@@ -2,7 +2,7 @@
 ### CSCI 4100U Final Project - Life Palette Wellness app
 
 **Group Members/Contributers**
-- (name), (username)
+- Megan Brandreth, mbrandreth
 - (name), (username)
 - (name), (username)
 - (name), (username)
