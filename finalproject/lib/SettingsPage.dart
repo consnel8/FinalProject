@@ -5,38 +5,38 @@ import 'appearance_page.dart' as appearance;
 import 'access_page.dart' as access;
 import 'account_page.dart' as account;
 import 'about_page.dart' as aboutp;
+import 'colour_theme.dart' as colours;
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
-void main() { // will be removed on final push after complete integration
+void main() { // will be removed on push
   runApp(const SPage());
 } // end main
 // will be removed
 
-class SPage extends StatelessWidget { // will be removed on final push after complete integration
+class SPage extends StatelessWidget { // will be removed on push
   const SPage({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData( // theme data will be necessary for the main application
-        scaffoldBackgroundColor: const Color(0xFFEFEBE9),
-        dialogBackgroundColor: const Color(0xFFEFEBE9),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFEFEBE9),),
+      title: 'Settings',
+      theme: colours.AppTheme.light,
+      /*
+      ThemeData(
         useMaterial3: true,
         textTheme: TextTheme(
           titleLarge: GoogleFonts.teko(
             fontSize: 40,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
           ),
           bodyLarge: GoogleFonts.teko(
             fontSize: 30,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
           ),
         ),
       ),
+      */
       home: const SettingsPage(title: 'Settings Page'),
       routes: {
         '/privsafety_page': (context) => privsafety.privsafety_page(),
@@ -92,22 +92,18 @@ class _MainSettings extends State<SettingsPage> {
               },
               icon: const Icon(
                 Icons.arrow_back,
-                color: Colors.black,
                 size: 50,
-              )
-          )
+              ),
+          ),
         ], // end actions
-          title: Text("Settings") // Settings title
-        /*
-        TODO:
-          - title size and font
-          - change colours
-        */
+          title: Text("Settings", style: TextStyle(
+            fontFamily: 'Teko',
+            fontSize: 50,
+          )) // Settings title
       ),
       body: Center(
         child: Container (
-          color: const Color(0xFFEFEBE9),
-          padding: const EdgeInsets.fromLTRB(30, 0, 30, 300),
+          padding: const EdgeInsets.fromLTRB(30, 15, 30, 300),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -117,8 +113,6 @@ class _MainSettings extends State<SettingsPage> {
                     body: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: SearchAnchor(
-                        viewBackgroundColor: const Color(0xFFEFEBE9),
-                        viewSurfaceTintColor: const Color(0xFFEFEBE9),
                         builder: (BuildContext context, SearchController controller){
                           return SearchBar(
                             controller: controller,
@@ -162,13 +156,13 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Account", style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 25,
+                    fontFamily: 'Lora',
                   )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => account.account_page()));
-                       // Navigator.push(context, _accountPage());
                       }, // end onPressed
                   ),
                 ], // end children
@@ -177,13 +171,13 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Notifications", style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 25,
+                    fontFamily: 'Lora',
                   )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => notifications.notifications_page()));
-                      //Navigator.push(context, _notificationsPage());
                     }, // end press
                   ),
                 ], // end children
@@ -192,13 +186,13 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Appearance", style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 25,
+                    fontFamily: 'Lora',
                   )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => appearance.appearance_page()));
-                     // Navigator.push(context, _appearancePage());
                     }, // end press
                   ),
                 ], // end children
@@ -207,13 +201,13 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Privacy and Safety", style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 25,
+                    fontFamily: 'Lora',
                   )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => privsafety.privsafety_page()));
-                     // Navigator.push(context, _privsafetyPage());
                     }, // end press
                   ),
                 ], // end children
@@ -222,13 +216,13 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Accessibility", style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 25,
+                    fontFamily: 'Lora',
                   )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => access.access_page()));
-                     // Navigator.push(context, _accessPage());
                     }, // end press
                   ),
                 ], // end children
@@ -237,13 +231,13 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("About", style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 25,
+                    fontFamily: 'Lora',
                   )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => aboutp.about_page()));
-                      //Navigator.push(context, _aboutPage());
                     }, // end press
                   ),
                 ], // end children
@@ -258,13 +252,15 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container (
-                    padding: const EdgeInsets.fromLTRB(120, 0, 0, 10),
+                    padding: const EdgeInsets.fromLTRB(120, 10, 0, 10),
                     child: TextButton(
                       onPressed: (){
                         // TODO: log out and redirect to log in page
                       },
                       child: Text("Log Out", style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
+                        fontFamily: 'Lora',
+                        fontWeight: FontWeight.bold,
                       )),
                     ),
                   ),
@@ -274,13 +270,15 @@ class _MainSettings extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(100, 0, 0, 10),
+                    padding: const EdgeInsets.fromLTRB(85, 0, 0, 10),
                     child: TextButton(
                       onPressed: (){
                         // TODO: log out and redirect to delete confirm page
                       },
                       child: Text("Delete Account", style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
+                        fontFamily: 'Lora',
+                        fontWeight: FontWeight.bold,
                         color: Colors.red,
                       )),
                     ),
