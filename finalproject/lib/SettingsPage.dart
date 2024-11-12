@@ -8,18 +8,18 @@ import 'about_page.dart' as aboutp;
 
 import 'package:google_fonts/google_fonts.dart';
 
-void main() { // will be removed on push
+void main() { // will be removed on final push after complete integration
   runApp(const SPage());
 } // end main
 // will be removed
 
-class SPage extends StatelessWidget { // will be removed on push
+class SPage extends StatelessWidget { // will be removed on final push after complete integration
   const SPage({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
+      theme: ThemeData( // theme data will be necessary for the main application
         scaffoldBackgroundColor: const Color(0xFFEFEBE9),
         dialogBackgroundColor: const Color(0xFFEFEBE9),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFEFEBE9),),
@@ -37,7 +37,7 @@ class SPage extends StatelessWidget { // will be removed on push
           ),
         ),
       ),
-      home: const SettingsPage(title: 'Flutter Demo Home Page'),
+      home: const SettingsPage(title: 'Settings Page'),
       routes: {
         '/privsafety_page': (context) => privsafety.privsafety_page(),
         '/notifications_page' : (context) => notifications.notifications_page(),
