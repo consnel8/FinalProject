@@ -6,6 +6,7 @@ import 'about_page.dart' as aboutp;
 import 'SettingsPage.dart' as settingsmain;
 
 import 'package:flutter/material.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 
 class privsafety_page extends StatefulWidget {
@@ -19,7 +20,31 @@ class _PSPageState extends State<privsafety_page>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      appBar: AppBar(
+        title: Text("Privacy & Safety", style: TextStyle(
+          fontFamily: 'Teko',
+          fontSize: 50,
+        ))
+      ),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 0, 30, 300),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  /*
+                  TODO:
+                    - delete data
+                  */
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
