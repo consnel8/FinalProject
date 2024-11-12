@@ -9,43 +9,39 @@ import 'colour_theme.dart' as colours;
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 
 void main() { // will be removed on push
   runApp(const SPage());
 } // end main
 // will be removed
 
+
 class SPage extends StatelessWidget { // will be removed on push
   const SPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Settings',
-      theme: colours.AppTheme.light,
-      /*
-      ThemeData(
-        useMaterial3: true,
-        textTheme: TextTheme(
-          titleLarge: GoogleFonts.teko(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
-          bodyLarge: GoogleFonts.teko(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      */
-      home: const SettingsPage(title: 'Settings Page'),
-      routes: {
-        '/privsafety_page': (context) => privsafety.privsafety_page(),
-        '/notifications_page' : (context) => notifications.notifications_page(),
-        '/appearance_page' : (context) => appearance.appearance_page(),
-        '/access_page' : (context) => access.access_page(),
-        '/account_page' : (context) => account.account_page(),
-        '/about_page' : (context) => aboutp.about_page(),
-      },
+
+    return AdaptiveTheme(
+        light: ThemeData.light(),
+        dark: ThemeData.dark(),
+        initial: AdaptiveThemeMode.system,
+        builder: (theme, darkTheme) => MaterialApp(
+          title: 'Settings',
+          theme: theme,
+          darkTheme: colours.AppTheme.dark,
+          themeMode: ThemeMode.system,
+          home: const SettingsPage(title: 'Settings Page'),
+          routes: {
+            '/privsafety_page': (context) => privsafety.privsafety_page(),
+            '/notifications_page' : (context) => notifications.notifications_page(),
+            '/appearance_page' : (context) => appearance.appearance_page(),
+            '/access_page' : (context) => access.access_page(),
+            '/account_page' : (context) => account.account_page(),
+            '/about_page' : (context) => aboutp.about_page(),
+          },
+        )
     );
   }
 } // end SPage
