@@ -3,7 +3,7 @@
 
 **Group Members/Contributers**
 - Megan Brandreth, mbrandreth
-- (name), (username)
+- Zara Farrukh, zarafarrukh, 100856302
 - (name), (username)
 - (name), (username)
 - (name), (username)
