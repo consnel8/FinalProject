@@ -122,15 +122,19 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = Colors.brown[100]!;
+    //final Color backgroundColor = Colors.brown[100]!;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      //backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.brown[800],
-        title: const Text('Recipe Book', style: TextStyle(color: Colors.white)),
+        //backgroundColor: Colors.brown[800],
+        title: const Text('Recipe Book',
+            //style: TextStyle(color: Colors.white)
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back
+              //, color: Colors.white
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -156,10 +160,10 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                        borderSide: const BorderSide(color: Colors.grey),
+                        //borderSide: const BorderSide(color: Colors.grey),
                       ),
                       filled: true,
-                      fillColor: backgroundColor,
+                      //fillColor: backgroundColor,
                     ),
                   ),
                 ),
@@ -178,7 +182,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                 IconButton(
                   icon: Icon(
                     showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
-                    color: showOnlyFavorites ? Colors.red : Colors.grey,
+                    color: showOnlyFavorites ? Color(0xfff485b1) : Colors.grey,
+                    // above was formerly 'Colors.red', changed to better fit colour scheme
                   ),
                   onPressed: _toggleFavoriteFilter, // Toggle favorite filter
                 ),
@@ -202,19 +207,23 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                       onTap: navigateToAddRecipe,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: backgroundColor,
+                          //color: backgroundColor,
                           borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(color: Colors.grey, width: 1),
+                          border: Border.all(
+                              //color: Colors.grey,
+                              width: 1),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add, size: 50, color: Colors.grey[600]),
+                            Icon(Icons.add, size: 50,
+                                //color: Colors.grey[600]
+                            ),
                             const SizedBox(height: 8),
                             const Text(
                               "Add Recipe",
                               style: TextStyle(
-                                color: Colors.purple,
+                                //color: Colors.purple,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -228,9 +237,11 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                       onTap: () => navigateToRecipeDescription(recipe),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: backgroundColor,
+                          //color: backgroundColor,
                           borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(color: Colors.grey, width: 1),
+                          border: Border.all(
+                              //color: Colors.grey,
+                              width: 1),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -249,7 +260,7 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                                         'PICTURE\nOF\nCOOKED\nFOOD',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Colors.brown,
+                                          //color: Colors.brown,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -257,13 +268,13 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                                     ),
                             ),
                             Container(
-                              color: backgroundColor,
+                              //color: backgroundColor,
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 recipe['name'],
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  color: Colors.pink,
+                                  //color: Colors.pink,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
