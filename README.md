@@ -10,6 +10,7 @@ Recipe Catalog: A recipe storage feature where users will be able to log their f
 
 Personal Journal: Users will be prompted to log their daily mood(s), activities, and thoughts throughout their day, creating a space for personal reflection and insight. Users will be able to view date-specific entries through search functionality, as well as see various mood and activity trends as more entries are made and data is collected. As a potential future addition, the inclusion of several journaling prompts could be added to help prompt users who may have difficulty journaling their thoughts and feelings without a specific goal in mind.
 
+
 **Group Members/Contributers**
 - Megan Brandreth, mbrandreth, (SID)
 - Zara Farrukh, zarafarrukh, 100856302
