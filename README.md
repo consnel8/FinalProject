@@ -2,8 +2,8 @@
 ### CSCI 4100U Final Project - Life Palette Wellness app
 
 **Group Members/Contributers**
-- Megan Brandreth, mbrandreth
+- Megan Brandreth, mbrandreth,
 - Zara Farrukh, zarafarrukh, 100856302
-- (name), (username)
-- (name), (username)
-- (name), (username)
+- (Connor Snelgrove), consnel8, 100826574
+- (name), (username), (SID)
+- (name), (username), (SID)

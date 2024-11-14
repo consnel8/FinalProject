@@ -42,6 +42,8 @@ dependencies:
   google_fonts: ^6.2.1
   flex_color_scheme: ^8.0.0
   adaptive_theme: ^3.6.0
+  image_picker: ^0.8.5+3  # Check for the latest version on pub.dev
+
 
 dev_dependencies:
   flutter_test:
