@@ -1,12 +1,4 @@
-import 'notifications_page.dart' as notifications;
-import 'appearance_page.dart' as appearance;
-import 'access_page.dart' as access;
-import 'account_page.dart' as account;
-import 'about_page.dart' as aboutp;
-import 'SettingsPage.dart' as settingsmain;
-
 import 'package:flutter/material.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 
 class privsafety_page extends StatefulWidget {
@@ -37,7 +29,8 @@ class _PSPageState extends State<privsafety_page>{
                 children: [
                   /*
                   TODO:
-                    - delete data
+                    - delete data (cloud)
+                    - disable geolocation/enable geolocation
                   */
                 ],
               ),
