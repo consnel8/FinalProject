@@ -22,16 +22,16 @@ class SPage extends StatelessWidget { // will be removed on push
 
   @override
   Widget build(BuildContext context) {
-
     return AdaptiveTheme(
-        light: ThemeData.light(),
-        dark: ThemeData.dark(),
+        light: colours.AppTheme.light,
+        dark: colours.AppTheme.dark,
         initial: AdaptiveThemeMode.system,
         builder: (theme, darkTheme) => MaterialApp(
           title: 'Settings',
-          theme: theme,
+          theme: colours.AppTheme.light,
           darkTheme: colours.AppTheme.dark,
           themeMode: ThemeMode.system,
+
           home: const SettingsPage(title: 'Settings Page'),
           routes: {
             '/privsafety_page': (context) => privsafety.privsafety_page(),
