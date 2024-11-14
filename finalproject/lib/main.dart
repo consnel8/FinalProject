@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'recipe_book_page.dart'; // Import the recipe book page
-//import settings page here
+import 'SettingsPage.dart';
+import 'colour_theme.dart' as colours;
 //import virtual wardrobe page here
 //import journal page here
 
@@ -17,10 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-    );
+    return AdaptiveTheme(
+        light: colours.AppTheme.light,
+        dark: colours.AppTheme.dark,
+        initial: AdaptiveThemeMode.system,
+        builder: (theme, darkTheme) => MaterialApp(
+          theme: colours.AppTheme.light,
+          darkTheme: colours.AppTheme.dark,
+          themeMode: theme == colours.AppTheme.light ? ThemeMode.light : ThemeMode.dark,
+          debugShowCheckedModeBanner: false,
+          home: SplashScreen(),
+    ));
   }
 }
 
@@ -47,6 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3A3A3A),
       body: Center(
         child: Image.asset(
           'assets/logo.png',
@@ -66,7 +76,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3A3A3A), // Dark header color
+        //backgroundColor: const Color(0xFF3A3A3A), // Dark header color
         title: Row(
           children: [
             Image.asset('assets/logo.png', height: 40), // Logo image
@@ -84,11 +94,13 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white), // Three-line menu icon
+            icon: const Icon(Icons.menu,
+                //color: Colors.white
+            ), // Three-line menu icon
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
+                MaterialPageRoute(builder: (context) => SettingsPage()),
               );
             },
           ),
@@ -128,7 +140,7 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showNewEntryDialog(context),
-        backgroundColor: Colors.green,
+        //backgroundColor: Colors.green,
         child: const Icon(Icons.add),
       ),
     );
@@ -245,7 +257,7 @@ class FeatureCard extends StatelessWidget {
                       fontFamily: 'Lora',
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.black,
+                      //color: Colors.black,
                     ),
                   ),
                 ],
@@ -276,6 +288,7 @@ class BlankPage extends StatelessWidget {
   }
 }
 
+/*
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -291,6 +304,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
+*/
 
 // Suggestions page that fetches nearby places
 class SuggestionsPage extends StatefulWidget {

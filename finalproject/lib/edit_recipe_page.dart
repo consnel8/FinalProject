@@ -50,15 +50,18 @@ class _EditRecipePageState extends State<EditRecipePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = Colors.brown[100]!;
+    //final Color backgroundColor = Colors.brown[100]!;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      //backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Edit Recipe'),
-        backgroundColor: Colors.brown[800],
-        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
-        iconTheme: const IconThemeData(color: Colors.white),
+        //backgroundColor: Colors.brown[800],
+        titleTextStyle: const TextStyle(
+            //color: Colors.white,
+            fontSize: 20
+        ),
+        //iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -108,8 +111,8 @@ class _EditRecipePageState extends State<EditRecipePage> {
             ElevatedButton(
               onPressed: saveEditedRecipe,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown[700],
-                foregroundColor: Colors.white, // Set text color to white
+                //backgroundColor: Colors.brown[700],
+                //foregroundColor: Colors.white, // Set text color to white
               ),
               child: const Text('Save Changes'),
             ),

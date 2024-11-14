@@ -1,12 +1,4 @@
-import 'privsafety_page.dart' as privsafety;
-import 'notifications_page.dart' as notifications;
-import 'appearance_page.dart' as appearance;
-import 'access_page.dart' as access;
-import 'account_page.dart' as account;
-import 'SettingsPage.dart' as settingsmain;
-
 import 'package:flutter/material.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 class about_page extends StatefulWidget {
   const about_page({super.key});
@@ -135,7 +127,7 @@ class _AboutPageState extends State<about_page>{
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(40, 10, 10, 0),
-                    child: const Image(image: AssetImage('images/Life_Palette_logo.png'), width: 280, height: 150),
+                    child: const Image(image: AssetImage('assets/logo.png'), width: 280, height: 150),
                   ),
                 ],
               ),

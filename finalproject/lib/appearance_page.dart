@@ -1,12 +1,4 @@
-import 'privsafety_page.dart' as privsafety;
-import 'notifications_page.dart' as notifications;
-import 'access_page.dart' as access;
-import 'account_page.dart' as account;
-import 'about_page.dart' as aboutp;
-import 'SettingsPage.dart' as settingsmain;
-
 import 'package:flutter/material.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
 class appearance_page extends StatefulWidget {
