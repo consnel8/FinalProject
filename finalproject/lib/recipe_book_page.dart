@@ -133,6 +133,14 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          Image.asset(
+            'assets/recipe_icon.png', // Path to your logo
+            height: 40,               // Set height as needed
+            width: 40,                // Optional: set width for consistent dimensions
+          ),
+          const SizedBox(width: 16), // Add spacing if needed
+        ],
       ),
       body: Column(
         children: [

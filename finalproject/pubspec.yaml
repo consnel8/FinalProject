@@ -42,7 +42,10 @@ dependencies:
   google_fonts: ^6.2.1
   flex_color_scheme: ^8.0.0
   adaptive_theme: ^3.6.0
-  image_picker: ^0.8.5+3  # Check for the latest version on pub.dev
+  image_picker: ^0.8.5+3
+  geolocator: ^9.0.2
+  geocoding: ^2.0.0
+  http: 1.2.2
 
 
 dev_dependencies:
@@ -68,6 +71,11 @@ flutter:
   assets:
     - images/
     - images/Life_Palette_logo.png
+    - assets/logo.png
+    - assets/wardrobe_icon.png
+    - assets/recipe_icon.png
+    - assets/journal_icon.png
+    - assets/suggestions_icon.png
   fonts:
     - family: Teko
       fonts:
