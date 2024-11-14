@@ -4,15 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'recipe_book_page.dart'; // Import the recipe book page
+//import settings page here
+//import virtual wardrobe page here
+//import journal page here
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     );
@@ -21,6 +26,8 @@ class MyApp extends StatelessWidget {
 
 // Splash screen that leads to the HomeScreen after a delay
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -30,9 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Start a timer for 8 seconds before navigating to HomeScreen
-    Timer(Duration(seconds: 8), () {
+    Timer(const Duration(seconds: 8), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => HomeScreen()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     });
   }
@@ -42,9 +49,9 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Image.asset(
-          'assets/logo.png', // Set the path to your logo image
-          width: 300,         // Adjust the width as needed
-          height: 300,        // Adjust the height as needed
+          'assets/logo.png',
+          width: 300,
+          height: 300,
         ),
       ),
     );
@@ -53,19 +60,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
 // Main Home Screen with Feature Cards for different functionalities
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF3A3A3A), // Dark header color
+        backgroundColor: const Color(0xFF3A3A3A), // Dark header color
         title: Row(
           children: [
             Image.asset('assets/logo.png', height: 40), // Logo image
-            SizedBox(width: 20),
-            Text(
+            const SizedBox(width: 20),
+            const Text(
               'Life Palette',
               style: TextStyle(
-                fontFamily: 'Teko', // Custom font for title
+                fontFamily: 'Teko',
                 fontWeight: FontWeight.bold,
                 color: Colors.orangeAccent,
                 fontSize: 30,
@@ -75,11 +84,11 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.menu, color: Colors.white), // Three-line menu icon
+            icon: const Icon(Icons.menu, color: Colors.white), // Three-line menu icon
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
           ),
@@ -112,7 +121,7 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/suggestions_icon.png', // Suggestions icon
               title: 'SUGGESTIONS',
               description: 'Get recommendations based on your location for places near you to eat, shop, and explore.',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SuggestionsPage())),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SuggestionsPage())),
             ),
           ],
         ),
@@ -120,7 +129,7 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showNewEntryDialog(context),
         backgroundColor: Colors.green,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -146,37 +155,37 @@ class HomeScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Create New Entry', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
+          title: const Text('Create New Entry', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.checkroom), // Wardrobe icon
-                title: Text('Virtual Wardrobe', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+                leading: const Icon(Icons.checkroom), // Wardrobe icon
+                title: const Text('Virtual Wardrobe', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Creating New Virtual Wardrobe Entry...')),
+                    const SnackBar(content: Text('Creating New Virtual Wardrobe Entry...')),
                   );
                 },
               ),
               ListTile(
-                leading: Icon(Icons.restaurant), // Recipe icon
-                title: Text('Recipe', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+                leading: const Icon(Icons.restaurant), // Recipe icon
+                title: const Text('Recipe', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Creating New Recipe Entry...')),
+                    const SnackBar(content: Text('Creating New Recipe Entry...')),
                   );
                 },
               ),
               ListTile(
-                leading: Icon(Icons.book), // Journal icon
-                title: Text('Journal', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+                leading: const Icon(Icons.book), // Journal icon
+                title: const Text('Journal', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Creating New Journal Entry...')),
+                    const SnackBar(content: Text('Creating New Journal Entry...')),
                   );
                 },
               ),
@@ -195,7 +204,7 @@ class FeatureCard extends StatelessWidget {
   final String description;
   final VoidCallback onTap;
 
-  const FeatureCard({
+  const FeatureCard({super.key, 
     required this.imagePath,
     required this.title,
     required this.description,
@@ -215,24 +224,24 @@ class FeatureCard extends StatelessWidget {
               backgroundColor: Colors.transparent,
               child: Image.asset(imagePath),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Teko',
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       color: Color(0xFFD2007C),
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     description,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Lora',
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -252,29 +261,31 @@ class FeatureCard extends StatelessWidget {
 class BlankPage extends StatelessWidget {
   final String title;
 
-  const BlankPage({required this.title});
+  const BlankPage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title, style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
+        title: Text(title, style: const TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
       ),
       body: Center(
-        child: Text('This is a blank page for $title.', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+        child: Text('This is a blank page for $title.', style: const TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
       ),
     );
   }
 }
 
 class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
+        title: const Text('Settings', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is the settings page.', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
       ),
     );
@@ -283,6 +294,8 @@ class SettingsPage extends StatelessWidget {
 
 // Suggestions page that fetches nearby places
 class SuggestionsPage extends StatefulWidget {
+  const SuggestionsPage({super.key});
+
   @override
   _SuggestionsPageState createState() => _SuggestionsPageState();
 }
@@ -320,7 +333,7 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data['results'] != null) {
-          Set<dynamic> allPlaces = Set();
+          Set<dynamic> allPlaces = {};
 
           for (var place in data['results']) {
             allPlaces.add(place);
@@ -372,7 +385,7 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
         title: const Text('Nearby Places to Eat, Shop & Explore', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
               ? Center(child: Text(errorMessage))
               : ListView.builder(
