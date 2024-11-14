@@ -5,5 +5,5 @@
 - Megan Brandreth, mbrandreth, (SID)
 - Zara Farrukh, zarafarrukh, 100856302
 - Connor Snelgrove, consnel8, 100826574
-- Eisha Riavi, eisharizvi, 100782325
+- Eisha Rizvi, eisharizvi, 100782325
 - (name), (username), (SID)
