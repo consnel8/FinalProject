@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'recipe_book_page.dart';
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
+import 'journal_page.dart';
 //import virtual wardrobe page here
-//import journal page here
 
 void main() {
   runApp(const MyApp());
@@ -124,7 +124,7 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/journal_icon.png', // Journal icon
               title: 'JOURNAL',
               description: 'Reflect on your day by writing entries, tracking moods, and capturing your thoughts.',
-              onTap: () => _navigateToBlankPage(context, 'Journal'),
+              onTap: () => _navigateToJournal(context),
             ),
             FeatureCard(
               imagePath: 'assets/suggestions_icon.png', // Suggestions icon
@@ -146,6 +146,13 @@ class HomeScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const RecipeBookPage()), // Navigate to RecipeBookPage
+    );
+  }
+
+  void _navigateToJournal(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const JournalPage()), // Navigate to Journal
     );
   }
 
