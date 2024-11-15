@@ -4,8 +4,12 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+<<<<<<< HEAD
 import 'recipe_book_page.dart'; // Import the recipe book page
 import 'add_recipe_page.dart'; // Import the add recipe page
+=======
+import 'recipe_book_page.dart';
+>>>>>>> b851ab8ef6a5c24ceaa1fa4749cab9f5ddc0bca8
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 // import other pages as needed
@@ -20,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveTheme(
+<<<<<<< HEAD
       light: colours.AppTheme.light,
       dark: colours.AppTheme.dark,
       initial: AdaptiveThemeMode.system,
@@ -31,6 +36,18 @@ class MyApp extends StatelessWidget {
         home: SplashScreen(),
       ),
     );
+=======
+        light: colours.AppTheme.light,
+        dark: colours.AppTheme.dark,
+        initial: AdaptiveThemeMode.system,
+        builder: (theme, darkTheme) => MaterialApp(
+          theme: colours.AppTheme.light,
+          darkTheme: colours.AppTheme.dark,
+          themeMode: theme == colours.AppTheme.light ? ThemeMode.light : ThemeMode.dark,
+          debugShowCheckedModeBanner: false,
+          home: const SplashScreen(),
+    ));
+>>>>>>> b851ab8ef6a5c24ceaa1fa4749cab9f5ddc0bca8
   }
 }
 
@@ -94,11 +111,15 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
+<<<<<<< HEAD
             icon: const Icon(Icons.menu),
+=======
+            icon: const Icon(Icons.menu), // Three-line menu icon
+>>>>>>> b851ab8ef6a5c24ceaa1fa4749cab9f5ddc0bca8
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
           ),
@@ -131,7 +152,7 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/suggestions_icon.png',
               title: 'SUGGESTIONS',
               description: 'Get recommendations based on your location for places near you to eat, shop, and explore.',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SuggestionsPage())),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SuggestionsPage())),
             ),
           ],
         ),
@@ -288,8 +309,6 @@ class BlankPage extends StatelessWidget {
 
 // Suggestions page that fetches nearby places
 class SuggestionsPage extends StatefulWidget {
-  const SuggestionsPage({super.key});
-
   @override
   _SuggestionsPageState createState() => _SuggestionsPageState();
 }
@@ -327,6 +346,7 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data['results'] != null) {
+          // Store places in a Set to remove duplicates based on place ID
           Set<dynamic> allPlaces = {};
 
           for (var place in data['results']) {
