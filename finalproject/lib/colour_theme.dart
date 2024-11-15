@@ -21,6 +21,7 @@ sealed class AppTheme {
     ),
     surface: Color(0xFF3A3A3A),
     scaffoldBackground: Color(0xFFF4EDE6),
+    // dialogBackground: Color(0xFF3A3A3A),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(
         color: Color(0xFF000000)
@@ -72,6 +73,7 @@ sealed class AppTheme {
     ).defaultError.toDark(10, true),
     surface: Color(0xFF3A3A3A),
     scaffoldBackground: Color(0xFF3A3A3A),
+    // dialogBackground: Color(0xFF3A3A3A),
     textTheme: const TextTheme(
         bodyMedium: TextStyle(
             color: Color(0xFFF4EDE6),
