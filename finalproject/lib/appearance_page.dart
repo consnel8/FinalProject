@@ -12,11 +12,10 @@ class _AppearancePageState extends State<appearance_page>{
 
   static const List<Widget> display = <Widget>[
     Text('Light'),
-    Text('System'),
-    Text('Dark')
+    Text('Dark'),
   ];
 
-  final List<bool> _selectedDisplay = <bool>[true, false, false];
+  final List<bool> _selectedDisplay = <bool>[true, false];
   bool vertical = false;
 
 
@@ -55,16 +54,13 @@ class _AppearancePageState extends State<appearance_page>{
                         direction: vertical ? Axis.vertical : Axis.horizontal,
                         onPressed: (int index){
                           setState(() {
-                            for (int i = 0; i < 3; i++){
+                            for (int i = 0; i < 2; i++){
                               _selectedDisplay[i] = i == index;
                             }
                             if (index == 0){
                               AdaptiveTheme.of(context).setLight();
                             }
                             if (index == 1){
-                              AdaptiveTheme.of(context).setSystem();
-                            }
-                            if (index == 2){
                               AdaptiveTheme.of(context).setDark();
                             }
                           });
