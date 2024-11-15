@@ -57,7 +57,7 @@ sealed class AppTheme {
   );
   // The defined dark theme.
   static ThemeData dark = FlexThemeData.dark(
-    colors: const FlexSchemeColor(
+    colors: const FlexSchemeColor( // Custom
       primary: Color(0xffb3cf81),
       primaryContainer: Color(0xFFF4EDE6),
       primaryLightRef: Color(0xFFF4EDE6),
