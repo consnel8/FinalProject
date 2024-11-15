@@ -114,6 +114,7 @@ flutter:
           weight: 600
           style: italic
         - asset: fonts/Lora-VariableFont_wght.ttf
+        - asset: fonts/DancingScript-Regular.ttf
 
 
   # The following line ensures that the Material Icons font is
