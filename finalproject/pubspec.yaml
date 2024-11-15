@@ -76,7 +76,7 @@ flutter:
     - assets/recipe_icon.png
     - assets/journal_icon.png
     - assets/suggestions_icon.png
-    - assets/journal_entry_icon.png
+    - assets/journal_diary_icon.jpg
   fonts:
     - family: Teko
       fonts:

@@ -250,59 +250,106 @@ class _EditJournalPageState extends State<EditJournalPage> {
       appBar: AppBar(
         title: Text(widget.entry == null ? 'Add New Entry' : 'Edit Entry'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: _contentController,
-              decoration: const InputDecoration(labelText: 'Content'),
-              maxLines: 4,
-            ),
-            ListTile(
-              title: Text('Date: ${_selectedDate.toLocal()}'.split(' ')[0]),
-              trailing: IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: () async {
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null && pickedDate != _selectedDate) {
-                    setState(() {
-                      _selectedDate = pickedDate;
-                    });
+      body: Container(
+        // Set your background here (you can choose color or image)
+        decoration: BoxDecoration(
+          color: const Color(0xFFf4f1f1), // Light background color
+          image: DecorationImage(
+            image: AssetImage('assets/journal_diary_icon.jpg'), // Background image (if desired)
+            fit: BoxFit.cover,
+            alignment: Alignment.centerLeft,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Subject TextField
+              Padding(
+                padding: const EdgeInsets.only(left: 50.0),
+                child: TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    labelText: 'Subject',
+                    labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
+                    filled: true,
+                    fillColor: Colors.transparent, // Make background transparent
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.transparent, // No border color
+                      ),
+                    ),
+                  ),
+                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Entry TextField
+              Padding(
+                padding: const EdgeInsets.only(left: 50.0),
+                child: TextField(
+                  controller: _contentController,
+                  decoration: InputDecoration(
+                    labelText: 'Entry',
+                    labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
+                    filled: true,
+                    fillColor: Colors.transparent, // Make background transparent
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.transparent, // No border color
+                      ),
+                    ),
+                  ),
+                  maxLines: 6,
+                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ListTile(
+                title: Text('Date: ${_selectedDate.toLocal()}'.split(' ')[0]),
+                trailing: IconButton(
+                  icon: const Icon(Icons.calendar_today),
+                  onPressed: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                    if (pickedDate != null && pickedDate != _selectedDate) {
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {
+                  if (_titleController.text.isNotEmpty &&
+                      _contentController.text.isNotEmpty) {
+                    final entry = JournalEntry(
+                      title: _titleController.text,
+                      content: _contentController.text,
+                      date: _selectedDate,
+                    );
+                    Navigator.of(context).pop(entry);
                   }
                 },
+                child: const Text('Save'),
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (_titleController.text.isNotEmpty &&
-                    _contentController.text.isNotEmpty) {
-                  final entry = JournalEntry(
-                    title: _titleController.text,
-                    content: _contentController.text,
-                    date: _selectedDate,
-                  );
-                  Navigator.of(context).pop(entry);
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
 
 // Journal Entry model
 class JournalEntry {
