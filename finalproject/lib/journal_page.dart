@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 
-class JournalPage extends StatelessWidget {
+class JournalPage extends StatefulWidget {
   const JournalPage({Key? key}) : super(key: key);
+
+  @override
+  _JournalPageState createState() => _JournalPageState();
+}
+
+class _JournalPageState extends State<JournalPage> {
+  // List to hold journal entries
+  List<JournalEntry> _entries = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFe8dcd4),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -15,67 +24,119 @@ class JournalPage extends StatelessWidget {
         ),
         title: Row(
           children: [
-            // Vertical black separator before the title
             Container(
-              height: 60, // Height of the separator line
-              width: 2, // Thickness of the line
-              color: Colors.black, // Line color
+              height: 60,
+              width: 2,
+              color: Colors.black,
             ),
-            SizedBox(width: 16), // Space between the separator and the title
-            // Title
+            SizedBox(width: 16),
             Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Center the title
-                children: [
-                  const Text(
-                    'PERSONAL JOURNAL',
-                    style: TextStyle(
-                      fontSize: 20, // Set font size for the title
-                    ),
-                  ),
-                ],
+              child: Align(
+                alignment: Alignment.center,
+                child: const Text(
+                  'PERSONAL JOURNAL',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
             ),
-            SizedBox(width: 16), // Space between the title and the next separator
-            // Vertical black separator after the title
+            SizedBox(width: 16),
             Container(
-              height: 60, // Height of the separator line
-              width: 2, // Thickness of the line
-              color: Colors.black, // Line color
+              height: 60,
+              width: 2,
+              color: Colors.black,
             ),
-            SizedBox(width: 16), // Space between the separator and the logo
-            // Right-aligned logo image
+            SizedBox(width: 16),
             Image.asset(
-              'assets/journal_icon.png', // Add your logo image in the assets folder
-              height: 70, // Set the size of your logo
+              'assets/journal_icon.png',
+              height: 60,
             ),
           ],
         ),
-        toolbarHeight: 80, // Increase the height of the AppBar
+        toolbarHeight: 80,
       ),
-      body: const Center(
+      body: _entries.isEmpty
+          ? const Center(
         child: Text('Start your journey by adding a new entry.'),
+      )
+          : ListView.builder(
+        itemCount: _entries.length,
+        itemBuilder: (context, index) {
+          final entry = _entries[index];
+          String shortContent = entry.content.length > 200
+              ? entry.content.substring(0, 200) + '...'
+              : entry.content; // Shortened entry
+          return ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  entry.title,
+                  style: const TextStyle(
+                    color: Color(0xFFBE3B88),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  shortContent,  // Display shortened entry
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                "${entry.date.toLocal()}".split(' ')[0],
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            onTap: () {
+              // Show full entry when tapped
+              _showEntryDetails(context, entry);
+            },
+          );
+        },
       ),
       bottomNavigationBar: BottomAppBar(
+        color: const Color(0xFF393634),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: const Icon(Icons.insights), // Insights button
+              icon: const Icon(Icons.insights),
+              iconSize: 35.0,
               onPressed: () {
-                _showInsights(context); // Show insights
+                _showInsights(context);
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.add), // Add entry button
-              onPressed: () {
-                _addNewEntry(context); // Add new journal entry
-              },
+            Container(
+              height: 60,
+              width: 2,
+              color: Colors.black,
             ),
             IconButton(
-              icon: const Icon(Icons.calendar_today), // Calendar button
+              icon: const Icon(Icons.add),
+              iconSize: 35.0,
               onPressed: () {
-                _searchByDate(context); // Search by date
+                _addNewEntry(context);
+              },
+            ),
+            Container(
+              height: 60,
+              width: 2,
+              color: Colors.black,
+            ),
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              iconSize: 35.0,
+              onPressed: () {
+                _searchByDate(context);
               },
             ),
           ],
@@ -85,14 +146,140 @@ class JournalPage extends StatelessWidget {
   }
 
   void _showInsights(BuildContext context) {
-    // Implement insights functionality here
-  }
-
-  void _addNewEntry(BuildContext context) {
-    // Implement add new entry functionality here
+    // insights functionality here
   }
 
   void _searchByDate(BuildContext context) {
-    // Implement date search functionality here
+    // date search functionality here
   }
+
+  // Show the full journal entry
+  void _showEntryDetails(BuildContext context, JournalEntry entry) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            entry.title,
+            style: const TextStyle(
+              color: Color(0xFFBE3B88),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            entry.content,
+            style: const TextStyle(
+              color: Colors.grey, //entry color
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Add a new journal entry
+  void _addNewEntry(BuildContext context) async {
+    final newEntry = await _showAddEntryDialog(context);
+    if (newEntry != null) {
+      setState(() {
+        _entries.add(newEntry);
+        // Sort the entries by date (newest first)
+        _entries.sort((a, b) => b.date.compareTo(a.date));
+      });
+    }
+  }
+
+  // Placeholder dialog for adding a new journal entry
+  Future<JournalEntry?> _showAddEntryDialog(BuildContext context) {
+    TextEditingController titleController = TextEditingController();
+    TextEditingController contentController = TextEditingController();
+    DateTime selectedDate = DateTime.now();
+
+    return showDialog<JournalEntry>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add New Journal Entry'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                controller: contentController,
+                decoration: const InputDecoration(labelText: 'Content'),
+                maxLines: 4,
+              ),
+              ListTile(
+                title: Text('Date: ${selectedDate.toLocal()}'.split(' ')[0]),
+                trailing: IconButton(
+                  icon: const Icon(Icons.calendar_today),
+                  onPressed: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+                    if (pickedDate != null && pickedDate != selectedDate) {
+                      setState(() {
+                        selectedDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (titleController.text.isNotEmpty && contentController.text.isNotEmpty) {
+                  final newEntry = JournalEntry(
+                    title: titleController.text,
+                    content: contentController.text,
+                    date: selectedDate,
+                  );
+                  Navigator.of(context).pop(newEntry);
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// Journal Entry model
+class JournalEntry {
+  final String title;
+  final String content;
+  final DateTime date;
+
+  JournalEntry({
+    required this.title,
+    required this.content,
+    required this.date,
+  });
 }
