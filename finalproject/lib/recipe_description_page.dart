@@ -96,7 +96,7 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,6 +109,9 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
                   fit: BoxFit.cover,
                   height: 200,
                   width: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(child: Text('Image not available'));
+                  },
                 ),
               )
             else
@@ -147,13 +150,24 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
             ...((widget.recipe['ingredients'] as List<dynamic>?)?.map((ingredient) => Text('- $ingredient')).toList() ?? [const Text('No ingredients listed.')]),
             const SizedBox(height: 16),
             const Text(
-              'Instructions:',
+              'Cooking Instructions:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(widget.recipe['instructions'] ?? 'No instructions provided.'),
+            ..._buildCookingInstructions(widget.recipe['cookingInstructions']),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _buildCookingInstructions(String? instructions) {
+    if (instructions == null || instructions.isEmpty) {
+      return [const Text('No instructions provided.')];
+    }
+
+    final steps = instructions.split(','); // Split the string by commas
+    return List<Widget>.generate(steps.length, (index) {
+      return Text('${index + 1}. ${steps[index].trim()}'); // Display as "1. Step", "2. Step", etc.
+    });
   }
 }
