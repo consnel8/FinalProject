@@ -158,13 +158,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToJournal(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const JournalPage()), // Navigate to Journal
-    );
-  }
-
   void _navigateToBlankPage(BuildContext context, String title) {
     Navigator.push(
       context,
