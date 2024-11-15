@@ -1,12 +1,4 @@
-import 'privsafety_page.dart' as privsafety;
-import 'notifications_page.dart' as notifications;
-import 'access_page.dart' as access;
-import 'account_page.dart' as account;
-import 'about_page.dart' as aboutp;
-import 'SettingsPage.dart' as settingsmain;
-
 import 'package:flutter/material.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
 class appearance_page extends StatefulWidget {
@@ -20,11 +12,10 @@ class _AppearancePageState extends State<appearance_page>{
 
   static const List<Widget> display = <Widget>[
     Text('Light'),
-    Text('System'),
-    Text('Dark')
+    Text('Dark'),
   ];
 
-  final List<bool> _selectedDisplay = <bool>[true, false, false];
+  final List<bool> _selectedDisplay = <bool>[true, false];
   bool vertical = false;
 
 
@@ -63,16 +54,13 @@ class _AppearancePageState extends State<appearance_page>{
                         direction: vertical ? Axis.vertical : Axis.horizontal,
                         onPressed: (int index){
                           setState(() {
-                            for (int i = 0; i < 3; i++){
+                            for (int i = 0; i < 2; i++){
                               _selectedDisplay[i] = i == index;
                             }
                             if (index == 0){
                               AdaptiveTheme.of(context).setLight();
                             }
                             if (index == 1){
-                              AdaptiveTheme.of(context).setSystem();
-                            }
-                            if (index == 2){
                               AdaptiveTheme.of(context).setDark();
                             }
                           });

@@ -32,15 +32,17 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = Colors.brown[100]!;
+    //final Color backgroundColor = Colors.brown[100]!;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      //backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Add Recipe'),
-        backgroundColor: Colors.brown[800],
-        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
-        iconTheme: const IconThemeData(color: Colors.white),
+        //backgroundColor: Colors.brown[800],
+        titleTextStyle: const TextStyle(
+            //color: Colors.white,
+            fontSize: 20),
+        //iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -72,7 +74,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
             Column(
               children: mealTypes.map((type) {
                 return CheckboxListTile(
-                  title: Text(type),
+                  title: Text(type, style: TextStyle(color: Color(0xff757575))),
                   value: selectedMealTypes.contains(type),
                   onChanged: (bool? selected) {
                     setState(() {
@@ -90,8 +92,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
             ElevatedButton(
               onPressed: saveRecipe,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown[700],
-                foregroundColor: Colors.white, // Set text color to white
+                //backgroundColor: Colors.brown[700],
+                //foregroundColor: Colors.white, // Set text color to white
               ),
               child: const Text('Save Recipe'),
             ),

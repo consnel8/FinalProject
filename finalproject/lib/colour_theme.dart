@@ -1,28 +1,14 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-/// The [AppTheme] defines light and dark themes for the app.
-///
-/// Theme setup for FlexColorScheme package v8.
-/// Use same major flex_color_scheme package version. If you use a
-/// lower minor version, some properties may not be supported.
-/// In that case, remove them after copying this theme to your
-/// app or upgrade package to version 8.0.0.
-///
-/// Use in [MaterialApp] like this:
-///
-/// MaterialApp(
-///  theme: AppTheme.light,
-///  darkTheme: AppTheme.dark,
-///  :
-/// );
+
 sealed class AppTheme {
   // The defined light theme.
   static ThemeData light = FlexThemeData.light(
     colors: const FlexSchemeColor( // Custom
-      primary: Color(0xff4e342a),
+      primary: Color(0xFF3A3A3A),
       primaryContainer: Color(0xffdcedc8),
-      primaryLightRef: Color(0xff4e342a),
+      primaryLightRef: Color(0xFF3A3A3A),
       secondary: Color(0xfff8bbd0),
       secondaryContainer: Color(0xfff485b1),
       secondaryLightRef: Color(0xfff8bbd0),
@@ -31,7 +17,29 @@ sealed class AppTheme {
       tertiaryLightRef: Color(0xffffe082),
       appBarColor: Color(0xfff485b1),
       error: Color(0xffba1a1a),
-      errorContainer: Color(0xffffdad6),
+      errorContainer: Color(0xffba1a1a),
+    ),
+    surface: Color(0xFF3A3A3A),
+    scaffoldBackground: Color(0xFFF4EDE6),
+    textTheme: const TextTheme(
+      bodyMedium: TextStyle(
+        color: Color(0xFF000000)
+      ),
+      bodySmall: TextStyle(
+          color: Color(0xFF000000)
+      ),
+      bodyLarge: TextStyle(
+          color: Color(0xFF000000)
+      ),
+      headlineMedium: TextStyle(
+        color: Color(0xFFF4EDE6),
+      ),
+      headlineLarge: TextStyle(
+        color: Color(0xFFF4EDE6),
+      ),
+      headlineSmall: TextStyle(
+        color: Color(0xFFF4EDE6),
+      ),
     ),
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,
@@ -48,20 +56,36 @@ sealed class AppTheme {
   );
   // The defined dark theme.
   static ThemeData dark = FlexThemeData.dark(
-    colors: const FlexSchemeColor(
-      primary: Color(0xffdfeecd),
-      primaryContainer: Color(0xff5f473e),
-      primaryLightRef: Color(0xff4e342a),
-      secondary: Color(0xfff590b8),
-      secondaryContainer: Color(0xfff8c1d4),
-      secondaryLightRef: Color(0xfff8bbd0),
-      tertiary: Color(0xff9ff1ff),
-      tertiaryContainer: Color(0xffffe38e),
-      tertiaryLightRef: Color(0xffffe082),
-      appBarColor: Color(0xfff590b8),
-      error: null,
-      errorContainer: null,
+    colors: const FlexSchemeColor( // Custom
+      primary: Color(0xffb3cf81),
+      primaryContainer: Color(0xFFF4EDE6),
+      primaryLightRef: Color(0xFFF4EDE6),
+      secondary: Color(0xffc66e95),
+      secondaryContainer: Color(0xffe17aa0),
+      secondaryLightRef: Color(0xffe17aa0),
+      tertiary: Color(0xff5eb5bf),
+      tertiaryContainer: Color(0xffe4ca74),
+      tertiaryLightRef: Color(0xffe4ca74),
+      appBarColor: Color(0xffda6995),
+      error: Color(0xffba1a1a),
+      errorContainer: Color(0xffba1a1a),
     ).defaultError.toDark(10, true),
+    surface: Color(0xFF3A3A3A),
+    scaffoldBackground: Color(0xFF3A3A3A),
+    textTheme: const TextTheme(
+        bodyMedium: TextStyle(
+            color: Color(0xFFF4EDE6),
+        ),
+      headlineMedium: TextStyle(
+        color: Color(0xFFF4EDE6),
+        ),
+      headlineLarge: TextStyle(
+        color: Color(0xFFF4EDE6),
+      ),
+      headlineSmall: TextStyle(
+        color: Color(0xFFF4EDE6),
+      ),
+    ),
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,
       tintedDisabledControls: true,
