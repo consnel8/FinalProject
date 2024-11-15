@@ -35,49 +35,83 @@ class _EntryDetailPageState extends State<EntryDetailPage> {
       appBar: AppBar(
         title: Text(widget.entry == null ? 'New Entry' : 'Edit Entry'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/journal_entry_icon.png'), // Background texture (like a paper)
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Stack(
           children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: contentController,
-              decoration: const InputDecoration(labelText: 'Content'),
-              maxLines: 5,
-            ),
-            ListTile(
-              title: Text('Date: ${selectedDate.toLocal()}'.split(' ')[0]),
-              trailing: IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: () async {
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null && pickedDate != selectedDate) {
-                    setState(() {
-                      selectedDate = pickedDate;
-                    });
-                  }
-                },
+            // Overlay for title and content
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5), // Slight dark overlay for readability
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final newEntry = JournalEntry(
-                  title: titleController.text,
-                  content: contentController.text,
-                  date: selectedDate,
-                );
-                Navigator.of(context).pop(newEntry); // Return the new entry to the previous page
-              },
-              child: Text(widget.entry == null ? 'Add Entry' : 'Save Changes'),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(  // Added to make the content scrollable
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title TextField
+                    TextField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                        labelStyle: TextStyle(fontFamily: 'DancingScript', fontSize: 24), // A cursive font for diary style
+                        border: InputBorder.none,
+                        hintText: 'Enter your diary title',
+                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      ),
+                      style: TextStyle(fontFamily: 'DancingScript', fontSize: 28), // Match the font for the content
+                    ),
+                    const Divider(color: Colors.white, thickness: 1), // Divider between title and content
+
+                    // Content TextField
+                    TextField(
+                      controller: contentController,
+                      decoration: const InputDecoration(
+                        labelText: 'Content',
+                        border: InputBorder.none,
+                        hintText: 'Start typing your diary entry...',
+                        hintStyle: TextStyle(fontSize: 18, color: Color(0xFF757575)),
+                      ),
+                      maxLines: null, // Allow for multiline input
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(fontSize: 20, fontFamily: 'DancingScript'), // Diary-style font
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Date Picker
+                    ListTile(
+                      title: Text(
+                        'Date: ${selectedDate.toLocal()}'.split(' ')[0],
+                        style: TextStyle(fontFamily: 'DancingScript', fontSize: 18),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.calendar_today),
+                        onPressed: () async {
+                          final pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: selectedDate,
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2101),
+                          );
+                          if (pickedDate != null && pickedDate != selectedDate) {
+                            setState(() {
+                              selectedDate = pickedDate;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

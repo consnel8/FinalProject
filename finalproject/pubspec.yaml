@@ -76,6 +76,7 @@ flutter:
     - assets/recipe_icon.png
     - assets/journal_icon.png
     - assets/suggestions_icon.png
+    - assets/journal_entry_icon.png
   fonts:
     - family: Teko
       fonts:
@@ -114,7 +115,6 @@ flutter:
           weight: 600
           style: italic
         - asset: fonts/Lora-VariableFont_wght.ttf
-        - asset: fonts/DancingScript-Regular.ttf
 
 
   # The following line ensures that the Material Icons font is
