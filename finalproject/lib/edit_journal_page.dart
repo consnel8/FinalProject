@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // Import the image picker package
-import 'journal_entry_model.dart'; // Your model
+import 'journal_entry_model.dart';
 
 class EditJournalPage extends StatefulWidget {
   final JournalEntry? entry;
@@ -114,7 +114,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                             ? '${_selectedDate!.toLocal()}'.split(' ')[0]
                             : 'Select Date'),
                     decoration: InputDecoration(
-                      labelText: 'Date',
+                      labelText: 'Select Date',
                       filled: true,
                       fillColor: Colors.transparent,
                       border: InputBorder.none,
@@ -129,7 +129,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                 decoration: InputDecoration(
                   hintText: 'Your journal entry...',
                   hintStyle: TextStyle(height: 1.5),
-                  border: InputBorder.none, // No border for the diary look
+                  border: InputBorder.none,
                   filled: true,
                   fillColor: Colors.transparent, // Transparent input box
                   contentPadding: EdgeInsets.only(left: 15.0, top: 20.0),
@@ -140,7 +140,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
               if (_imageFile != null)
                 Image.file(
                   _imageFile!,
-                  height: 200, // You can adjust the height based on your preference
+                  height: 200,
                   fit: BoxFit.cover,
                 ),
             ],
@@ -148,7 +148,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF393634), // Brown color for the bottom bar
+        color: const Color(0xFF393634),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

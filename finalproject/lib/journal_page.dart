@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'edit_journal_page.dart';
 import 'journal_entry_model.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';  // For encoding/decoding the list
 
 class JournalPage extends StatefulWidget {
   const JournalPage({Key? key}) : super(key: key);
@@ -12,6 +14,31 @@ class JournalPage extends StatefulWidget {
 
 class _JournalPageState extends State<JournalPage> {
   List<JournalEntry> _entries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEntries();  // Load entries from storage when the page is created
+  }
+
+  // Load journal entries from SharedPreferences
+  Future<void> _loadEntries() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? entriesString = prefs.getString('journal_entries');
+    if (entriesString != null) {
+      final List<dynamic> entriesJson = json.decode(entriesString);
+      setState(() {
+        _entries = entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
+      });
+    }
+  }
+
+  // Save journal entries to SharedPreferences
+  Future<void> _saveEntries() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> entriesJson = _entries.map((entry) => entry.toJson()).toList();
+    await prefs.setString('journal_entries', json.encode(entriesJson));
+  }
 
   String formatDate(DateTime date) {
     final now = DateTime.now();
@@ -166,6 +193,7 @@ class _JournalPageState extends State<JournalPage> {
           }
         }
         _entries.sort((a, b) => b.date.compareTo(a.date));
+        _saveEntries(); // Save entries after they are updated
       });
     }
   }
