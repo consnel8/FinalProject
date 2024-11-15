@@ -4,7 +4,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'recipe_book_page.dart'; // Import the recipe book page
+import 'recipe_book_page.dart';
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 //import virtual wardrobe page here
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           darkTheme: colours.AppTheme.dark,
           themeMode: theme == colours.AppTheme.light ? ThemeMode.light : ThemeMode.dark,
           debugShowCheckedModeBanner: false,
-          home: SplashScreen(),
+          home: const SplashScreen(),
     ));
   }
 }
@@ -76,7 +76,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //backgroundColor: const Color(0xFF3A3A3A), // Dark header color
         title: Row(
           children: [
             Image.asset('assets/logo.png', height: 40), // Logo image
@@ -94,13 +93,11 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.menu,
-                //color: Colors.white
-            ), // Three-line menu icon
+            icon: const Icon(Icons.menu), // Three-line menu icon
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
           ),
@@ -133,14 +130,13 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/suggestions_icon.png', // Suggestions icon
               title: 'SUGGESTIONS',
               description: 'Get recommendations based on your location for places near you to eat, shop, and explore.',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SuggestionsPage())),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SuggestionsPage())),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showNewEntryDialog(context),
-        //backgroundColor: Colors.green,
         child: const Icon(Icons.add),
       ),
     );
@@ -257,7 +253,6 @@ class FeatureCard extends StatelessWidget {
                       fontFamily: 'Lora',
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      //color: Colors.black,
                     ),
                   ),
                 ],
@@ -288,28 +283,8 @@ class BlankPage extends StatelessWidget {
   }
 }
 
-/*
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
-      ),
-      body: const Center(
-        child: Text('This is the settings page.', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
-      ),
-    );
-  }
-}
-*/
-
 // Suggestions page that fetches nearby places
 class SuggestionsPage extends StatefulWidget {
-  const SuggestionsPage({super.key});
-
   @override
   _SuggestionsPageState createState() => _SuggestionsPageState();
 }
@@ -347,6 +322,7 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data['results'] != null) {
+          // Store places in a Set to remove duplicates based on place ID
           Set<dynamic> allPlaces = {};
 
           for (var place in data['results']) {
