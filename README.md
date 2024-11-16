@@ -18,4 +18,4 @@ Personal Journal: Users will be prompted to log their daily mood(s), activities,
 - Zara Farrukh, zarafarrukh, 100856302
 - Connor Snelgrove, consnel8, 100826574
 - Eisha Rizvi, eisharizvi, 100782325
-- (name), (username), (SID)
+- Syeda Muqadas, Syeda-Muqadas, 100825225
