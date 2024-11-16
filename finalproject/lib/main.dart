@@ -172,112 +172,119 @@ class HomeScreen extends StatelessWidget {
     showDialog(
       context: parentContext,
       builder: (BuildContext dialogContext) {
-        return Theme(
-          data: Theme.of(parentContext).copyWith(
-            dialogBackgroundColor: Colors.white,
-            textTheme: const TextTheme(
-              bodyLarge: TextStyle(color: Colors.black),
-              bodyMedium: TextStyle(color: Colors.black),
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text(
+            'Create New Entry',
+            style: TextStyle(
+              fontFamily: 'Teko',
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
-            iconTheme: const IconThemeData(color: Colors.black),
           ),
-          child: AlertDialog(
-            title: const Text(
-              'Create New Entry',
-              style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.checkroom),
-                  title: const Text(
-                    'Virtual Wardrobe',
-                    style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                  onTap: () {
-                    Navigator.pop(dialogContext); // Close the dialog
-
-                    ScaffoldMessenger.of(parentContext).showSnackBar(
-                      const SnackBar(content: Text('Creating New Wardrobe Entry...')),
-                    );
-                    Future.delayed(const Duration(seconds: 3), () {
-                      // Navigate to the New wardrobe page
-                      Navigator.of(parentContext).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AddRecipePage(), //add wardrobe page
-                        ),
-                      ).then((result) {
-                        // Check if a result is returned
-                        if (result != null) {
-                          Navigator.of(parentContext).pushReplacement(
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
-                          );
-                        }
-                      });
-                    });
-                  },
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.checkroom,
+                  color: Colors.black,
                 ),
-                ListTile(
-                  leading: const Icon(Icons.restaurant),
-                  title: const Text(
-                    'Recipe',
-                    style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold, color: Colors.black),
+                title: const Text(
+                  'Virtual Wardrobe',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  onTap: () {
-                    Navigator.pop(dialogContext); // Close the dialog
-
-                    ScaffoldMessenger.of(parentContext).showSnackBar(
-                      const SnackBar(content: Text('Creating New Recipe Entry...')),
-                    );
-                    Future.delayed(const Duration(seconds: 3), () {
-                      // Navigate to the AddRecipePage where user can add the recipe
-                      Navigator.of(parentContext).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AddRecipePage(),
-                        ),
-                      ).then((result) {
-                        // Check if a result is returned when the user saves the recipe
-                        if (result != null) {
-                          Navigator.of(parentContext).pushReplacement(
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
-                          );
-                        }
-                      });
-                    });
-                  },
                 ),
-                ListTile(
-                  leading: const Icon(Icons.book),
-                  title: const Text(
-                    'Journal',
-                    style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold, color: Colors.black),
+                onTap: () {
+                  Navigator.pop(dialogContext); // Close the dialog
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('Creating New Wardrobe Entry...')),
+                  );
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Navigator.of(parentContext).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddRecipePage(), // Navigate to wardrobe page
+                      ),
+                    ).then((result) {
+                      if (result != null) {
+                        Navigator.of(parentContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    });
+                  });
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.restaurant,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Recipe',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  onTap: () {
-                    Navigator.pop(dialogContext); // Close the dialog
-
-                    ScaffoldMessenger.of(parentContext).showSnackBar(
-                      const SnackBar(content: Text('Creating New Journal Entry...')),
-                    );
-                    Future.delayed(const Duration(seconds: 3), () {
-                      // Navigate to the New journal page
-                      Navigator.of(parentContext).push(
-                        MaterialPageRoute(
-                          builder: (context) => const EditJournalPage(), //journal page
-                        ),
-                      ).then((result) {
-                        // Check if a result is returned
-                        if (result != null) {
-                          Navigator.of(parentContext).pushReplacement(
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
-                          );
-                        }
-                      });
-                    });
-                  },
                 ),
-              ],
-            ),
+                onTap: () {
+                  Navigator.pop(dialogContext); // Close the dialog
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('Creating New Recipe Entry...')),
+                  );
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Navigator.of(parentContext).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddRecipePage(), // Navigate to recipe page
+                      ),
+                    ).then((result) {
+                      if (result != null) {
+                        Navigator.of(parentContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    });
+                  });
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.book,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Journal',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(dialogContext); // Close the dialog
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('Creating New Journal Entry...')),
+                  );
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Navigator.of(parentContext).push(
+                      MaterialPageRoute(
+                        builder: (context) => const EditJournalPage(), // Navigate to journal page
+                      ),
+                    ).then((result) {
+                      if (result != null) {
+                        Navigator.of(parentContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    });
+                  });
+                },
+              ),
+            ],
           ),
         );
       },
