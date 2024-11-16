@@ -11,17 +11,6 @@ class JournalEntry {
     this.imageUrl,
   });
 
-  // Convert a JournalEntry to a Map (for JSON serialization)
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'content': content,
-      'date': date.toIso8601String(),
-      'imageUrl': imageUrl,
-    };
-  }
-
-  // Create a JournalEntry from a Map (for JSON deserialization)
   factory JournalEntry.fromJson(Map<String, dynamic> json) {
     return JournalEntry(
       title: json['title'],
@@ -29,5 +18,14 @@ class JournalEntry {
       date: DateTime.parse(json['date']),
       imageUrl: json['imageUrl'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'content': content,
+      'date': date.toIso8601String(),
+      'imageUrl': imageUrl,
+    };
   }
 }

@@ -58,6 +58,24 @@ class _EditJournalPageState extends State<EditJournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Color(0xFFbe3b88), // Primary color for the header
+              onPrimary: Colors.white,    // Text color for the header
+              surface: Colors.white,      // Background color of the picker
+              onSurface: Colors.black,    // Text color for calendar grid
+              secondary: Color(0xFFbe3b88), // Active date selection color
+              onSecondary: Colors.white,   // Text color for active date
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Color(0xFFDCB65D)), // Updated to use foregroundColor
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -72,7 +90,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
     return Scaffold(
       backgroundColor: Colors.transparent, // Keep the background transparent
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF393634),
         elevation: 0, // Remove the shadow for the diary look
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -81,6 +99,36 @@ class _EditJournalPageState extends State<EditJournalPage> {
           },
         ),
         title: const Text('Edit Entry'),
+        actions: widget.entry != null
+            ? [
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              // Confirm before deleting
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Delete Entry'),
+                  content: const Text('Are you sure you want to delete this entry?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(), // Cancel
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                        Navigator.pop(context, 'delete'); // Signal deletion to parent
+                      },
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ]
+            : null,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -95,12 +143,17 @@ class _EditJournalPageState extends State<EditJournalPage> {
             children: [
               TextField(
                 controller: _titleController,
-                maxLines: 2,
                 decoration: InputDecoration(
                   hintText: 'Title',
                   border: InputBorder.none, // No border for the diary look
                   filled: true,
                   fillColor: Colors.transparent, // Transparent input box
+                ),
+                style: TextStyle(
+                  fontSize: 30, // Make the font size large
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFbe3b88),
+                  fontFamily: 'RobotoMono',
                 ),
               ),
               const SizedBox(height: 16),
@@ -119,6 +172,9 @@ class _EditJournalPageState extends State<EditJournalPage> {
                       fillColor: Colors.transparent,
                       border: InputBorder.none,
                     ),
+                    style: TextStyle(
+                      color: Color(0xFFbe3b88), // Style the text in the field
+                    ),
                   ),
                 ),
               ),
@@ -128,11 +184,16 @@ class _EditJournalPageState extends State<EditJournalPage> {
                 maxLines: 10,
                 decoration: InputDecoration(
                   hintText: 'Your journal entry...',
-                  hintStyle: TextStyle(height: 1.5),
+                  hintStyle: TextStyle(height: 3),
                   border: InputBorder.none,
                   filled: true,
-                  fillColor: Colors.transparent, // Transparent input box
+                  fillColor: Colors.transparent,
                   contentPadding: EdgeInsets.only(left: 15.0, top: 20.0),
+                ),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'IndieFlower',
                 ),
               ),
               const SizedBox(height: 16),
@@ -143,6 +204,11 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   height: 200,
                   fit: BoxFit.cover,
                 ),
+              // Check if image is a local file or asset path
+              if (widget.entry?.imageUrl != null && _imageFile == null)
+                widget.entry!.imageUrl!.startsWith('assets/')
+                    ? Image.asset(widget.entry!.imageUrl!) // For asset images
+                    : Image.file(File(widget.entry!.imageUrl!)), // For file images
             ],
           ),
         ),

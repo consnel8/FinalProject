@@ -66,6 +66,8 @@ dev_dependencies:
   flutter_timezone: ^3.0.1
   permission_handler: ^11.2.1
 
+  table_calendar: ^3.1.2
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -80,6 +82,7 @@ flutter:
     - assets/journal_icon.png
     - assets/suggestions_icon.png
     - assets/journal_diary_icon.jpg
+    - assets/journal_entry2.jpg
   fonts:
     - family: Teko
       fonts:
@@ -118,6 +121,13 @@ flutter:
           weight: 600
           style: italic
         - asset: fonts/Lora-VariableFont_wght.ttf
+    - family: RobotoMono
+      fonts:
+        - asset: assets/fonts/RobotoMono-Variable_wght.ttf
+    - family: IndieFlower
+      fonts:
+        - asset: assets/fonts/IndieFlower-Regular.ttf
+
 
 
   # The following line ensures that the Material Icons font is
