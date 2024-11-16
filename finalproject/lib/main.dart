@@ -9,6 +9,7 @@ import 'add_recipe_page.dart'; // Import the add recipe page
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 import 'journal_page.dart';
+import 'edit_journal_page.dart';
 //import virtual wardrobe page here
 
 void main() {
@@ -262,7 +263,7 @@ class HomeScreen extends StatelessWidget {
                       // Navigate to the New journal page
                       Navigator.of(parentContext).push(
                         MaterialPageRoute(
-                          builder: (context) => const AddRecipePage(), //add journal page
+                          builder: (context) => const EditJournalPage(), //journal page
                         ),
                       ).then((result) {
                         // Check if a result is returned

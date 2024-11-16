@@ -238,19 +238,30 @@ class _JournalPageState extends State<JournalPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+
             IconButton(
                 icon: const Icon(Icons.insights),
                 iconSize: 35.0,
                 onPressed: () {}),
+            Container(
+              height: 60, // Height of the separator
+              width: 2, // Width of the separator
+              color: Colors.black, // Color of the separator
+            ),
             IconButton(
                 icon: const Icon(Icons.add),
-                iconSize: 35.0,
+                iconSize: 45.0,
                 onPressed: () {
                   _navigateToEditPage(context, null);
                 }),
+            Container(
+              height: 60, // Height of the separator
+              width: 2, // Width of the separator
+              color: Colors.black, // Color of the separator
+            ),
             IconButton(
-                icon: const Icon(Icons.calendar_today),
-                iconSize: 35.0,
+              icon: const Icon(Icons.calendar_today),
+              iconSize: 35.0,
               onPressed: () async {
                 final DateTime? selectedDate = await _selectDate(context);
                 if (selectedDate != null) {

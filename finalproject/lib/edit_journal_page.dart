@@ -224,6 +224,11 @@ class _EditJournalPageState extends State<EditJournalPage> {
               iconSize: 35.0,
               onPressed: _captureImage, // Capture an image
             ),
+            Container(
+              height: 60, // Height of the separator
+              width: 2, // Width of the separator
+              color: Colors.black, // Color of the separator
+            ),
             // Save Entry Button
             IconButton(
               icon: const Icon(Icons.save),
