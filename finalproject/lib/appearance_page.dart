@@ -18,7 +18,6 @@ class _AppearancePageState extends State<appearance_page>{
   final List<bool> _selectedDisplay = <bool>[true, false];
   bool vertical = false;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
