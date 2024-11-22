@@ -9,6 +9,7 @@ import 'add_recipe_page.dart'; // Import the add recipe page
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 import 'journal_page.dart';
+import 'edit_journal_page.dart';
 //import virtual wardrobe page here
 
 void main() {
@@ -154,7 +155,7 @@ class HomeScreen extends StatelessWidget {
   void _navigateToJournal(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const JournalPage()), // Navigate to Journal
+      MaterialPageRoute(builder: (context) => const JournalPage()),
     );
   }
 
@@ -167,44 +168,120 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showNewEntryDialog(BuildContext context) {
+  void _showNewEntryDialog(BuildContext parentContext) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
+      context: parentContext,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Create New Entry', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
+          backgroundColor: Colors.white,
+          title: const Text(
+            'Create New Entry',
+            style: TextStyle(
+              fontFamily: 'Teko',
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.checkroom),
-                title: const Text('Virtual Wardrobe', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+                leading: const Icon(
+                  Icons.checkroom,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Virtual Wardrobe',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
                 onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Creating New Virtual Wardrobe Entry...')),
+                  Navigator.pop(dialogContext); // Close the dialog
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('Creating New Wardrobe Entry...')),
                   );
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Navigator.of(parentContext).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddRecipePage(), // Navigate to wardrobe page
+                      ),
+                    ).then((result) {
+                      if (result != null) {
+                        Navigator.of(parentContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    });
+                  });
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.restaurant),
-                title: const Text('Recipe', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+                leading: const Icon(
+                  Icons.restaurant,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Recipe',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AddRecipePage()), // Navigate to AddRecipePage
+                  Navigator.pop(dialogContext); // Close the dialog
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('Creating New Recipe Entry...')),
                   );
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Navigator.of(parentContext).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddRecipePage(), // Navigate to recipe page
+                      ),
+                    ).then((result) {
+                      if (result != null) {
+                        Navigator.of(parentContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    });
+                  });
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.book),
-                title: const Text('Journal', style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
+                leading: const Icon(
+                  Icons.book,
+                  color: Colors.black,
+                ),
+                title: const Text(
+                  'Journal',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
                 onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  Navigator.pop(dialogContext); // Close the dialog
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
                     const SnackBar(content: Text('Creating New Journal Entry...')),
                   );
+                  Future.delayed(const Duration(seconds: 3), () {
+                    Navigator.of(parentContext).push(
+                      MaterialPageRoute(
+                        builder: (context) => const EditJournalPage(), // Navigate to journal page
+                      ),
+                    ).then((result) {
+                      if (result != null) {
+                        Navigator.of(parentContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        );
+                      }
+                    });
+                  });
                 },
               ),
             ],
@@ -294,7 +371,7 @@ class BlankPage extends StatelessWidget {
   }
 }
 
-// Suggestions page that fetches nearby places
+// Suggestions Page
 class SuggestionsPage extends StatefulWidget {
   @override
   _SuggestionsPageState createState() => _SuggestionsPageState();
@@ -333,7 +410,6 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data['results'] != null) {
-          // Store places in a Set to remove duplicates based on place ID
           Set<dynamic> allPlaces = {};
 
           for (var place in data['results']) {
@@ -383,12 +459,30 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nearby Places to Eat, Shop & Explore', style: TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
+        title: Text(
+          'Nearby Places to Eat, Shop & Explore',
+          style: TextStyle(
+            fontFamily: 'Teko',
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          ),
+        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
-              ? Center(child: Text(errorMessage))
+              ? Center(
+                  child: Text(
+                    errorMessage,
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+                    ),
+                  ),
+                )
               : ListView.builder(
                   itemCount: nearbyPlaces.length,
                   itemBuilder: (context, index) {
@@ -400,11 +494,23 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                         : 'Unknown Category';
 
                     return ListTile(
-                      title: Text(name),
-                      subtitle: Text('$category\n$address'),
+                      title: Text(
+                        name,
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '$category\n$address',
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+                        ),
+                      ),
                     );
                   },
                 ),
     );
   }
 }
+
