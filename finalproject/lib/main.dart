@@ -475,42 +475,41 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
-              ? Center(
-                  child: Text(
-                    errorMessage,
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: nearbyPlaces.length,
-                  itemBuilder: (context, index) {
-                    var place = nearbyPlaces[index];
-                    String name = place['name'] ?? 'Unknown Name';
-                    String address = place['location']?['address'] ?? 'Unknown Address';
-                    String category = place['categories'] != null
-                        ? place['categories'][0]['name'] ?? 'Unknown Category'
-                        : 'Unknown Category';
+          ? Center(
+        child: Text(
+          errorMessage,
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+          ),
+        ),
+      )
+          : ListView.builder(
+        itemCount: nearbyPlaces.length,
+        itemBuilder: (context, index) {
+          var place = nearbyPlaces[index];
+          String name = place['name'] ?? 'Unknown Name';
+          String address = place['location']?['address'] ?? 'Unknown Address';
+          String category = place['categories'] != null
+              ? place['categories'][0]['name'] ?? 'Unknown Category'
+              : 'Unknown Category';
 
-                    return ListTile(
-                      title: Text(
-                        name,
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '$category\n$address',
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+          return ListTile(
+            title: Text(
+              name,
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              '$category\n$address',
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
-
