@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'add_recipe_page.dart';
 import 'recipe_description_page.dart';
+import 'notifications_page.dart';
 
 class RecipeBookPage extends StatefulWidget {
   const RecipeBookPage({super.key});
@@ -14,7 +15,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     {
       'name': 'Spaghetti Bolognese',
       'description': 'A delicious Italian pasta dish.',
-      'image': 'https://passportmagazine.com/wp-content/uploads/2024/07/Bolognese-Sauce-photo-by-Tatiana-Goskova-585x390.jpg',
+      'image':
+          'https://passportmagazine.com/wp-content/uploads/2024/07/Bolognese-Sauce-photo-by-Tatiana-Goskova-585x390.jpg',
       'mealTypes': ['Dinner'],
       'favorite': false,
       'ingredients': [
@@ -40,7 +42,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     {
       'name': 'Chicken Salad',
       'description': 'A healthy salad with grilled chicken.',
-      'image': 'https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_16:9/k%2FPhoto%2FRecipes%2F2024-03-chicken-salad-190%2Fchicken-salad-190-261',
+      'image':
+          'https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_16:9/k%2FPhoto%2FRecipes%2F2024-03-chicken-salad-190%2Fchicken-salad-190-261',
       'mealTypes': ['Lunch'],
       'favorite': false,
       'ingredients': [
@@ -57,11 +60,12 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
         Taste and season with additional salt and pepper if desired,
         Serve as a sandwich or over salad
       '''
-      },
+    },
     {
       'name': 'Pancakes',
       'description': 'Fluffy pancakes for breakfast.',
-      'image': 'https://img.sndimg.com/food/image/upload/f_auto,c_thumb,q_55,w_744,ar_5:4/v1/img/recipes/65/04/9/picIXtWig.jpg',
+      'image':
+          'https://img.sndimg.com/food/image/upload/f_auto,c_thumb,q_55,w_744,ar_5:4/v1/img/recipes/65/04/9/picIXtWig.jpg',
       'mealTypes': ['Breakfast', 'Brunch'],
       'favorite': false,
       'ingredients': [
@@ -73,7 +77,7 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
         '3 tablespoons butter, melted',
         '1 large egg',
       ],
-      'cookingInstructions':''' 
+      'cookingInstructions': '''
         Melt the butter and set it aside. In a medium bowl whisk together the flour sugar baking powder and salt,
         In a separate bowl whisk together milk egg melted butter and vanilla extract,
         Create a well in the center of your dry ingredients. Pour in the milk mixture and stir gently with a fork until the flour is just incorporated. A few small lumps are okay. As the batter sits it should start to bubble,
@@ -83,12 +87,19 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
         After 1 to 2 minutes the edges will look dry and bubbles will form and pop on the surface. Flip the pancakes and cook for another 1 to 2 minutes until lightly browned and cooked in the middle,
         Serve immediately with warm syrup butter and berries,
         '''
-        },
+    },
   ];
 
   List<Map<String, dynamic>> filteredRecipes = [];
   final TextEditingController searchController = TextEditingController();
-  final List<String> mealTypes = ['All', 'Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Dessert'];
+  final List<String> mealTypes = [
+    'All',
+    'Breakfast',
+    'Brunch',
+    'Lunch',
+    'Dinner',
+    'Dessert'
+  ];
   String selectedMealType = 'All';
   bool showOnlyFavorites = false;
 
@@ -97,6 +108,7 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     super.initState();
     filteredRecipes = recipes;
     searchController.addListener(_searchRecipe);
+    PermissionHandler.requestNotificationPermission();
   }
 
   @override
@@ -112,8 +124,10 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
       filteredRecipes = recipes.where((recipe) {
         final recipeName = recipe['name'].toLowerCase();
         final matchesQuery = recipeName.contains(query);
-        final matchesMealType = selectedMealType == 'All' || (recipe['mealTypes'] as List).contains(selectedMealType);
-        final matchesFavorite = !showOnlyFavorites || (recipe['favorite'] ?? false);
+        final matchesMealType = selectedMealType == 'All' ||
+            (recipe['mealTypes'] as List).contains(selectedMealType);
+        final matchesFavorite =
+            !showOnlyFavorites || (recipe['favorite'] ?? false);
         return matchesQuery && matchesMealType && matchesFavorite;
       }).toList();
     });
@@ -172,6 +186,66 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     );
   }
 
+  void scheduleAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(
+          "Schedule Weekly Notifications",
+          style: TextStyle(
+            fontFamily: 'Lora',
+            fontSize: 18,
+          ),
+        ),
+        content: const Text(
+            "Would you like to schedule weekly notifications to try a new recipe?"),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              PermissionHandler.enableWeekly();
+              Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  content: Text("Weekly Notifications Scheduled."),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: Text(
+              "Proceed",
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  int scheduleNum2 = 0;
+
   @override
   Widget build(BuildContext context) {
     //final Color backgroundColor = Colors.brown[100]!;
@@ -180,13 +254,14 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
       //backgroundColor: backgroundColor,
       appBar: AppBar(
         //backgroundColor: Colors.brown[800],
-        title: const Text('Recipe Book',
-            //style: TextStyle(color: Colors.white)
+        title: const Text(
+          'Recipe Book',
+          //style: TextStyle(color: Colors.white)
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back
               //, color: Colors.white
-          ),
+              ),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -196,12 +271,37 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
             width: 40,
           ),
           const SizedBox(width: 16),
+          IconButton(
+              onPressed: () {
+                if (scheduleNum2 == 0) {
+                  scheduleAlert();
+                  scheduleNum2++;
+                } else if (scheduleNum2 == 1) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      content: Text(
+                          "Your weekly notification is already scheduled."),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.alarm_add)),
         ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               children: [
                 Expanded(
@@ -268,8 +368,9 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add, size: 50,
-                                //color: Colors.grey[600]
+                            Icon(
+                              Icons.add, size: 50,
+                              //color: Colors.grey[600]
                             ),
                             const SizedBox(height: 8),
                             const Text(
@@ -321,7 +422,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                             ),
                             Container(
                               //color: backgroundColor,
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 recipe['name'],
                                 textAlign: TextAlign.center,
