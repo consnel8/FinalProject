@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'edit_journal_page.dart';
 import 'journal_entry_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';  // For encoding/decoding the list
+import 'dart:convert'; // For encoding/decoding the list
+import 'notifications_page.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({Key? key}) : super(key: key);
@@ -14,11 +15,11 @@ class JournalPage extends StatefulWidget {
 class _JournalPageState extends State<JournalPage> {
   List<JournalEntry> _entries = [];
 
-
   @override
   void initState() {
     super.initState();
     _loadEntries(); // Load entries from storage when the page is created
+    PermissionHandler.requestNotificationPermission();
   }
 
   // Load journal entries from SharedPreferences
@@ -29,7 +30,8 @@ class _JournalPageState extends State<JournalPage> {
     if (entriesString != null) {
       final List<dynamic> entriesJson = json.decode(entriesString);
       setState(() {
-        _entries = entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
+        _entries =
+            entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
       });
     } else {
       _entries = [];
@@ -52,7 +54,8 @@ class _JournalPageState extends State<JournalPage> {
       ),
       JournalEntry(
         title: 'Journal Entry 2',
-        content: 'Today felt like a small victory. I finally finished that coding project '
+        content:
+            'Today felt like a small victory. I finally finished that coding project '
             'I have been working on for weeks. It was not perfect, but seeing it all come together gave me a huge sense'
             'of accomplishment. I took some time to celebrate this milestone by treating myself to my favourite coffee at the cute cafe nearby.'
             'I cannot wait to see what next week has to offer for me!',
@@ -64,12 +67,11 @@ class _JournalPageState extends State<JournalPage> {
     _saveEntries(); // Save the updated entries list to storage
   }
 
-
   // Save journal entries to SharedPreferences
   Future<void> _saveEntries() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> entriesJson = _entries.map((entry) =>
-        entry.toJson()).toList();
+    final List<Map<String, dynamic>> entriesJson =
+        _entries.map((entry) => entry.toJson()).toList();
     await prefs.setString('journal_entries', json.encode(entriesJson));
   }
 
@@ -118,9 +120,6 @@ class _JournalPageState extends State<JournalPage> {
     return picked;
   }
 
-
-
-
   String formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
@@ -128,21 +127,92 @@ class _JournalPageState extends State<JournalPage> {
     String daysAgoText = difference == 0
         ? "Today"
         : difference == 1
-        ? "1 day ago"
-        : "$difference days ago";
+            ? "1 day ago"
+            : "$difference days ago";
 
-    String formattedDate = "${getMonthAbbreviation(date.month)} ${date.day}, ${date.year}";
+    String formattedDate =
+        "${getMonthAbbreviation(date.month)} ${date.day}, ${date.year}";
 
     return "$daysAgoText | $formattedDate";
   }
 
   String getMonthAbbreviation(int month) {
     const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
     ];
     return months[month - 1];
   }
 
+  void scheduleAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(
+          "Schedule Daily Notifications",
+          style: TextStyle(
+            fontFamily: 'Lora',
+            fontSize: 18,
+          ),
+        ),
+        content: const Text(
+            "Would you like to schedule daily notifications to journal?"),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              PermissionHandler.enableDaily();
+              Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  content: Text("Daily Notification Scheduled."),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: Text(
+              "Proceed",
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  int scheduleNum = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +225,32 @@ class _JournalPageState extends State<JournalPage> {
             Navigator.pop(context); // Handle back navigation
           },
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                if (scheduleNum == 0) {
+                  scheduleAlert();
+                  scheduleNum++;
+                } else if (scheduleNum == 1) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      content:
+                          Text("Your daily notification is already scheduled."),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.alarm_add)),
+        ],
         title: Row(
           children: [
             Container(
@@ -189,60 +285,59 @@ class _JournalPageState extends State<JournalPage> {
       ),
       body: _entries.isEmpty
           ? const Center(
-          child: Text('Start your journey by adding a new entry.'))
+              child: Text('Start your journey by adding a new entry.'))
           : Scrollbar(
-        child: ListView.separated(
-          itemCount: _entries.length,
-          itemBuilder: (context, index) {
-            final entry = _entries[index];
-            String shortContent = entry.content.length > 200
-                ? entry.content.substring(0, 200) + '...'
-                : entry.content;
-            return ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(entry.title,
-                      style: const TextStyle(
-                          color: Color(0xFFBE3B88),
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text(shortContent,
-                      style: const TextStyle(
-                          color: Color(0xFF787878), fontSize: 16)),
-                  // Display the image below the entry content if available
-                  if (entry.imageUrl != null)
-                    Padding(
+              child: ListView.separated(
+                itemCount: _entries.length,
+                itemBuilder: (context, index) {
+                  final entry = _entries[index];
+                  String shortContent = entry.content.length > 200
+                      ? entry.content.substring(0, 200) + '...'
+                      : entry.content;
+                  return ListTile(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(entry.title,
+                            style: const TextStyle(
+                                color: Color(0xFFBE3B88),
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Text(shortContent,
+                            style: const TextStyle(
+                                color: Color(0xFF787878), fontSize: 16)),
+                        // Display the image below the entry content if available
+                        if (entry.imageUrl != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Image.asset(
+                              entry.imageUrl!,
+                              height: 150, // Set a fixed height for the image
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                      ],
+                    ),
+                    subtitle: Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: Image.asset(
-                        entry.imageUrl!,
-                        height: 150, // Set a fixed height for the image
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                ],
+                      child: Text(formatDate(entry.date),
+                          style: const TextStyle(color: Color(0xFF2e2e2e))),
+                    ),
+                    onTap: () {
+                      _navigateToEditPage(context, entry);
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) =>
+                    const Divider(color: Color(0xFFb1b1b1), thickness: 1),
               ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(formatDate(entry.date),
-                    style: const TextStyle(color: Color(0xFF2e2e2e))),
-              ),
-              onTap: () {
-                _navigateToEditPage(context, entry);
-              },
-            );
-          },
-          separatorBuilder: (context, index) =>
-          const Divider(color: Color(0xFFb1b1b1), thickness: 1),
-        ),
-      ),
+            ),
       bottomNavigationBar: BottomAppBar(
         color: const Color(0xFF393634),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-
             IconButton(
                 icon: const Icon(Icons.insights),
                 iconSize: 35.0,
@@ -269,7 +364,8 @@ class _JournalPageState extends State<JournalPage> {
               onPressed: () async {
                 final DateTime? selectedDate = await _selectDate(context);
                 if (selectedDate != null) {
-                  _searchByDate(selectedDate);  // Filter entries by selected date
+                  _searchByDate(
+                      selectedDate); // Filter entries by selected date
                 }
               },
             ),
