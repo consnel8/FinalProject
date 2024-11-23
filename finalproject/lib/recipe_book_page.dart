@@ -15,31 +15,93 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     {
       'name': 'Spaghetti Bolognese',
       'description': 'A delicious Italian pasta dish.',
-      'image': 'https://example.com/spaghetti.jpg',
+      'image':
+          'https://passportmagazine.com/wp-content/uploads/2024/07/Bolognese-Sauce-photo-by-Tatiana-Goskova-585x390.jpg',
       'mealTypes': ['Dinner'],
       'favorite': false,
+      'ingredients': [
+        '1 1/2 tbsp olive oil',
+        '2 garlic cloves, minced',
+        '1 onion, finely chopped',
+        '1 lb ground beef or pork',
+        '1/2 cup red wine',
+        '2 beef bouillon cubes, crumbled',
+        '800g can crushed tomatoes',
+        '2 tbsp tomato paste',
+        '2 tsp Worcestershire sauce',
+      ],
+      'cookingInstructions': '''
+        Sauté: Heat oil in a large pot or deep skillet over medium high heat. Add onion and garlic cook for 3 minutes or until light golden and softened, 
+        Cook beef: Turn heat up to high and add beef. Cook. breaking it up as your go. until browned,
+        Reduce wine: Add red wine. Bring to simmer and cook for 1 minute. scraping the bottom of the pot. until the alcohol smell is gone,
+        Simmer: Add the remaining ingredients. Stir. bring to a simmer then turn down to medium so it bubbles gently. Cook for 20 to 30 minutes (no lid). adding water if the sauce gets too thick for your taste. Stir occasionally,
+        Slow simmer option: really takes this to another level. if you have the time! Add 3/4 cup of water. cover with lid and simmer on very low for 2 to 2.5 hours. stirring every 30 minutes or so. (Note 5) Uncover. simmer 20 minutes to thicken sauce. (Note 6 for slow cooker),
+        Taste and add more salt it desired. Serve over spaghetti though if you have the time. I recommend tossing the sauce and pasta per steps below'
+    '''
     },
     {
       'name': 'Chicken Salad',
       'description': 'A healthy salad with grilled chicken.',
-      'image': 'https://example.com/chicken_salad.jpg',
+      'image':
+          'https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_16:9/k%2FPhoto%2FRecipes%2F2024-03-chicken-salad-190%2Fchicken-salad-190-261',
       'mealTypes': ['Lunch'],
       'favorite': false,
+      'ingredients': [
+        '2 cups cooked chopped chicken',
+        '½ cup mayonnaise',
+        '1 rib celery, diced',
+        '1 green onion, sliced',
+        '1 tsp Dijon mustard',
+        '½ tsp seasoned salt',
+        '1 tsp chopped fresh dill',
+      ],
+      'cookingInstructions': '''
+        In a medium bowl add chicken mayonnaise celery green onion mustard salt pepper and dill if using. Mix well to combine,
+        Taste and season with additional salt and pepper if desired,
+        Serve as a sandwich or over salad
+      '''
     },
     {
       'name': 'Pancakes',
       'description': 'Fluffy pancakes for breakfast.',
-      'image': 'https://example.com/pancakes.jpg',
+      'image':
+          'https://img.sndimg.com/food/image/upload/f_auto,c_thumb,q_55,w_744,ar_5:4/v1/img/recipes/65/04/9/picIXtWig.jpg',
       'mealTypes': ['Breakfast', 'Brunch'],
       'favorite': false,
+      'ingredients': [
+        '1 ½ cups all-purpose flour',
+        '3 ½ teaspoons baking powder',
+        '1 tablespoon white sugar',
+        '¼ teaspoon salt, or more to taste',
+        '1 ¼ cups milk',
+        '3 tablespoons butter, melted',
+        '1 large egg',
+      ],
+      'cookingInstructions': '''
+        Melt the butter and set it aside. In a medium bowl whisk together the flour sugar baking powder and salt,
+        In a separate bowl whisk together milk egg melted butter and vanilla extract,
+        Create a well in the center of your dry ingredients. Pour in the milk mixture and stir gently with a fork until the flour is just incorporated. A few small lumps are okay. As the batter sits it should start to bubble,
+        Place a large skillet or griddle over medium heat. Sprinkle in a few drops of water to test if its ready. You want them to dance around a bit and evaporate,
+        Brush the skillet with melted butter,
+        Scoop the batter onto the skillet using a 1/4 cup measure or large cookie scoop and spread each pancake into a 4-inch circle,
+        After 1 to 2 minutes the edges will look dry and bubbles will form and pop on the surface. Flip the pancakes and cook for another 1 to 2 minutes until lightly browned and cooked in the middle,
+        Serve immediately with warm syrup butter and berries,
+        '''
     },
   ];
 
   List<Map<String, dynamic>> filteredRecipes = [];
   final TextEditingController searchController = TextEditingController();
-  final List<String> mealTypes = ['All', 'Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Dessert'];
+  final List<String> mealTypes = [
+    'All',
+    'Breakfast',
+    'Brunch',
+    'Lunch',
+    'Dinner',
+    'Dessert'
+  ];
   String selectedMealType = 'All';
-  bool showOnlyFavorites = false; // Add a boolean flag to toggle favorite recipes view
+  bool showOnlyFavorites = false;
 
   @override
   void initState() {
@@ -62,8 +124,10 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
       filteredRecipes = recipes.where((recipe) {
         final recipeName = recipe['name'].toLowerCase();
         final matchesQuery = recipeName.contains(query);
-        final matchesMealType = selectedMealType == 'All' || (recipe['mealTypes'] as List).contains(selectedMealType);
-        final matchesFavorite = !showOnlyFavorites || (recipe['favorite'] ?? false); // Check if it matches favorite filter
+        final matchesMealType = selectedMealType == 'All' ||
+            (recipe['mealTypes'] as List).contains(selectedMealType);
+        final matchesFavorite =
+            !showOnlyFavorites || (recipe['favorite'] ?? false);
         return matchesQuery && matchesMealType && matchesFavorite;
       }).toList();
     });
@@ -78,7 +142,7 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
 
   void _toggleFavoriteFilter() {
     setState(() {
-      showOnlyFavorites = !showOnlyFavorites; // Toggle favorite recipes filter
+      showOnlyFavorites = !showOnlyFavorites;
       _searchRecipe();
     });
   }
@@ -182,7 +246,6 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
 
   int scheduleNum2 = 0;
 
-
   @override
   Widget build(BuildContext context) {
     //final Color backgroundColor = Colors.brown[100]!;
@@ -191,33 +254,34 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
       //backgroundColor: backgroundColor,
       appBar: AppBar(
         //backgroundColor: Colors.brown[800],
-        title: const Text('Recipe Book',
-            //style: TextStyle(color: Colors.white)
+        title: const Text(
+          'Recipe Book',
+          //style: TextStyle(color: Colors.white)
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back
               //, color: Colors.white
-          ),
+              ),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           Image.asset(
-            'assets/recipe_icon.png', // Path to your logo
-            height: 40,               // Set height as needed
-            width: 40,                // Optional: set width for consistent dimensions
+            'assets/recipe_icon.png',
+            height: 40,
+            width: 40,
           ),
-          const SizedBox(width: 16), // Add spacing if needed
+          const SizedBox(width: 16),
           IconButton(
               onPressed: () {
-                if (scheduleNum2 == 0){
+                if (scheduleNum2 == 0) {
                   scheduleAlert();
                   scheduleNum2++;
-                }
-                else if (scheduleNum2 == 1) {
+                } else if (scheduleNum2 == 1) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      content: Text("Your weekly notification is already scheduled."),
+                      content: Text(
+                          "Your weekly notification is already scheduled."),
                       actions: [
                         TextButton(
                           onPressed: () {
@@ -230,14 +294,14 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                   );
                 }
               },
-              icon: const Icon(Icons.alarm_add)
-          ),
+              icon: const Icon(Icons.alarm_add)),
         ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               children: [
                 Expanded(
@@ -273,7 +337,7 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                     color: showOnlyFavorites ? Color(0xfff485b1) : Colors.grey,
                     // above was formerly 'Colors.red', changed to better fit colour scheme
                   ),
-                  onPressed: _toggleFavoriteFilter, // Toggle favorite filter
+                  onPressed: _toggleFavoriteFilter,
                 ),
               ],
             ),
@@ -304,8 +368,9 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add, size: 50,
-                                //color: Colors.grey[600]
+                            Icon(
+                              Icons.add, size: 50,
+                              //color: Colors.grey[600]
                             ),
                             const SizedBox(height: 8),
                             const Text(
@@ -357,7 +422,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                             ),
                             Container(
                               //color: backgroundColor,
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 recipe['name'],
                                 textAlign: TextAlign.center,
