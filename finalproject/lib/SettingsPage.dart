@@ -14,19 +14,18 @@ class SettingsPage extends StatefulWidget {
 
 // MAIN PAGE CLASS
 class MainSettings extends State<SettingsPage> {
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-          title: Text("Settings", style: TextStyle(
-            fontFamily: 'Teko',
-            fontSize: 50,
-          )),
+        title: Text("Settings",
+            style: TextStyle(
+              fontFamily: 'Teko',
+              fontSize: 50,
+            )),
       ),
       body: Center(
-        child: Container (
+        child: Container(
           padding: const EdgeInsets.fromLTRB(30, 15, 30, 300),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,14 +33,18 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Account", style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'Lora',
-                  )),
+                  Text("Account",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Lora',
+                      )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => account.account_page()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => account.account_page()));
                     }, // end onPressed
                   ),
                 ], // end children
@@ -49,14 +52,19 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Notifications", style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'Lora',
-                  )),
+                  Text("Notifications",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Lora',
+                      )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => notifications.notifications_page()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  notifications.notifications_page()));
                     }, // end press
                   ),
                 ], // end children
@@ -64,14 +72,19 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Appearance", style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'Lora',
-                  )),
+                  Text("Appearance",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Lora',
+                      )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => appearance.appearance_page()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  appearance.appearance_page()));
                     }, // end press
                   ),
                 ], // end children
@@ -79,14 +92,19 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Privacy and Safety", style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'Lora',
-                  )),
+                  Text("Privacy and Safety",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Lora',
+                      )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => privsafety.privsafety_page()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  privsafety.privsafety_page()));
                     }, // end press
                   ),
                 ], // end children
@@ -94,14 +112,18 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("About", style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: 'Lora',
-                  )),
+                  Text("About",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Lora',
+                      )),
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => aboutp.about_page()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => aboutp.about_page()));
                     }, // end press
                   ),
                 ], // end children
