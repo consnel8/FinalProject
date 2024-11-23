@@ -58,6 +58,8 @@ class _EditJournalPageState extends State<EditJournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+
+      /*
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -76,6 +78,8 @@ class _EditJournalPageState extends State<EditJournalPage> {
           child: child!,
         );
       },
+
+       */
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -88,10 +92,10 @@ class _EditJournalPageState extends State<EditJournalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent, // Keep the background transparent
+      //backgroundColor: Colors.transparent, // Keep the background transparent
       appBar: AppBar(
-        backgroundColor: Color(0xFF393634),
-        elevation: 0, // Remove the shadow for the diary look
+        //backgroundColor: Color(0xFF393634),
+        elevation: 1, // Remove the shadow for the diary look
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -102,7 +106,9 @@ class _EditJournalPageState extends State<EditJournalPage> {
         actions: widget.entry != null
             ? [
           IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete,
+                //color: Colors.red
+            ),
             onPressed: () {
               // Confirm before deleting
               showDialog(
