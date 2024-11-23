@@ -14,6 +14,7 @@ class JournalPage extends StatefulWidget {
 class _JournalPageState extends State<JournalPage> {
   List<JournalEntry> _entries = [];
 
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +93,7 @@ class _JournalPageState extends State<JournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      /*
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -109,6 +111,8 @@ class _JournalPageState extends State<JournalPage> {
           child: child!,
         );
       },
+
+       */
     );
 
     return picked;
@@ -143,7 +147,7 @@ class _JournalPageState extends State<JournalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFe8dcd4),
+      //backgroundColor: const Color(0xFFe8dcd4),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
