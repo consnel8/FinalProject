@@ -49,6 +49,8 @@ dependencies:
   camera: ^0.11.0+2
   shared_preferences: ^2.3.3
   intl: ^0.19.0
+  firebase_core: ^3.8.0
+  cloud_firestore: ^5.5.0
 
 
 dev_dependencies:
@@ -75,6 +77,7 @@ dev_dependencies:
 flutter:
   assets:
     - images/
+    - assets/
     - images/Life_Palette_logo.png
     - assets/logo.png
     - assets/wardrobe_icon.png
@@ -83,6 +86,9 @@ flutter:
     - assets/suggestions_icon.png
     - assets/journal_diary_icon.jpg
     - assets/journal_entry2.jpg
+    - assets/collage.jpg
+    - assets/Outfit.jpg
+    - assets/shoes.jpg
   fonts:
     - family: Teko
       fonts:

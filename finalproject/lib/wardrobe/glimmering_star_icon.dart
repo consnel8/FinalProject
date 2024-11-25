@@ -28,7 +28,7 @@ class _GlitteringIconState extends State<GlitteringIcon> with SingleTickerProvid
   void initState() {
     super.initState();
     _stars = [];
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat();
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 10))..repeat();
 
     // Set the height and width of the screen (or card)
     _screenHeight = widget.cardHeight;
@@ -41,7 +41,7 @@ class _GlitteringIconState extends State<GlitteringIcon> with SingleTickerProvid
   // Generate a random number of stars and their positions
   void _generateStars() {
     for (int i = 0; i < 10; i++) {
-      double x = (widget.cardWidth * (i + 1)) / 10;  // Spread across the width
+      double x = (widget.cardWidth * (i + 1)) / 50;  // Spread across the width
       double size = (i % 2 == 0) ? 10.0 : 20.0; // Alternate between small and medium stars
       _stars.add(Star(x: x, size: size));
     }

@@ -6,9 +6,10 @@ class OutfitScreen extends StatelessWidget {
   final Map<String, dynamic> outfit;
   final Function(Map<String, dynamic>) onUpdateOutfit;
   final Function() onDeleteOutfit;
-  final Function() onToggleFavorite;
+  final Function(bool) onToggleFavorite;
 
-  const OutfitScreen({super.key, 
+  const OutfitScreen({
+    super.key,
     required this.outfit,
     required this.onUpdateOutfit,
     required this.onDeleteOutfit,
@@ -34,16 +35,39 @@ class OutfitScreen extends StatelessWidget {
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'Edit') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditOutfitPage(
-                      outfit: outfit,
-                      onSave: (updatedOutfit) {
-                        onUpdateOutfit(updatedOutfit);
-                      },
-                    ),
-                  ),
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Edit Outfit'),
+                      content: const Text('Are you sure you want to edit this outfit?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Close the dialog
+                          },
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Close the dialog
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditOutfitPage(
+                                  outfit: outfit,
+                                  onSave: (updatedOutfit) {
+                                    onUpdateOutfit(updatedOutfit);
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    );
+                  },
                 );
               }
             },
@@ -58,13 +82,28 @@ class OutfitScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Outfit image covering 50% of screen height
-          Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(outfit['image']),
-                fit: BoxFit.cover,
+          // Outfit image covering 70% of screen height
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(),
+                    body: Center(
+                      child: Image.network(outfit['image'], fit: BoxFit.contain),
+                    ),
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(outfit['image']),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -141,42 +180,81 @@ class OutfitScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(
-                    outfit['isFavorite'] ? Icons.favorite : Icons.favorite_border,
-                    color: outfit['isFavorite'] ? Colors.red : Colors.grey,
-                  ),
-                  onPressed: onToggleFavorite,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Delete Outfit'),
-                          content: const Text('Are you sure you want to delete this outfit?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context); // Close the dialog
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                onDeleteOutfit();
-                                Navigator.pop(context); // Close the dialog
-                                Navigator.pop(context); // Go back to previous screen
-                              },
-                              child: const Text('Delete'),
-                            ),
-                          ],
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        outfit['isFavorite'] ? Icons.favorite : Icons.favorite_border,
+                        color: outfit['isFavorite'] ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(outfit['isFavorite']
+                                  ? 'Remove from Favorites'
+                                  : 'Add to Favorites'),
+                              content: Text(outfit['isFavorite']
+                                  ? 'Are you sure you want to remove this outfit from your favorites list?'
+                                  : 'Are you sure you want to add this outfit to your favorites list?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context); // Close the dialog
+                                  },
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context); // Close the dialog
+                                    onToggleFavorite(!outfit['isFavorite']);
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
-                    );
-                  },
+                    ),
+                    const Text('Favorite'),
+                  ],
+                ),
+                Column(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Delete Outfit'),
+                              content: const Text('Are you sure you want to delete this outfit?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context); // Close the dialog
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    onDeleteOutfit();
+                                    Navigator.pop(context); // Close the dialog
+                                    Navigator.pop(context); // Go back to previous screen
+                                  },
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    const Text('Delete'),
+                  ],
                 ),
               ],
             ),

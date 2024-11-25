@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,7 +22,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
     'Bottom': null,
     'Accessories': null,
   };
-  bool showOutfitOptions = false;
+ // bool showOutfitOptions = false;
   final ImagePicker _picker = ImagePicker();
 
   // Select image from gallery or camera
@@ -38,39 +39,53 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
 
   // Generate preview of the outfit collage
   Widget buildCollagePreview() {
-    return Column(
-      children: [
-        if (outfitParts['Top'] != null) Image.asset(outfitParts['Top']!),
-        if (outfitParts['Bottom'] != null) Image.asset(outfitParts['Bottom']!),
-        if (outfitParts['Accessories'] != null)
-          Image.asset(outfitParts['Accessories']!),
-      ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: outfitParts.keys.map((part) {
+        return outfitParts[part] != null
+            ? Image.asset(
+          outfitParts[part]!,
+          height: 100,
+          width: 100,
+          fit: BoxFit.cover,
+        )
+            : Icon(Icons.image, size: 50, color: Colors.grey);
+      }).toList(),
     );
   }
 
   // Save outfit to the dashboard
-  void saveOutfit() {
+  Future<void> saveOutfit() async {
     if (descriptionController.text.isNotEmpty &&
         selectedItemType != null &&
         selectedCategory != null &&
         outfitParts.values.any((image) => image != null)) {
-      final newOutfit = {
-        'title': descriptionController.text,
-        'category': selectedCategory,
-        'type': selectedItemType,
-        'parts': outfitParts,
-        'isFavorite': false, // Default favorite state
-      };
+      try{
+        final newOutfit = {
+          'title': descriptionController.text,
+          'category': selectedCategory,
+          'type': selectedItemType,
+          'parts': outfitParts,
+          'isFavorite': false, // Default favorite state
+          'createdAt': Timestamp.now(),
+        };
+        await FirebaseFirestore.instance.collection('outfits').add(newOutfit);
+        widget.onSave(newOutfit);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Outfit saved successfully!')),
+        );
+        Navigator.pop(context);
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving outfit: $error')),
+        );
+      }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please fill all fields and select images for at least one parts')),
+        );
+      }
 
-      widget.onSave(newOutfit); // Passing the new outfit back to the dashboard
-      Navigator.pop(context); // Navigate back to the dashboard page
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Please fill all fields and select images for at least one part')),
-      );
-    }
   }
 
   @override
@@ -81,7 +96,13 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: saveOutfit,
+           // onPressed: saveOutfit,
+            onPressed: () {
+              // Call onSave when the user saves the outfit
+              final outfit = Outfit(name: 'Winter Outfit', imageUrl: '...');
+              onSave(outfit);
+              Navigator.pop(context); // Return to the previous screen
+            },
           ),
         ],
       ),
@@ -91,6 +112,11 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Show the two main options
+            if (outfitParts.values.any((path) => path != null))
+              Container(
+                height: 200,
+                child: buildCollagePreview(),
+              ),
             Text(
               'Select Outfit Type',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -143,7 +169,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        showOutfitOptions = true;
+                        //
                       });
                     },
                     child: Card(
@@ -173,7 +199,6 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               ],
             ),
             SizedBox(height: 20),
-            if (showOutfitOptions)
               Expanded(
                 child: ListView(
                   children: outfitParts.keys.map((part) {
@@ -214,7 +239,8 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                                 left: 10,
                                 child: Text(part,
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                                        fontWeight: FontWeight.bold)
+                                ),
                               ),
                             ],
                           ),
@@ -246,7 +272,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               subtitle: Text('Clothing, Shoe, Jewellery, etc.'),
               trailing: DropdownButton<String>(
                 value: selectedItemType,
-                items: <String>['Clothing', 'Shoe', 'Jewellery']
+                items: <String>['Clothing', 'Shoe', 'Jewellery', 'Dresses']
                     .map((String value) => DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -267,7 +293,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               subtitle: Text('Winter, Casual, Formal, etc.'),
               trailing: DropdownButton<String>(
                 value: selectedCategory,
-                items: <String>['Winter', 'Casual', 'Formal']
+                items: <String>['Winter/Fall','Summer/Spring' , 'Casual', 'Formal', 'Accessories']
                     .map((String value) => DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -286,4 +312,16 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
       ),
     );
   }
+
+  void onSave(Outfit outfit) {
+  // Logic to save the outfit
+  print('Outfit saved: ${outfit.name}');
+  // To Add my  database or to add  update logic here
+  }
+}
+class Outfit {
+  final String name;
+  final String imageUrl;
+
+  Outfit({required this.name, required this.imageUrl});
 }

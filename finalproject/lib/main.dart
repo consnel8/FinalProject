@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:finalproject/wardrobe/outfit_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -8,11 +9,13 @@ import 'recipe_book_page.dart'; // Import the recipe book page
 import 'add_recipe_page.dart'; // Import the add recipe page
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
+import 'wardrobe/outfit_builder.dart';
 import 'journal_page.dart';
 import 'edit_journal_page.dart';
+import 'wardrobe/outfits_page.dart';
 //import virtual wardrobe page here
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 
@@ -115,7 +118,7 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/wardrobe_icon.png',
               title: 'VIRTUAL WARDROBE',
               description: 'Effortlessly manage your clothing collection and plan outfits.',
-              onTap: () => _navigateToBlankPage(context, 'Virtual Wardrobe'),
+              onTap: () => _navigateToVirtualWardrobe(context),
             ),
             FeatureCard(
               imagePath: 'assets/recipe_icon.png',
@@ -145,6 +148,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  void _navigateToVirtualWardrobe(BuildContext context){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const OutfitDashboardPage()),
+    );
+  }
   void _navigateToRecipeBook(BuildContext context) {
     Navigator.push(
       context,
@@ -206,7 +215,9 @@ class HomeScreen extends StatelessWidget {
                   Future.delayed(const Duration(seconds: 3), () {
                     Navigator.of(parentContext).push(
                       MaterialPageRoute(
-                        builder: (context) => const AddRecipePage(), // Navigate to wardrobe page
+                        builder: (context) =>  OutfitBuilderPage(onSave: (outfit) {
+                          // Add save logic here
+                        }), // Navigate to wardrobe page
                       ),
                     ).then((result) {
                       if (result != null) {

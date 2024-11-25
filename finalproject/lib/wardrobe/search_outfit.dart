@@ -53,7 +53,7 @@ class OutfitSearchDelegate extends SearchDelegate {
                   onDeleteOutfit: () {
                     // Handle delete action
                   },
-                  onToggleFavorite: () {
+                  onToggleFavorite: (bool isFavorite) {
                     // Handle toggle favorite action
                   },
                   onUpdateOutfit: (updatedOutfit) {
