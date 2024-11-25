@@ -75,6 +75,40 @@ class _JournalPageState extends State<JournalPage> {
     await prefs.setString('journal_entries', json.encode(entriesJson));
   }
 
+  // Method to get mood icon
+  IconData _getMoodIcon(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'happy':
+        return Icons.sentiment_satisfied;
+      case 'hungry':
+        return Icons.food_bank_outlined;
+      case 'sad':
+        return Icons.sentiment_dissatisfied;
+      case 'excited':
+        return Icons.sentiment_very_satisfied_outlined;
+      case 'motivated':
+        return Icons.snowboarding;
+      case 'angry':
+        return Icons.sentiment_very_dissatisfied;
+    default:
+        return Icons.sentiment_very_satisfied;
+    }
+  }
+
+  // Method to get mood color
+  Color _getMoodColor(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'happy':
+        return Colors.yellow;
+      case 'neutral':
+        return Colors.grey;
+      case 'sad':
+        return Colors.blue;
+      default:
+        return Colors.green;
+    }
+  }
+
   void _searchByDate(DateTime selectedDate) {
     setState(() {
       _entries = _entries.where((entry) {
@@ -302,11 +336,22 @@ class _JournalPageState extends State<JournalPage> {
                             style: const TextStyle(
                                 color: Color(0xFFBE3B88),
                                 fontSize: 24,
-                                fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(height: 8),
-                        Text(shortContent,
-                            style: const TextStyle(
-                                color: Color(0xFF787878), fontSize: 16)),
+                        Row(
+                          children: [
+                            Text(shortContent,
+                                style: const TextStyle(color: Color(0xFF787878), fontSize: 16)),
+                            const SizedBox(width: 10),
+                            // Conditionally show the mood icon and color only if entry.mood is not null
+                            if (entry.mood != null)
+                              Icon(
+                                _getMoodIcon(entry.mood!),  // Use the non-nullable value `entry.mood!`
+                                color: _getMoodColor(entry.mood!),
+                              ),
+                          ],
+                        ),
                         // Display the image below the entry content if available
                         if (entry.imageUrl != null)
                           Padding(

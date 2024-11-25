@@ -17,6 +17,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
   final _contentController = TextEditingController();
   File? _imageFile; // To hold the picked image file
   DateTime? _selectedDate; // To store the selected date
+  String? _selectedMood;  // Store the selected mood
 
   @override
   void initState() {
@@ -30,8 +31,10 @@ class _EditJournalPageState extends State<EditJournalPage> {
           ? File(widget.entry!.imageUrl!)
           : null; // Load existing image if present
       _selectedDate = widget.entry!.date; // Load existing date if present
+      _selectedMood = widget.entry!.mood;  // Prepopulate the mood if editing
     } else {
       _selectedDate = DateTime.now(); // Default to the current date if no entry is provided
+
     }
   }
 
@@ -202,6 +205,22 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   fontFamily: 'IndieFlower',
                 ),
               ),
+              DropdownButton<String>(
+                value: _selectedMood,
+                hint: Text('Select Mood'),
+                items: ['Happy', 'Motivated', 'Sad', 'Excited', 'Angry', 'Hungry']
+                    .map((mood) {
+                  return DropdownMenuItem<String>(
+                    value: mood,
+                    child: Text(mood),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedMood = value;
+                  });
+                },
+              ),
               const SizedBox(height: 16),
               // Display the picked or captured image if any
               if (_imageFile != null)
@@ -246,6 +265,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   content: _contentController.text,
                   imageUrl: _imageFile?.path, // Save the file path as the image URL
                   date: _selectedDate ?? DateTime.now(), // Use selected date or default to now
+                  mood: _selectedMood,
                 );
 
                 Navigator.pop(context, updatedEntry); // Return the updated entry
