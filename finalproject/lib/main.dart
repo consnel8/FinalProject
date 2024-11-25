@@ -11,6 +11,8 @@ import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 import 'wardrobe/outfit_builder.dart';
 import 'journal_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'journal_entry_model.dart';
 import 'edit_journal_page.dart';
 import 'wardrobe/outfits_page.dart';
 //import virtual wardrobe page here
@@ -283,15 +285,33 @@ class HomeScreen extends StatelessWidget {
                   Future.delayed(const Duration(seconds: 3), () {
                     Navigator.of(parentContext).push(
                       MaterialPageRoute(
-                        builder: (context) => const EditJournalPage(), // Navigate to journal page
+                        builder: (context) => EditJournalPage(),
                       ),
-                    ).then((result) {
-                      if (result != null) {
+                    ).then((result) async {
+                      if (result != null && result is JournalEntry) {
+                        // Load the current entries
+                        final prefs = await SharedPreferences.getInstance();
+                        final String? entriesString = prefs.getString('journal_entries');
+                        List<JournalEntry> entries = [];
+
+                        if (entriesString != null) {
+                          final List<dynamic> entriesJson = json.decode(entriesString);
+                          entries = entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
+                        }
+
+                        // Add the new entry and save back
+                        entries.add(result);
+                        entries.sort((a, b) => b.date.compareTo(a.date));
+                        await prefs.setString('journal_entries',
+                            json.encode(entries.map((entry) => entry.toJson()).toList()));
+
+                        // Reload the home screen
                         Navigator.of(parentContext).pushReplacement(
                           MaterialPageRoute(builder: (context) => const HomeScreen()),
                         );
                       }
                     });
+
                   });
                 },
               ),
