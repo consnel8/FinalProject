@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:finalproject/wardrobe/outfit_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -9,11 +10,20 @@ import 'add_recipe_page.dart'; // Import the add recipe page
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 import 'journal_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'journal_entry_model.dart';
 import 'edit_journal_page.dart';
-//import virtual wardrobe page here
+import 'wardrobe/outfits_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+WidgetsFlutterBinding.ensureInitialized();
+// Initialize Firebase with the options from firebase_options.dart
+await Firebase.initializeApp(
+options: DefaultFirebaseOptions.currentPlatform,
+);
+runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -115,7 +125,7 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/wardrobe_icon.png',
               title: 'VIRTUAL WARDROBE',
               description: 'Effortlessly manage your clothing collection and plan outfits.',
-              onTap: () => _navigateToBlankPage(context, 'Virtual Wardrobe'),
+              onTap: () => _navigateToVirtualWardrobe(context),
             ),
             FeatureCard(
               imagePath: 'assets/recipe_icon.png',
@@ -145,6 +155,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  void _navigateToVirtualWardrobe(BuildContext context){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const OutfitDashboardPage()),
+    );
+  }
   void _navigateToRecipeBook(BuildContext context) {
     Navigator.push(
       context,
@@ -206,7 +222,9 @@ class HomeScreen extends StatelessWidget {
                   Future.delayed(const Duration(seconds: 3), () {
                     Navigator.of(parentContext).push(
                       MaterialPageRoute(
-                        builder: (context) => const AddRecipePage(), // Navigate to wardrobe page
+                        builder: (context) =>  OutfitBuilderPage(onSave: (outfit) {
+                          // Add save logic here
+                        }), // Navigate to wardrobe page
                       ),
                     ).then((result) {
                       if (result != null) {
@@ -272,15 +290,33 @@ class HomeScreen extends StatelessWidget {
                   Future.delayed(const Duration(seconds: 3), () {
                     Navigator.of(parentContext).push(
                       MaterialPageRoute(
-                        builder: (context) => const EditJournalPage(), // Navigate to journal page
+                        builder: (context) => EditJournalPage(),
                       ),
-                    ).then((result) {
-                      if (result != null) {
+                    ).then((result) async {
+                      if (result != null && result is JournalEntry) {
+                        // Load the current entries
+                        final prefs = await SharedPreferences.getInstance();
+                        final String? entriesString = prefs.getString('journal_entries');
+                        List<JournalEntry> entries = [];
+
+                        if (entriesString != null) {
+                          final List<dynamic> entriesJson = json.decode(entriesString);
+                          entries = entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
+                        }
+
+                        // Add the new entry and save back
+                        entries.add(result);
+                        entries.sort((a, b) => b.date.compareTo(a.date));
+                        await prefs.setString('journal_entries',
+                            json.encode(entries.map((entry) => entry.toJson()).toList()));
+
+                        // Reload the home screen
                         Navigator.of(parentContext).pushReplacement(
                           MaterialPageRoute(builder: (context) => const HomeScreen()),
                         );
                       }
                     });
+
                   });
                 },
               ),
@@ -475,42 +511,41 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
-              ? Center(
-                  child: Text(
-                    errorMessage,
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: nearbyPlaces.length,
-                  itemBuilder: (context, index) {
-                    var place = nearbyPlaces[index];
-                    String name = place['name'] ?? 'Unknown Name';
-                    String address = place['location']?['address'] ?? 'Unknown Address';
-                    String category = place['categories'] != null
-                        ? place['categories'][0]['name'] ?? 'Unknown Category'
-                        : 'Unknown Category';
+          ? Center(
+        child: Text(
+          errorMessage,
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+          ),
+        ),
+      )
+          : ListView.builder(
+        itemCount: nearbyPlaces.length,
+        itemBuilder: (context, index) {
+          var place = nearbyPlaces[index];
+          String name = place['name'] ?? 'Unknown Name';
+          String address = place['location']?['address'] ?? 'Unknown Address';
+          String category = place['categories'] != null
+              ? place['categories'][0]['name'] ?? 'Unknown Category'
+              : 'Unknown Category';
 
-                    return ListTile(
-                      title: Text(
-                        name,
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '$category\n$address',
-                        style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+          return ListTile(
+            title: Text(
+              name,
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              '$category\n$address',
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
-

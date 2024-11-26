@@ -30,13 +30,14 @@ class _EditRecipePageState extends State<EditRecipePage> {
     );
     instructionsController = TextEditingController(text: widget.recipe['instructions']);
     imageUrlController = TextEditingController(text: widget.recipe['image']);
-    
-    // Initialize selectedMealTypes with a default empty list if it's null
+
+    // Initialize selectedMealTypes
     selectedMealTypes = List<String>.from(widget.recipe['mealTypes'] ?? []);
   }
 
   void saveEditedRecipe() {
     final editedRecipe = {
+      'id': widget.recipe['id'], // Ensure Firestore document ID is preserved
       'name': nameController.text,
       'description': descriptionController.text,
       'ingredients': ingredientsController.text.split(',').map((e) => e.trim()).toList(),
@@ -45,23 +46,15 @@ class _EditRecipePageState extends State<EditRecipePage> {
       'mealTypes': selectedMealTypes,
       'favorite': widget.recipe['favorite'],
     };
-    Navigator.pop(context, editedRecipe); // Return the edited recipe to the previous
+
+    Navigator.pop(context, editedRecipe); // Return the edited recipe to the parent
   }
 
   @override
   Widget build(BuildContext context) {
-    //final Color backgroundColor = Colors.brown[100]!;
-
     return Scaffold(
-      //backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Edit Recipe'),
-        //backgroundColor: Colors.brown[800],
-        titleTextStyle: const TextStyle(
-            //color: Colors.white,
-            fontSize: 20
-        ),
-        //iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -89,7 +82,10 @@ class _EditRecipePageState extends State<EditRecipePage> {
               decoration: const InputDecoration(labelText: 'Image URL'),
             ),
             const SizedBox(height: 20),
-            const Text('Select Meal Types:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text(
+              'Select Meal Types:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             Column(
               children: mealTypes.map((type) {
                 return CheckboxListTile(
@@ -110,10 +106,6 @@ class _EditRecipePageState extends State<EditRecipePage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: saveEditedRecipe,
-              style: ElevatedButton.styleFrom(
-                //backgroundColor: Colors.brown[700],
-                //foregroundColor: Colors.white, // Set text color to white
-              ),
               child: const Text('Save Changes'),
             ),
           ],

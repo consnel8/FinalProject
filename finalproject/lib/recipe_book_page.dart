@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'add_recipe_page.dart';
 import 'recipe_description_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecipeBookPage extends StatefulWidget {
   const RecipeBookPage({super.key});
@@ -10,93 +11,26 @@ class RecipeBookPage extends StatefulWidget {
 }
 
 class _RecipeBookPageState extends State<RecipeBookPage> {
-  List<Map<String, dynamic>> recipes = [
-    {
-      'name': 'Spaghetti Bolognese',
-      'description': 'A delicious Italian pasta dish.',
-      'image': 'https://passportmagazine.com/wp-content/uploads/2024/07/Bolognese-Sauce-photo-by-Tatiana-Goskova-585x390.jpg',
-      'mealTypes': ['Dinner'],
-      'favorite': false,
-      'ingredients': [
-        '1 1/2 tbsp olive oil',
-        '2 garlic cloves, minced',
-        '1 onion, finely chopped',
-        '1 lb ground beef or pork',
-        '1/2 cup red wine',
-        '2 beef bouillon cubes, crumbled',
-        '800g can crushed tomatoes',
-        '2 tbsp tomato paste',
-        '2 tsp Worcestershire sauce',
-      ],
-      'cookingInstructions': '''
-        Sauté: Heat oil in a large pot or deep skillet over medium high heat. Add onion and garlic cook for 3 minutes or until light golden and softened, 
-        Cook beef: Turn heat up to high and add beef. Cook. breaking it up as your go. until browned,
-        Reduce wine: Add red wine. Bring to simmer and cook for 1 minute. scraping the bottom of the pot. until the alcohol smell is gone,
-        Simmer: Add the remaining ingredients. Stir. bring to a simmer then turn down to medium so it bubbles gently. Cook for 20 to 30 minutes (no lid). adding water if the sauce gets too thick for your taste. Stir occasionally,
-        Slow simmer option: really takes this to another level. if you have the time! Add 3/4 cup of water. cover with lid and simmer on very low for 2 to 2.5 hours. stirring every 30 minutes or so. (Note 5) Uncover. simmer 20 minutes to thicken sauce. (Note 6 for slow cooker),
-        Taste and add more salt it desired. Serve over spaghetti though if you have the time. I recommend tossing the sauce and pasta per steps below'
-    '''
-    },
-    {
-      'name': 'Chicken Salad',
-      'description': 'A healthy salad with grilled chicken.',
-      'image': 'https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_16:9/k%2FPhoto%2FRecipes%2F2024-03-chicken-salad-190%2Fchicken-salad-190-261',
-      'mealTypes': ['Lunch'],
-      'favorite': false,
-      'ingredients': [
-        '2 cups cooked chopped chicken',
-        '½ cup mayonnaise',
-        '1 rib celery, diced',
-        '1 green onion, sliced',
-        '1 tsp Dijon mustard',
-        '½ tsp seasoned salt',
-        '1 tsp chopped fresh dill',
-      ],
-      'cookingInstructions': '''
-        In a medium bowl add chicken mayonnaise celery green onion mustard salt pepper and dill if using. Mix well to combine,
-        Taste and season with additional salt and pepper if desired,
-        Serve as a sandwich or over salad
-      '''
-      },
-    {
-      'name': 'Pancakes',
-      'description': 'Fluffy pancakes for breakfast.',
-      'image': 'https://img.sndimg.com/food/image/upload/f_auto,c_thumb,q_55,w_744,ar_5:4/v1/img/recipes/65/04/9/picIXtWig.jpg',
-      'mealTypes': ['Breakfast', 'Brunch'],
-      'favorite': false,
-      'ingredients': [
-        '1 ½ cups all-purpose flour',
-        '3 ½ teaspoons baking powder',
-        '1 tablespoon white sugar',
-        '¼ teaspoon salt, or more to taste',
-        '1 ¼ cups milk',
-        '3 tablespoons butter, melted',
-        '1 large egg',
-      ],
-      'cookingInstructions':''' 
-        Melt the butter and set it aside. In a medium bowl whisk together the flour sugar baking powder and salt,
-        In a separate bowl whisk together milk egg melted butter and vanilla extract,
-        Create a well in the center of your dry ingredients. Pour in the milk mixture and stir gently with a fork until the flour is just incorporated. A few small lumps are okay. As the batter sits it should start to bubble,
-        Place a large skillet or griddle over medium heat. Sprinkle in a few drops of water to test if its ready. You want them to dance around a bit and evaporate,
-        Brush the skillet with melted butter,
-        Scoop the batter onto the skillet using a 1/4 cup measure or large cookie scoop and spread each pancake into a 4-inch circle,
-        After 1 to 2 minutes the edges will look dry and bubbles will form and pop on the surface. Flip the pancakes and cook for another 1 to 2 minutes until lightly browned and cooked in the middle,
-        Serve immediately with warm syrup butter and berries,
-        '''
-        },
-  ];
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<Map<String, dynamic>> recipes = [];
   List<Map<String, dynamic>> filteredRecipes = [];
   final TextEditingController searchController = TextEditingController();
-  final List<String> mealTypes = ['All', 'Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Dessert'];
+  final List<String> mealTypes = [
+    'All',
+    'Breakfast',
+    'Brunch',
+    'Lunch',
+    'Dinner',
+    'Dessert'
+  ];
   String selectedMealType = 'All';
   bool showOnlyFavorites = false;
 
   @override
   void initState() {
     super.initState();
-    filteredRecipes = recipes;
     searchController.addListener(_searchRecipe);
+    _fetchRecipes();
   }
 
   @override
@@ -106,14 +40,48 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     super.dispose();
   }
 
+  Future<void> _fetchRecipes() async {
+    try {
+      final snapshot = await _firestore.collection('recipes').get();
+      print('Fetched recipes from Firestore: ${snapshot.docs.length}'); // Debug log
+      final List<Map<String, dynamic>> fetchedRecipes = snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id; // Add Firestore document ID
+        return data;
+      }).toList();
+      setState(() {
+        recipes = fetchedRecipes;
+        filteredRecipes = recipes;
+      });
+    } catch (e) {
+      print('Error fetching recipes: $e'); // Debug log
+    }
+  }
+
+  Future<void> _addRecipe(Map<String, dynamic> newRecipe) async {
+  try {
+    final docRef = await _firestore.collection('recipes').add(newRecipe);
+    newRecipe['id'] = docRef.id; // Add the document ID to the recipe
+    setState(() {
+      recipes.add(newRecipe); // Add to local list
+      _searchRecipe(); // Refresh filtered list
+    });
+  } catch (e) {
+    print('Error adding recipe: $e');
+  }
+}
+
+
   void _searchRecipe() {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredRecipes = recipes.where((recipe) {
         final recipeName = recipe['name'].toLowerCase();
         final matchesQuery = recipeName.contains(query);
-        final matchesMealType = selectedMealType == 'All' || (recipe['mealTypes'] as List).contains(selectedMealType);
-        final matchesFavorite = !showOnlyFavorites || (recipe['favorite'] ?? false);
+        final matchesMealType = selectedMealType == 'All' ||
+            (recipe['mealTypes'] as List).contains(selectedMealType);
+        final matchesFavorite =
+            !showOnlyFavorites || (recipe['favorite'] ?? false);
         return matchesQuery && matchesMealType && matchesFavorite;
       }).toList();
     });
@@ -133,18 +101,16 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     });
   }
 
-  void navigateToAddRecipe() async {
-    final newRecipe = await Navigator.push<Map<String, dynamic>>(
-      context,
-      MaterialPageRoute(builder: (context) => const AddRecipePage()),
-    );
-    if (newRecipe != null) {
-      setState(() {
-        recipes.add(newRecipe);
-        _searchRecipe();
-      });
-    }
+void navigateToAddRecipe() async {
+  final newRecipe = await Navigator.push<Map<String, dynamic>>(
+    context,
+    MaterialPageRoute(builder: (context) => const AddRecipePage()),
+  );
+
+  if (newRecipe != null) {
+    await _addRecipe(newRecipe); // Save recipe to Firebase and local list
   }
+}
 
   void navigateToRecipeDescription(Map<String, dynamic> recipe) {
     Navigator.push(
@@ -152,18 +118,23 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
       MaterialPageRoute(
         builder: (context) => RecipeDescriptionPage(
           recipe: recipe,
-          onUpdateRecipe: (updatedRecipe) {
+          onUpdateRecipe: (updatedRecipe) async {
+            await _firestore
+                .collection('recipes')
+                .doc(updatedRecipe['id'])
+                .set(updatedRecipe); // Update Firestore
             setState(() {
-              final index = recipes.indexOf(recipe);
+              final index = recipes.indexWhere((r) => r['id'] == recipe['id']);
               if (index != -1) {
                 recipes[index] = updatedRecipe;
                 _searchRecipe();
               }
             });
           },
-          onDeleteRecipe: () {
+          onDeleteRecipe: () async {
+            await _firestore.collection('recipes').doc(recipe['id']).delete(); // Delete from Firestore
             setState(() {
-              recipes.remove(recipe);
+              recipes.removeWhere((r) => r['id'] == recipe['id']);
               _searchRecipe();
             });
           },
@@ -174,28 +145,17 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
 
   @override
   Widget build(BuildContext context) {
-    //final Color backgroundColor = Colors.brown[100]!;
-
     return Scaffold(
-      //backgroundColor: backgroundColor,
       appBar: AppBar(
-        //backgroundColor: Colors.brown[800],
-        title: const Text('Recipe Book',
-            //style: TextStyle(color: Colors.white)
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back
-              //, color: Colors.white
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: const Text('Recipe Book'),
         actions: [
-          Image.asset(
-            'assets/recipe_icon.png',
-            height: 40,
-            width: 40,
+          IconButton(
+            icon: Icon(
+              showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
+              color: showOnlyFavorites ? const Color(0xfff485b1) : Colors.grey,
+            ),
+            onPressed: _toggleFavoriteFilter,
           ),
-          const SizedBox(width: 16),
         ],
       ),
       body: Column(
@@ -212,10 +172,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                        //borderSide: const BorderSide(color: Colors.grey),
                       ),
                       filled: true,
-                      //fillColor: backgroundColor,
                     ),
                   ),
                 ),
@@ -229,15 +187,6 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                     );
                   }).toList(),
                   onChanged: _filterByMealType,
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(
-                    showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
-                    color: showOnlyFavorites ? Color(0xfff485b1) : Colors.grey,
-                    // above was formerly 'Colors.red', changed to better fit colour scheme
-                  ),
-                  onPressed: _toggleFavoriteFilter,
                 ),
               ],
             ),
@@ -259,23 +208,17 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                       onTap: navigateToAddRecipe,
                       child: Container(
                         decoration: BoxDecoration(
-                          //color: backgroundColor,
                           borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(
-                              //color: Colors.grey,
-                              width: 1),
+                          border: Border.all(width: 1),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add, size: 50,
-                                //color: Colors.grey[600]
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
+                          children: const [
+                            Icon(Icons.add, size: 50),
+                            SizedBox(height: 8),
+                            Text(
                               "Add Recipe",
                               style: TextStyle(
-                                //color: Colors.purple,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -289,11 +232,8 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                       onTap: () => navigateToRecipeDescription(recipe),
                       child: Container(
                         decoration: BoxDecoration(
-                          //color: backgroundColor,
                           borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(
-                              //color: Colors.grey,
-                              width: 1),
+                          border: Border.all(width: 1),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -307,12 +247,10 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                                         fit: BoxFit.cover,
                                       ),
                                     )
-                                  : Center(
+                                  : const Center(
                                       child: Text(
-                                        'PICTURE\nOF\nCOOKED\nFOOD',
-                                        textAlign: TextAlign.center,
+                                        'No Image',
                                         style: TextStyle(
-                                          //color: Colors.brown,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -320,13 +258,11 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
                                     ),
                             ),
                             Container(
-                              //color: backgroundColor,
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 recipe['name'],
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  //color: Colors.pink,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),

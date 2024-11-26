@@ -25,24 +25,17 @@ class _AddRecipePageState extends State<AddRecipePage> {
       'instructions': instructionsController.text,
       'image': imageUrlController.text.isNotEmpty ? imageUrlController.text : null,
       'mealTypes': selectedMealTypes,
-      'favorite': false,
+      'favorite': false, // Default favorite status
     };
-    Navigator.pop(context, newRecipe);
+
+    Navigator.pop(context, newRecipe); // Return the new recipe to the parent
   }
 
   @override
   Widget build(BuildContext context) {
-    //final Color backgroundColor = Colors.brown[100]!;
-
     return Scaffold(
-      //backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Add Recipe'),
-        //backgroundColor: Colors.brown[800],
-        titleTextStyle: const TextStyle(
-            //color: Colors.white,
-            fontSize: 20),
-        //iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -70,11 +63,14 @@ class _AddRecipePageState extends State<AddRecipePage> {
               decoration: const InputDecoration(labelText: 'Image URL'),
             ),
             const SizedBox(height: 20),
-            const Text('Select Meal Types:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text(
+              'Select Meal Types:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             Column(
               children: mealTypes.map((type) {
                 return CheckboxListTile(
-                  title: Text(type, style: TextStyle(color: Color(0xff757575))),
+                  title: Text(type),
                   value: selectedMealTypes.contains(type),
                   onChanged: (bool? selected) {
                     setState(() {
@@ -91,10 +87,6 @@ class _AddRecipePageState extends State<AddRecipePage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: saveRecipe,
-              style: ElevatedButton.styleFrom(
-                //backgroundColor: Colors.brown[700],
-                //foregroundColor: Colors.white, // Set text color to white
-              ),
               child: const Text('Save Recipe'),
             ),
           ],

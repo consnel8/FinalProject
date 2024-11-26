@@ -26,8 +26,8 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
       ),
     );
     if (editedRecipe != null) {
-      widget.onUpdateRecipe(editedRecipe); // Update the recipe in the main list
-      setState(() {}); // Refresh the UI with updated recipe 
+      widget.onUpdateRecipe(editedRecipe); // Update the recipe in Firestore
+      setState(() {}); // Refresh the UI with updated recipe
     }
   }
 
@@ -46,11 +46,14 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
               },
             ),
             TextButton(
-              child: const Text('Delete', style: TextStyle(color: Color(0xFFB8170B))),
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Color(0xFFB8170B)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
-                widget.onDeleteRecipe(); // Call the delete function in the main list
-                Navigator.of(context).pop(); // Go back to the previous 
+                widget.onDeleteRecipe(); // Delete the recipe from Firestore
+                Navigator.of(context).pop(); // Go back to the previous screen
               },
             ),
           ],
@@ -63,43 +66,30 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
     setState(() {
       widget.recipe['favorite'] = !(widget.recipe['favorite'] ?? false); // Toggle favorite status
     });
-    widget.onUpdateRecipe(widget.recipe); // Update the recipe in the main list
+    widget.onUpdateRecipe(widget.recipe); // Update the favorite status in Firestore
   }
 
   @override
   Widget build(BuildContext context) {
-    //final Color backgroundColor = Colors.brown[100]!;
     final bool isFavorite = widget.recipe['favorite'] ?? false;
 
     return Scaffold(
-      //backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(widget.recipe['name'] ?? 'Recipe'),
-        //backgroundColor: Colors.brown[800],
-        titleTextStyle: const TextStyle(
-            //color: Colors.white,
-            fontSize: 20),
-        iconTheme: const IconThemeData(
-            //color: Colors.white
-        ),
         actions: [
           IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: Color(0xfff485b1),
+              color: const Color(0xfff485b1),
             ),
             onPressed: _toggleFavoriteRecipe,
           ),
           IconButton(
-            icon: const Icon(Icons.edit
-                //, color: Colors.white
-            ),
+            icon: const Icon(Icons.edit),
             onPressed: _navigateToEditRecipe,
           ),
           IconButton(
-            icon: const Icon(Icons.delete
-                //, color: Colors.white
-            ),
+            icon: const Icon(Icons.delete),
             onPressed: _confirmDeleteRecipe,
           ),
         ],
@@ -118,7 +108,7 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
                   height: 200,
                   width: double.infinity,
                   errorBuilder: (context, error, stackTrace) {
-                    return Center(child: Text('Image not available'));
+                    return const Center(child: Text('Image not available'));
                   },
                 ),
               )
@@ -127,18 +117,14 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
                 height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  //color: backgroundColor,
                   borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(
-                      //color: Colors.grey,
-                      width: 1),
+                  border: Border.all(width: 1),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
-                    'PICTURE\nOF\nCOOKED\nFOOD',
+                    'No Image',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      //color: Colors.brown,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -157,13 +143,16 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
               'Ingredients:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            ...((widget.recipe['ingredients'] as List<dynamic>?)?.map((ingredient) => Text('- $ingredient')).toList() ?? [const Text('No ingredients listed.')]),
+            ...((widget.recipe['ingredients'] as List<dynamic>?)
+                    ?.map((ingredient) => Text('- $ingredient'))
+                    .toList() ??
+                [const Text('No ingredients listed.')]),
             const SizedBox(height: 16),
             const Text(
               'Cooking Instructions:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            ..._buildCookingInstructions(widget.recipe['cookingInstructions']),
+            ..._buildCookingInstructions(widget.recipe['instructions']),
           ],
         ),
       ),

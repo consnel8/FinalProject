@@ -17,6 +17,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
   final _contentController = TextEditingController();
   File? _imageFile; // To hold the picked image file
   DateTime? _selectedDate; // To store the selected date
+  String? _selectedMood;  // Store the selected mood
 
   @override
   void initState() {
@@ -30,8 +31,10 @@ class _EditJournalPageState extends State<EditJournalPage> {
           ? File(widget.entry!.imageUrl!)
           : null; // Load existing image if present
       _selectedDate = widget.entry!.date; // Load existing date if present
+      _selectedMood = widget.entry!.mood;  // Prepopulate the mood if editing
     } else {
       _selectedDate = DateTime.now(); // Default to the current date if no entry is provided
+
     }
   }
 
@@ -58,6 +61,8 @@ class _EditJournalPageState extends State<EditJournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+
+      /*
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -76,6 +81,8 @@ class _EditJournalPageState extends State<EditJournalPage> {
           child: child!,
         );
       },
+
+       */
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -88,10 +95,10 @@ class _EditJournalPageState extends State<EditJournalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent, // Keep the background transparent
+      //backgroundColor: Colors.transparent, // Keep the background transparent
       appBar: AppBar(
-        backgroundColor: Color(0xFF393634),
-        elevation: 0, // Remove the shadow for the diary look
+        //backgroundColor: Color(0xFF393634),
+        elevation: 1, // Remove the shadow for the diary look
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -102,7 +109,9 @@ class _EditJournalPageState extends State<EditJournalPage> {
         actions: widget.entry != null
             ? [
           IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete,
+                //color: Colors.red
+            ),
             onPressed: () {
               // Confirm before deleting
               showDialog(
@@ -196,6 +205,22 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   fontFamily: 'IndieFlower',
                 ),
               ),
+              DropdownButton<String>(
+                value: _selectedMood,
+                hint: Text('Select Mood'),
+                items: ['Happy', 'Motivated', 'Sad', 'Excited', 'Angry', 'Hungry']
+                    .map((mood) {
+                  return DropdownMenuItem<String>(
+                    value: mood,
+                    child: Text(mood),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedMood = value;
+                  });
+                },
+              ),
               const SizedBox(height: 16),
               // Display the picked or captured image if any
               if (_imageFile != null)
@@ -240,6 +265,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   content: _contentController.text,
                   imageUrl: _imageFile?.path, // Save the file path as the image URL
                   date: _selectedDate ?? DateTime.now(), // Use selected date or default to now
+                  mood: _selectedMood,
                 );
 
                 Navigator.pop(context, updatedEntry); // Return the updated entry
