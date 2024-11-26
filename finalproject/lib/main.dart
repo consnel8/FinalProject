@@ -14,10 +14,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'journal_entry_model.dart';
 import 'edit_journal_page.dart';
 import 'wardrobe/outfits_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 //import virtual wardrobe page here
 
 void main() async {
-  runApp(const MyApp());
+WidgetsFlutterBinding.ensureInitialized();
+// Initialize Firebase with the options from firebase_options.dart
+await Firebase.initializeApp(
+options: DefaultFirebaseOptions.currentPlatform,
+);
+runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
