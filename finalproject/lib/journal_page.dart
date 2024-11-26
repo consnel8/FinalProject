@@ -344,12 +344,6 @@ class _JournalPageState extends State<JournalPage> {
                             Text(shortContent,
                                 style: const TextStyle(color: Color(0xFF787878), fontSize: 16)),
                             const SizedBox(width: 10),
-                            // Conditionally show the mood icon and color only if entry.mood is not null
-                            if (entry.mood != null)
-                              Icon(
-                                _getMoodIcon(entry.mood!),  // Use the non-nullable value `entry.mood!`
-                                color: _getMoodColor(entry.mood!),
-                              ),
                           ],
                         ),
                         // Display the image below the entry content if available

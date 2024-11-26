@@ -34,7 +34,6 @@ class _EditJournalPageState extends State<EditJournalPage> {
       _selectedMood = widget.entry!.mood;  // Prepopulate the mood if editing
     } else {
       _selectedDate = DateTime.now(); // Default to the current date if no entry is provided
-
     }
   }
 
@@ -61,28 +60,6 @@ class _EditJournalPageState extends State<EditJournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
-
-      /*
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Color(0xFFbe3b88), // Primary color for the header
-              onPrimary: Colors.white,    // Text color for the header
-              surface: Colors.white,      // Background color of the picker
-              onSurface: Colors.black,    // Text color for calendar grid
-              secondary: Color(0xFFbe3b88), // Active date selection color
-              onSecondary: Colors.white,   // Text color for active date
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Color(0xFFDCB65D)), // Updated to use foregroundColor
-            ),
-          ),
-          child: child!,
-        );
-      },
-
-       */
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -92,12 +69,24 @@ class _EditJournalPageState extends State<EditJournalPage> {
     }
   }
 
+  void _showMoodPicker() async {
+    final String? mood = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return MoodPickerDialog(currentMood: _selectedMood);
+      },
+    );
+    if (mood != null) {
+      setState(() {
+        _selectedMood = mood;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.transparent, // Keep the background transparent
       appBar: AppBar(
-        //backgroundColor: Color(0xFF393634),
         elevation: 1, // Remove the shadow for the diary look
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -109,9 +98,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
         actions: widget.entry != null
             ? [
           IconButton(
-            icon: const Icon(Icons.delete,
-                //color: Colors.red
-            ),
+            icon: const Icon(Icons.delete),
             onPressed: () {
               // Confirm before deleting
               showDialog(
@@ -170,20 +157,39 @@ class _EditJournalPageState extends State<EditJournalPage> {
               GestureDetector(
                 onTap: () => _selectDate(context), // Trigger date picker on tap
                 child: AbsorbPointer(
-                  child: TextField(
-                    controller: TextEditingController(
-                        text: _selectedDate != null
-                            ? '${_selectedDate!.toLocal()}'.split(' ')[0]
-                            : 'Select Date'),
-                    decoration: InputDecoration(
-                      labelText: 'Select Date',
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: InputBorder.none,
-                    ),
-                    style: TextStyle(
-                      color: Color(0xFFbe3b88), // Style the text in the field
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: TextEditingController(
+                            text: _selectedDate != null
+                                ? '${_selectedDate!.toLocal()}'.split(' ')[0]
+                                : 'Select Date',
+                          ),
+                          decoration: InputDecoration(
+                            labelText: 'Select Date',
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                          ),
+                          style: TextStyle(
+                            color: Color(0xFFbe3b88), // Style the text in the field
+                          ),
+                        ),
+                      ),
+                      if (_selectedMood != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 15.0),
+                          child: Text(
+                            'Mood: $_selectedMood',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFFbe3b88),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -204,22 +210,6 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   fontWeight: FontWeight.bold,
                   fontFamily: 'IndieFlower',
                 ),
-              ),
-              DropdownButton<String>(
-                value: _selectedMood,
-                hint: Text('Select Mood'),
-                items: ['Happy', 'Motivated', 'Sad', 'Excited', 'Angry', 'Hungry']
-                    .map((mood) {
-                  return DropdownMenuItem<String>(
-                    value: mood,
-                    child: Text(mood),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedMood = value;
-                  });
-                },
               ),
               const SizedBox(height: 16),
               // Display the picked or captured image if any
@@ -243,6 +233,17 @@ class _EditJournalPageState extends State<EditJournalPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            // Mood Picker Button
+            IconButton(
+              icon: const Icon(Icons.mood),
+              iconSize: 35.0,
+              onPressed: _showMoodPicker,
+            ),
+            Container(
+              height: 60,
+              width: 2,
+              color: Colors.black,
+            ),
             // Camera Button to capture an image
             IconButton(
               icon: const Icon(Icons.camera_alt),
@@ -273,6 +274,38 @@ class _EditJournalPageState extends State<EditJournalPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Mood Picker Dialog
+class MoodPickerDialog extends StatelessWidget {
+  final String? currentMood;
+
+  const MoodPickerDialog({Key? key, this.currentMood}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Select Mood'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: ['Happy', 'Motivated', 'Sad', 'Excited'].map((mood) {
+          return RadioListTile<String>(
+            title: Text(
+              mood,
+              style: TextStyle(
+                color: Color(0xFFbe3b88),
+              ),
+            ),
+            value: mood,
+            groupValue: currentMood,
+            onChanged: (String? value) {
+              Navigator.pop(context, value); // Return the selected mood
+            },
+          );
+        }).toList(),
       ),
     );
   }
