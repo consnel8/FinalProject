@@ -57,7 +57,7 @@ class _AboutPageState extends State<about_page> {
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(38, 0, 10, 10),
-                    child: Text("GitHub: illxso",
+                    child: Text("GitHub: mbrandreth",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
