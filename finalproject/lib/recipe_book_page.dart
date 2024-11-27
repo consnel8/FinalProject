@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'add_recipe_page.dart';
 import 'recipe_description_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'notifications_page.dart';
 
 class RecipeBookPage extends StatefulWidget {
   const RecipeBookPage({super.key});
