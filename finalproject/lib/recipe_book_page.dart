@@ -140,6 +140,69 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
     );
   }
 
+    void scheduleAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+          AlertDialog(
+            title: const Text(
+              "Schedule Weekly Notifications",
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+              ),
+            ),
+            content: const Text(
+                "Would you like to schedule weekly notifications to try a new recipe?"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  PermissionHandler.enableWeekly();
+                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
+                          content: Text("Weekly Notifications Scheduled."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        ),
+                  );
+                },
+                child: Text(
+                  "Proceed",
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  int scheduleNum2 = 0;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,6 +216,31 @@ class _RecipeBookPageState extends State<RecipeBookPage> {
             ),
             onPressed: _toggleFavoriteFilter,
           ),
+          IconButton(
+              onPressed: () {
+                if (scheduleNum2 == 0) {
+                  scheduleAlert();
+                  scheduleNum2++;
+                } else if (scheduleNum2 == 1) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
+                          content: Text(
+                              "Your weekly notification is already scheduled."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.alarm_add)),
         ],
       ),
       body: Column(
