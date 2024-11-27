@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class account_page extends StatefulWidget {
   const account_page({super.key});
@@ -8,77 +10,53 @@ class account_page extends StatefulWidget {
 }
 
 class _AccountPageState extends State<account_page> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Account",
-              style: TextStyle(
-                fontFamily: 'Teko',
-                fontSize: 50,
-              ))),
+        title: Text(
+          "Account",
+          style: TextStyle(
+            fontFamily: 'Teko',
+            fontSize: 50,
+          ),
+        ),
+      ),
       body: Center(
         child: Container(
           padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                    child: Text(
-                      "Delete Data?",
-                      style: TextStyle(
-                        fontFamily: 'Lora',
-                        fontSize: 18,
-                      ),
-                    ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                child: Text(
+                  "Delete Data?",
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontSize: 18,
                   ),
-                ], // end children
+                ),
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: deletionAlert,
-                    child: const Text(
-                      "Begin Data Deletion",
-                      style: TextStyle(
-                        fontFamily: 'Lora',
-                      ),
-                    ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: deletionAlert,
+                child: const Text(
+                  "Begin Data Deletion",
+                  style: TextStyle(
+                    fontFamily: 'Lora',
                   ),
-                ],
+                ),
               ),
-              Row(
-                children: [
-                  Text(" "),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "By clicking the above button, you agree to the complete deletion of\n"
-                    "your data off the Life Palette"
-                    "app. All recipes, wardrobe items, journal\n"
-                    "entries, or otherwise saved data will be completely wiped. This data\n"
-                    "will not be able to be recovered.\n",
-                    style: TextStyle(
-                      fontFamily: 'Lora',
-                      fontSize: 10,
-                    ),
-                  ),
-                ],
-              )
-            ], // end children
+            ],
           ),
         ),
       ),
     );
-  } // end build
+  }
 
   void deletionAlert() {
     showDialog(
@@ -92,7 +70,8 @@ class _AccountPageState extends State<account_page> {
           ),
         ),
         content: const Text(
-            "Are you sure you'd like to delete your data? This action cannot be undone."),
+          "Are you sure you'd like to delete your data? This action cannot be undone.",
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
@@ -107,14 +86,9 @@ class _AccountPageState extends State<account_page> {
             ),
           ),
           TextButton(
-            onPressed: () {
-              /*
-                     TODO:
-                      Implement cloud deletion, either occurring here
-                      or redirecting to process elsewhere before returning,
-                      closing this pop up in the process and potentially giving the user a pop up
-                      or notification to explain it is finished.
-                     */
+            onPressed: () async {
+              Navigator.pop(context);
+              await _deleteUserData();
             },
             child: Text(
               "Proceed",
@@ -128,4 +102,53 @@ class _AccountPageState extends State<account_page> {
       ),
     );
   }
-} // end account_page
+
+  Future<void> _deleteUserData() async {
+    final user = _auth.currentUser;
+
+    if (user == null) {
+      _showMessage("No user is logged in.");
+      return;
+    }
+
+    try {
+      final userDocRef = _firestore.collection('users').doc(user.uid);
+
+      // Delete subcollections and documents
+      final subcollections = ['recipes', 'journal', 'wardrobe'];
+      for (String subcollection in subcollections) {
+        final querySnapshot = await userDocRef.collection(subcollection).get();
+        for (var doc in querySnapshot.docs) {
+          await doc.reference.delete();
+        }
+      }
+
+      // Delete the main document
+      await userDocRef.delete();
+
+      // Optionally, delete the user's authentication record
+      await user.delete();
+
+      _showMessage("Your data has been successfully deleted.");
+    } catch (e) {
+      _showMessage("An error occurred while deleting data: $e");
+    }
+  }
+
+  void _showMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
