@@ -8,10 +8,10 @@ class RecipeBookPage extends StatefulWidget {
   const RecipeBookPage({super.key});
 
   @override
-  _RecipeBookPageState createState() => _RecipeBookPageState();
+  RecipeBookPageState createState() => RecipeBookPageState();
 }
 
-class _RecipeBookPageState extends State<RecipeBookPage> {
+class RecipeBookPageState extends State<RecipeBookPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> recipes = [];
   List<Map<String, dynamic>> filteredRecipes = [];

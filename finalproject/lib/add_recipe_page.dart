@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AddRecipePage extends StatefulWidget {
@@ -16,19 +17,48 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
   final List<String> mealTypes = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Dessert'];
   List<String> selectedMealTypes = [];
+  bool isLoading = false;
 
-  void saveRecipe() {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> saveRecipe() async {
+    if (nameController.text.isEmpty || ingredientsController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all required fields.')),
+      );
+      return;
+    }
+
     final newRecipe = {
-      'name': nameController.text.isNotEmpty ? nameController.text : 'Untitled Recipe',
-      'description': descriptionController.text,
+      'name': nameController.text.trim(),
+      'description': descriptionController.text.trim(),
       'ingredients': ingredientsController.text.split(',').map((e) => e.trim()).toList(),
-      'instructions': instructionsController.text,
-      'image': imageUrlController.text.isNotEmpty ? imageUrlController.text : null,
+      'instructions': instructionsController.text.trim(),
+      'image': imageUrlController.text.isNotEmpty ? imageUrlController.text.trim() : null,
       'mealTypes': selectedMealTypes,
       'favorite': false, // Default favorite status
+      'createdAt': FieldValue.serverTimestamp(), // Timestamp for creation
     };
 
-    Navigator.pop(context, newRecipe); // Return the new recipe to the parent
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _firestore.collection('recipes').add(newRecipe);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Recipe saved successfully!')),
+      );
+      Navigator.pop(context); // Return to the previous screen
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving recipe: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -37,61 +67,63 @@ class _AddRecipePageState extends State<AddRecipePage> {
       appBar: AppBar(
         title: const Text('Add Recipe'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Recipe Name'),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Recipe Name'),
+                  ),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                  ),
+                  TextField(
+                    controller: ingredientsController,
+                    decoration: const InputDecoration(labelText: 'Ingredients (comma separated)'),
+                  ),
+                  TextField(
+                    controller: instructionsController,
+                    decoration: const InputDecoration(labelText: 'Instructions'),
+                    maxLines: 4,
+                  ),
+                  TextField(
+                    controller: imageUrlController,
+                    decoration: const InputDecoration(labelText: 'Image URL'),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Select Meal Types:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Column(
+                    children: mealTypes.map((type) {
+                      return CheckboxListTile(
+                        title: Text(type),
+                        value: selectedMealTypes.contains(type),
+                        onChanged: (bool? selected) {
+                          setState(() {
+                            if (selected == true) {
+                              selectedMealTypes.add(type);
+                            } else {
+                              selectedMealTypes.remove(type);
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: saveRecipe,
+                    child: const Text('Save Recipe'),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-            ),
-            TextField(
-              controller: ingredientsController,
-              decoration: const InputDecoration(labelText: 'Ingredients (comma separated)'),
-            ),
-            TextField(
-              controller: instructionsController,
-              decoration: const InputDecoration(labelText: 'Instructions'),
-              maxLines: 4,
-            ),
-            TextField(
-              controller: imageUrlController,
-              decoration: const InputDecoration(labelText: 'Image URL'),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Select Meal Types:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            Column(
-              children: mealTypes.map((type) {
-                return CheckboxListTile(
-                  title: Text(type),
-                  value: selectedMealTypes.contains(type),
-                  onChanged: (bool? selected) {
-                    setState(() {
-                      if (selected == true) {
-                        selectedMealTypes.add(type);
-                      } else {
-                        selectedMealTypes.remove(type);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: saveRecipe,
-              child: const Text('Save Recipe'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
