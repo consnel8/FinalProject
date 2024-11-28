@@ -48,7 +48,7 @@ class _JournalPageState extends State<JournalPage> {
     _entries.addAll([
       JournalEntry(
         title: 'Welcome!',
-        content: 'This is a sample entry to help you get started.',
+        content: 'This is a sample entry to help you get started. Select your mood, capture a picture, begin journaling!',
         date: DateTime.now(),
         imageUrl: 'assets/journal_icon.png', // First pre-written entry
       ),
@@ -295,7 +295,7 @@ class _JournalPageState extends State<JournalPage> {
                 alignment: Alignment.center,
                 child: Text(
                   'PERSONAL JOURNAL',
-                  style: TextStyle(fontSize: 25, fontFamily: 'Teko'),
+                  style: TextStyle(fontSize: 28, fontFamily: 'Teko'),
                 ),
               ),
             ),
@@ -343,11 +343,15 @@ class _JournalPageState extends State<JournalPage> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Text(shortContent,
+                            Expanded(
+                              child: Text(
+                                shortContent,
                                 style: const TextStyle(
                                     color: Color(0xFF787878),
                                     fontSize: 16,
-                                    fontFamily: 'Lora')),
+                                    fontFamily: 'Lora'),
+                              ),
+                            ),
                             const SizedBox(width: 10),
                           ],
                         ),

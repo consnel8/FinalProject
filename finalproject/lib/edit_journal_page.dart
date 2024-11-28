@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Import the image picker package
+import 'package:image_picker/image_picker.dart';
 import 'journal_entry_model.dart';
 
 class EditJournalPage extends StatefulWidget {
@@ -86,7 +86,14 @@ class _EditJournalPageState extends State<EditJournalPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Theme(
+        data: Theme.of(context).copyWith(
+      textTheme: Theme.of(context).textTheme.apply(
+        bodyColor: Colors.black,
+        displayColor: Colors.black,
+      ),
+    ),
+    child: Scaffold(
       appBar: AppBar(
         elevation: 1, // Remove the shadow for the diary look
         leading: IconButton(
@@ -136,7 +143,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
             : null,
       ),
       body: Container(
-        /*
+
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/journal_diary_icon.jpg'), // Background image
@@ -144,9 +151,6 @@ class _EditJournalPageState extends State<EditJournalPage> {
           ),
         ),
 
-        Doesn't work with dark mode
-
-         */
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -158,12 +162,11 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   hintStyle: TextStyle(fontFamily: 'Lora'),
                   hintText: 'Title',
                   border: InputBorder.none,
-                  // No border for the diary look
                   filled: true,
-                  fillColor: Colors.transparent, // Transparent input box
+                  fillColor: Colors.transparent,
                 ),
                 style: TextStyle(
-                  fontSize: 30, // Make the font size large
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFbe3b88),
                   fontFamily: 'RobotoMono',
@@ -234,6 +237,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'IndieFlower',
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 16),
@@ -304,6 +308,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
           ],
         ),
       ),
+    )
     );
   }
 }
