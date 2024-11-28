@@ -17,5 +17,5 @@ Personal Journal: Users will be prompted to log their daily mood(s), activities,
 - Megan Brandreth, mbrandreth
 - Zara Farrukh, zarafarrukh
 - Connor Snelgrove, consnel8
-- Eisha Rizvi, eisharizvi, 100782325
-- Syeda Muqadas, Syeda-Muqadas, 100825225
+- Eisha Rizvi, eisharizvi
+- Syeda Muqadas, Syeda-Muqadas
