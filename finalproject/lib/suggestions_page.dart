@@ -104,16 +104,17 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   foregroundColor: isLightTheme ? Colors.black : Colors.white,
                   backgroundColor: isLightTheme ? Colors.white : Colors.black,
-                  side: BorderSide(color: isLightTheme ? Colors.black : Colors.white),
-                  textStyle: TextStyle(fontSize: 20), 
+                  side: BorderSide(
+                      color: isLightTheme ? Colors.black : Colors.white),
+                  textStyle: TextStyle(fontSize: 20),
                 ),
                 child: const Text('Nearby Places'),
               ),
             ),
-
             const SizedBox(height: 40),
             Center(
               child: ElevatedButton(
@@ -122,7 +123,8 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        backgroundColor: isLightTheme ? Colors.white : Color(0xFF8B7D5B),
+                        backgroundColor:
+                            isLightTheme ? Colors.white : Color(0xFF8B7D5B),
                         title: Text(
                           'Add a New Place',
                           style: TextStyle(
@@ -137,7 +139,9 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                               decoration: InputDecoration(
                                 hintText: 'Enter place name',
                                 hintStyle: TextStyle(
-                                  color: isLightTheme ? Colors.black54 : Colors.white54,
+                                  color: isLightTheme
+                                      ? Colors.black54
+                                      : Colors.white54,
                                 ),
                               ),
                             ),
@@ -147,7 +151,9 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                               decoration: InputDecoration(
                                 hintText: 'Enter place address',
                                 hintStyle: TextStyle(
-                                  color: isLightTheme ? Colors.black54 : Colors.white54,
+                                  color: isLightTheme
+                                      ? Colors.black54
+                                      : Colors.white54,
                                 ),
                               ),
                             ),
@@ -161,19 +167,22 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                             child: Text(
                               'Cancel',
                               style: TextStyle(
-                                color: isLightTheme ? Colors.black : Colors.white,
+                                color:
+                                    isLightTheme ? Colors.black : Colors.white,
                               ),
                             ),
                           ),
                           ElevatedButton(
                             onPressed: _addPlace,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isLightTheme ? Colors.blue : Colors.blueGrey,
+                              backgroundColor:
+                                  isLightTheme ? Colors.blue : Colors.blueGrey,
                             ),
                             child: Text(
                               'Add',
                               style: TextStyle(
-                                color: isLightTheme ? Colors.black : Colors.white,
+                                color:
+                                    isLightTheme ? Colors.black : Colors.white,
                               ),
                             ),
                           ),
@@ -183,10 +192,12 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   foregroundColor: isLightTheme ? Colors.black : Colors.white,
                   backgroundColor: isLightTheme ? Colors.white : Colors.black,
-                  side: BorderSide(color: isLightTheme ? Colors.black : Colors.white),
+                  side: BorderSide(
+                      color: isLightTheme ? Colors.black : Colors.white),
                   textStyle: TextStyle(fontSize: 20),
                 ),
                 child: const Text('Add New Place'),
@@ -198,7 +209,6 @@ class _SuggestionsPageState extends State<SuggestionsPage> {
     );
   }
 }
-
 
 class NearbyPlacesPage extends StatefulWidget {
   const NearbyPlacesPage({super.key});
@@ -212,7 +222,8 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
   bool isLoading = true;
   String errorMessage = '';
 
-  final String foursquareApiKey = "fsq3GOZ7uhN/MS2jobaLIO0xPFO8b5M7gVzLp3YK79MmSU0=";
+  final String foursquareApiKey =
+      "fsq3GOZ7uhN/MS2jobaLIO0xPFO8b5M7gVzLp3YK79MmSU0=";
 
   @override
   void initState() {
@@ -294,12 +305,16 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
           style: TextStyle(
             fontFamily: 'Teko',
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
           ),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         iconTheme: IconThemeData(
-          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
         ),
       ),
       body: isLoading
@@ -309,7 +324,9 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
                   child: Text(
                     errorMessage,
                     style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black54
+                          : Colors.white70,
                     ),
                   ),
                 )
@@ -318,7 +335,8 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
                   itemBuilder: (context, index) {
                     var place = nearbyPlaces[index];
                     String name = place['name'] ?? 'Unknown Name';
-                    String address = place['location']?['address'] ?? 'Unknown Address';
+                    String address =
+                        place['location']?['address'] ?? 'Unknown Address';
                     String category = place['categories'] != null
                         ? place['categories'][0]['name'] ?? 'Unknown Category'
                         : 'Unknown Category';
@@ -327,14 +345,20 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
                       title: Text(
                         name,
                         style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       subtitle: Text(
                         '$category\n$address',
                         style: TextStyle(
-                          color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black54
+                                  : Colors.white70,
                         ),
                       ),
                     );
@@ -343,4 +367,3 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
     );
   }
 }
-

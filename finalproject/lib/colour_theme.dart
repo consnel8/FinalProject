@@ -12,7 +12,8 @@ import 'package:flutter/material.dart';
 sealed class AppTheme {
   // The defined light theme.
   static ThemeData light = FlexThemeData.light(
-    colors: const FlexSchemeColor( // Custom
+    colors: const FlexSchemeColor(
+      // Custom
       primary: Color(0xFF3A3A3A),
       primaryContainer: Color(0xffdcedc8),
       primaryLightRef: Color(0xFF3A3A3A),
@@ -30,15 +31,9 @@ sealed class AppTheme {
     scaffoldBackground: Color(0xFFF4EDE6),
     // dialogBackground: Color(0xFF3A3A3A),
     textTheme: const TextTheme(
-      bodyMedium: TextStyle(
-        color: Color(0xFF000000)
-      ),
-      bodySmall: TextStyle(
-          color: Color(0xFF000000)
-      ),
-      bodyLarge: TextStyle(
-          color: Color(0xFF000000)
-      ),
+      bodyMedium: TextStyle(color: Color(0xFF000000)),
+      bodySmall: TextStyle(color: Color(0xFF000000)),
+      bodyLarge: TextStyle(color: Color(0xFF000000)),
       headlineMedium: TextStyle(
         color: Color(0xFFF4EDE6),
       ),
@@ -62,6 +57,7 @@ sealed class AppTheme {
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
   );
+
   // The defined dark theme.
   static ThemeData dark = FlexThemeData.dark(
     colors: const FlexSchemeColor(
@@ -82,12 +78,12 @@ sealed class AppTheme {
     scaffoldBackground: Color(0xFF3A3A3A),
     // dialogBackground: Color(0xFF3A3A3A),
     textTheme: const TextTheme(
-        bodyMedium: TextStyle(
-            color: Color(0xFFF4EDE6),
-        ),
+      bodyMedium: TextStyle(
+        color: Color(0xFFF4EDE6),
+      ),
       headlineMedium: TextStyle(
         color: Color(0xFFF4EDE6),
-        ),
+      ),
       headlineLarge: TextStyle(
         color: Color(0xFFF4EDE6),
       ),

@@ -24,7 +24,8 @@ class OutfitScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(outfit['title']),
+        title: Text(outfit['title'],
+            style: TextStyle(fontFamily: 'Teko', fontSize: 30)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -39,14 +40,18 @@ class OutfitScreen extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Edit Outfit'),
-                      content: const Text('Are you sure you want to edit this outfit?'),
+                      title: const Text('Edit Outfit',
+                          style: TextStyle(fontFamily: 'Lora')),
+                      content: const Text(
+                          'Are you sure you want to edit this outfit?',
+                          style: TextStyle(fontFamily: 'Lora')),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context); // Close the dialog
                           },
-                          child: const Text('No'),
+                          child: const Text('No',
+                              style: TextStyle(fontFamily: 'Lora')),
                         ),
                         TextButton(
                           onPressed: () {
@@ -63,7 +68,8 @@ class OutfitScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          child: const Text('Yes'),
+                          child: const Text('Yes',
+                              style: TextStyle(fontFamily: 'Lora')),
                         ),
                       ],
                     );
@@ -74,7 +80,8 @@ class OutfitScreen extends StatelessWidget {
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'Edit',
-                child: Text('Edit Outfit'),
+                child:
+                    Text('Edit Outfit', style: TextStyle(fontFamily: 'Lora')),
               ),
             ],
           ),
@@ -91,7 +98,8 @@ class OutfitScreen extends StatelessWidget {
                   builder: (context) => Scaffold(
                     appBar: AppBar(),
                     body: Center(
-                      child: Image.network(outfit['image'], fit: BoxFit.contain),
+                      child:
+                          Image.network(outfit['image'], fit: BoxFit.contain),
                     ),
                   ),
                 ),
@@ -114,9 +122,12 @@ class OutfitScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(outfit['title'], style: const TextStyle(fontSize: 24)),
+                Text(outfit['title'],
+                    style: const TextStyle(fontSize: 32, fontFamily: 'Teko')),
                 const SizedBox(height: 8),
-                Text(outfit['category'], style: const TextStyle(fontSize: 18, color: Colors.grey)),
+                Text(outfit['category'],
+                    style: const TextStyle(
+                        fontSize: 18, color: Colors.grey, fontFamily: 'Lora')),
                 const SizedBox(height: 16),
                 // Description section
                 Row(
@@ -124,7 +135,8 @@ class OutfitScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         outfit['description'] ?? 'No description available.',
-                        style: const TextStyle(fontSize: 16),
+                        style:
+                            const TextStyle(fontSize: 16, fontFamily: 'Lora'),
                       ),
                     ),
                     IconButton(
@@ -141,12 +153,16 @@ class OutfitScreen extends StatelessWidget {
                                 children: [
                                   const Text(
                                     'Edit Description',
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Lora'),
                                   ),
                                   TextField(
                                     controller: descriptionController,
                                     maxLines: 3,
                                     decoration: const InputDecoration(
+                                      hintStyle: TextStyle(fontFamily: 'Lora'),
                                       hintText: 'Enter description',
                                     ),
                                   ),
@@ -155,11 +171,13 @@ class OutfitScreen extends StatelessWidget {
                                     onPressed: () {
                                       onUpdateOutfit({
                                         ...outfit,
-                                        'description': descriptionController.text,
+                                        'description':
+                                            descriptionController.text,
                                       });
                                       Navigator.pop(context);
                                     },
-                                    child: const Text('Save'),
+                                    child: const Text('Save',
+                                        style: TextStyle(fontFamily: 'Lora')),
                                   ),
                                 ],
                               ),
@@ -184,7 +202,9 @@ class OutfitScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: Icon(
-                        outfit['isFavorite'] ? Icons.favorite : Icons.favorite_border,
+                        outfit['isFavorite']
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                         color: outfit['isFavorite'] ? Colors.red : Colors.grey,
                       ),
                       onPressed: () {
@@ -192,25 +212,31 @@ class OutfitScreen extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text(outfit['isFavorite']
-                                  ? 'Remove from Favorites'
-                                  : 'Add to Favorites'),
-                              content: Text(outfit['isFavorite']
-                                  ? 'Are you sure you want to remove this outfit from your favorites list?'
-                                  : 'Are you sure you want to add this outfit to your favorites list?'),
+                              title: Text(
+                                  outfit['isFavorite']
+                                      ? 'Remove from Favorites'
+                                      : 'Add to Favorites',
+                                  style: TextStyle(fontFamily: 'Lora')),
+                              content: Text(
+                                  outfit['isFavorite']
+                                      ? 'Are you sure you want to remove this outfit from your favorites list?'
+                                      : 'Are you sure you want to add this outfit to your favorites list?',
+                                  style: TextStyle(fontFamily: 'Lora')),
                               actions: [
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context); // Close the dialog
                                   },
-                                  child: const Text('No'),
+                                  child: const Text('No',
+                                      style: TextStyle(fontFamily: 'Lora')),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context); // Close the dialog
                                     onToggleFavorite(!outfit['isFavorite']);
                                   },
-                                  child: const Text('Yes'),
+                                  child: const Text('Yes',
+                                      style: TextStyle(fontFamily: 'Lora')),
                                 ),
                               ],
                             );
@@ -218,7 +244,8 @@ class OutfitScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const Text('Favorite'),
+                    const Text('Favorite',
+                        style: TextStyle(fontFamily: 'Lora')),
                   ],
                 ),
                 Column(
@@ -230,22 +257,28 @@ class OutfitScreen extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: const Text('Delete Outfit'),
-                              content: const Text('Are you sure you want to delete this outfit?'),
+                              title: const Text('Delete Outfit',
+                                  style: TextStyle(fontFamily: 'Lora')),
+                              content: const Text(
+                                  'Are you sure you want to delete this outfit?',
+                                  style: TextStyle(fontFamily: 'Lora')),
                               actions: [
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context); // Close the dialog
                                   },
-                                  child: const Text('Cancel'),
+                                  child: const Text('Cancel',
+                                      style: TextStyle(fontFamily: 'Lora')),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     onDeleteOutfit();
                                     Navigator.pop(context); // Close the dialog
-                                    Navigator.pop(context); // Go back to previous screen
+                                    Navigator.pop(
+                                        context); // Go back to previous screen
                                   },
-                                  child: const Text('Delete'),
+                                  child: const Text('Delete',
+                                      style: TextStyle(fontFamily: 'Lora')),
                                 ),
                               ],
                             );
@@ -253,7 +286,7 @@ class OutfitScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const Text('Delete'),
+                    const Text('Delete', style: TextStyle(fontFamily: 'Lora')),
                   ],
                 ),
               ],

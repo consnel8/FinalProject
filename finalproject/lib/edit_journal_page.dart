@@ -17,7 +17,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
   final _contentController = TextEditingController();
   File? _imageFile; // To hold the picked image file
   DateTime? _selectedDate; // To store the selected date
-  String? _selectedMood;  // Store the selected mood
+  String? _selectedMood; // Store the selected mood
 
   @override
   void initState() {
@@ -31,9 +31,10 @@ class _EditJournalPageState extends State<EditJournalPage> {
           ? File(widget.entry!.imageUrl!)
           : null; // Load existing image if present
       _selectedDate = widget.entry!.date; // Load existing date if present
-      _selectedMood = widget.entry!.mood;  // Prepopulate the mood if editing
+      _selectedMood = widget.entry!.mood; // Prepopulate the mood if editing
     } else {
-      _selectedDate = DateTime.now(); // Default to the current date if no entry is provided
+      _selectedDate =
+          DateTime.now(); // Default to the current date if no entry is provided
     }
   }
 
@@ -94,45 +95,58 @@ class _EditJournalPageState extends State<EditJournalPage> {
             Navigator.pop(context); // Handle back navigation
           },
         ),
-        title: const Text('Edit Entry'),
+        title: const Text('Edit Entry',
+            style: TextStyle(fontFamily: 'Teko', fontSize: 38)),
         actions: widget.entry != null
             ? [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              // Confirm before deleting
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Entry'),
-                  content: const Text('Are you sure you want to delete this entry?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(), // Cancel
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                        Navigator.pop(context, 'delete'); // Signal deletion to parent
-                      },
-                      child: const Text('Delete'),
-                    ),
-                  ],
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    // Confirm before deleting
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Delete Entry',
+                            style: TextStyle(fontFamily: 'Lora')),
+                        content: const Text(
+                            'Are you sure you want to delete this entry?',
+                            style: TextStyle(fontFamily: 'Lora')),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            // Cancel
+                            child: const Text('Cancel',
+                                style: TextStyle(fontFamily: 'Lora')),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                              Navigator.pop(context,
+                                  'delete'); // Signal deletion to parent
+                            },
+                            child: const Text('Delete',
+                                style: TextStyle(fontFamily: 'Lora')),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ]
+              ]
             : null,
       ),
       body: Container(
+        /*
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/journal_diary_icon.jpg'), // Background image
             fit: BoxFit.cover, // Ensure the image covers the screen
           ),
         ),
+
+        Doesn't work with dark mode
+
+         */
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -140,8 +154,11 @@ class _EditJournalPageState extends State<EditJournalPage> {
               TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
+                  labelStyle: TextStyle(fontFamily: 'Lora'),
+                  hintStyle: TextStyle(fontFamily: 'Lora'),
                   hintText: 'Title',
-                  border: InputBorder.none, // No border for the diary look
+                  border: InputBorder.none,
+                  // No border for the diary look
                   filled: true,
                   fillColor: Colors.transparent, // Transparent input box
                 ),
@@ -167,22 +184,27 @@ class _EditJournalPageState extends State<EditJournalPage> {
                                 : 'Select Date',
                           ),
                           decoration: InputDecoration(
+                            labelStyle: TextStyle(fontFamily: 'Lora'),
                             labelText: 'Select Date',
                             filled: true,
                             fillColor: Colors.transparent,
                             border: InputBorder.none,
                           ),
                           style: TextStyle(
-                            color: Color(0xFFbe3b88), // Style the text in the field
+                            color: Color(0xFFbe3b88),
+                            // Style the text in the field
+                            fontFamily: 'Lora',
                           ),
                         ),
                       ),
                       if (_selectedMood != null)
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 15.0),
+                          padding:
+                              const EdgeInsets.only(left: 8.0, bottom: 15.0),
                           child: Text(
                             'Mood: $_selectedMood',
                             style: TextStyle(
+                              fontFamily: 'Lora',
                               fontSize: 16,
                               color: Color(0xFFbe3b88),
                               fontWeight: FontWeight.bold,
@@ -199,7 +221,10 @@ class _EditJournalPageState extends State<EditJournalPage> {
                 maxLines: 10,
                 decoration: InputDecoration(
                   hintText: 'Your journal entry...',
-                  hintStyle: TextStyle(height: 3),
+                  hintStyle: TextStyle(
+                    height: 3,
+                    fontFamily: 'Lora',
+                  ),
                   border: InputBorder.none,
                   filled: true,
                   fillColor: Colors.transparent,
@@ -223,7 +248,8 @@ class _EditJournalPageState extends State<EditJournalPage> {
               if (widget.entry?.imageUrl != null && _imageFile == null)
                 widget.entry!.imageUrl!.startsWith('assets/')
                     ? Image.asset(widget.entry!.imageUrl!) // For asset images
-                    : Image.file(File(widget.entry!.imageUrl!)), // For file images
+                    : Image.file(File(widget.entry!.imageUrl!)),
+              // For file images
             ],
           ),
         ),
@@ -264,12 +290,15 @@ class _EditJournalPageState extends State<EditJournalPage> {
                 final updatedEntry = JournalEntry(
                   title: _titleController.text,
                   content: _contentController.text,
-                  imageUrl: _imageFile?.path, // Save the file path as the image URL
-                  date: _selectedDate ?? DateTime.now(), // Use selected date or default to now
+                  imageUrl: _imageFile?.path,
+                  // Save the file path as the image URL
+                  date: _selectedDate ?? DateTime.now(),
+                  // Use selected date or default to now
                   mood: _selectedMood,
                 );
 
-                Navigator.pop(context, updatedEntry); // Return the updated entry
+                Navigator.pop(
+                    context, updatedEntry); // Return the updated entry
               },
             ),
           ],
@@ -288,16 +317,14 @@ class MoodPickerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select Mood'),
+      title: const Text('Select Mood', style: TextStyle(fontFamily: 'Lora')),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: ['Happy', 'Motivated', 'Sad', 'Excited'].map((mood) {
           return RadioListTile<String>(
             title: Text(
               mood,
-              style: TextStyle(
-                color: Color(0xFFbe3b88),
-              ),
+              style: TextStyle(color: Color(0xFFbe3b88), fontFamily: 'Lora'),
             ),
             value: mood,
             groupValue: currentMood,

@@ -5,14 +5,14 @@ import 'dart:async';
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
 
-class notifications_page extends StatefulWidget {
-  const notifications_page({super.key});
+class NotificationsPage extends StatefulWidget {
+  const NotificationsPage({super.key});
 
   @override
-  State<notifications_page> createState() => _NotificationsPageState();
+  State<NotificationsPage> createState() => _NotificationsPageState();
 }
 
-class _NotificationsPageState extends State<notifications_page> {
+class _NotificationsPageState extends State<NotificationsPage> {
   bool enabledisable = true;
   bool dailyTrue = false;
   bool weeklyTrue = false;
@@ -22,14 +22,14 @@ class _NotificationsPageState extends State<notifications_page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Notifications",
+          title: const Text("Notifications",
               style: TextStyle(
                 fontFamily: 'Teko',
                 fontSize: 50,
               ))),
       body: Center(
         child: Container(
-          padding: const EdgeInsets.fromLTRB(30, 0, 30, 300),
+          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -38,11 +38,11 @@ class _NotificationsPageState extends State<notifications_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                    child: Text(
-                      "Check external Notification\nPermissions?\n",
+                    child: const Text(
+                      "Check external Notification Permissions?",
                       style: TextStyle(
                         fontFamily: 'Lora',
-                        fontSize: 18,
+                        fontSize: 17,
                       ),
                     ),
                   ),
@@ -51,31 +51,25 @@ class _NotificationsPageState extends State<notifications_page> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                    child: ElevatedButton(
-                      onPressed: checkPerms,
-                      child: Text(
-                        "Check Permissions",
-                        style: TextStyle(
-                          fontFamily: 'Lora',
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 30, 0),
-                    child: Text(
-                      "$enableSTR In-App Notifications?\n",
+                  ElevatedButton(
+                    onPressed: checkPerms,
+                    child: const Text(
+                      "Check Permissions",
                       style: TextStyle(
                         fontFamily: 'Lora',
-                        fontSize: 18,
                       ),
+                    ),
+                  ),
+                ],
+              ),
+              const Row(
+                children: [
+                  Text(
+                    "\nBy clicking the following buttons, you will be redirected to your"
+                    " device\nsettings page. System notifications for this app can be deleted here.",
+                    style: TextStyle(
+                      fontFamily: 'Lora',
+                      fontSize: 10,
                     ),
                   ),
                 ],
@@ -84,65 +78,113 @@ class _NotificationsPageState extends State<notifications_page> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(50, 0, 30, 0),
-                    child: Switch(
-                      value: enabledisable,
-                      onChanged: (bool value) {
-                        if (enabledisable == true) {
-                          setState(() {
-                            enabledisable = false;
-                            enableSTR = "Enable";
-                            PermissionHandler.disableNotif();
-                          });
-                        } else if (enabledisable == false) {
-                          setState(() {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                content: Text(
-                                    "Choose which notifications to enable."),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      PermissionHandler.enableDaily();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Only Daily Notifications"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      PermissionHandler.enableWeekly();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Only Weekly Notifications"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      PermissionHandler.enableDaily();
-                                      PermissionHandler.enableWeekly();
-                                      Navigator.pop(context);
-                                    },
-                                    child:
-                                        Text("Daily and Weekly Notifications"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Nevermind"),
-                                  ),
-                                ],
+                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                    child: Text(
+                      "$enableSTR In-App Notifications?",
+                      style: const TextStyle(
+                        fontFamily: 'Lora',
+                        fontSize: 17,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Switch(
+                    value: enabledisable,
+                    onChanged: (bool value) {
+                      if (enabledisable == true) {
+                        setState(() {
+                          enabledisable = false;
+                          enableSTR = "Enable";
+                          PermissionHandler.disableNotif();
+                        });
+                      } else if (enabledisable == false) {
+                        setState(() {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              content: const Text(
+                                "Choose which notifications to enable.",
+                                style: TextStyle(
+                                  fontFamily: 'Lora',
+                                ),
                               ),
-                            );
-                            enabledisable = true;
-                            enableSTR = "Disable";
-                          });
-                        }
-                      },
-                    ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    PermissionHandler.enableDaily();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "Only Daily Notifications",
+                                    style: TextStyle(
+                                      fontFamily: 'Lora',
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    PermissionHandler.enableWeekly();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "Only Weekly Notifications",
+                                    style: TextStyle(
+                                      fontFamily: 'Lora',
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    PermissionHandler.enableDaily();
+                                    PermissionHandler.enableWeekly();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "Daily and Weekly Notifications",
+                                    style: TextStyle(
+                                      fontFamily: 'Lora',
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      fontFamily: 'Lora',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          enabledisable = true;
+                          enableSTR = "Disable";
+                        });
+                      }
+                    },
                   ),
                 ],
               ),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "\nChoose to enable and disable in-app notifications. When enabling,\nchoose which "
+                    "notifications to enable, if any.",
+                    style: TextStyle(
+                      fontFamily: 'Lora',
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -193,7 +235,7 @@ class PermissionHandler {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       1,
       "Journaling Time!",
-      "Let\'s pen in a new journal entry for today!",
+      "Let's pen in a new journal entry for today!",
       _nextInstanceOfTime(21, 30),
       platformChannelSpecifics,
       matchDateTimeComponents: DateTimeComponents.time,

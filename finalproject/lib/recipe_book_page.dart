@@ -44,7 +44,8 @@ class RecipeBookPageState extends State<RecipeBookPage> {
   Future<void> _fetchRecipes() async {
     try {
       final snapshot = await _firestore.collection('recipes').get();
-      final List<Map<String, dynamic>> fetchedRecipes = snapshot.docs.map((doc) {
+      final List<Map<String, dynamic>> fetchedRecipes =
+          snapshot.docs.map((doc) {
         final data = doc.data();
         data['id'] = doc.id; // Store document ID for future updates/deletes
         return data;
@@ -141,74 +142,89 @@ class RecipeBookPageState extends State<RecipeBookPage> {
     );
   }
 
-    void scheduleAlert() {
+  int checkcount = 0;
+
+  void scheduleAlert() {
     showDialog(
       context: context,
-      builder: (BuildContext context) =>
-          AlertDialog(
-            title: const Text(
-              "Schedule Weekly Notifications",
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(
+          "Schedule Weekly Notifications",
+          style: TextStyle(
+            fontFamily: 'Lora',
+            fontSize: 18,
+          ),
+        ),
+        content: const Text(
+          "Would you like to schedule weekly notifications to try a new recipe?",
+          style: TextStyle(fontFamily: 'Lora'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              // notif not set
+              checkcount = 2;
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Cancel",
               style: TextStyle(
                 fontFamily: 'Lora',
                 fontSize: 18,
               ),
             ),
-            content: const Text(
-                "Would you like to schedule weekly notifications to try a new recipe?"),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(
-                    fontFamily: 'Lora',
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  PermissionHandler.enableWeekly();
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        AlertDialog(
-                          content: Text("Weekly Notifications Scheduled."),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("OK"),
-                            ),
-                          ],
-                        ),
-                  );
-                },
-                child: Text(
-                  "Proceed",
-                  style: TextStyle(
-                    fontFamily: 'Lora',
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            ],
           ),
+          TextButton(
+            onPressed: () {
+              PermissionHandler.enableWeekly();
+              Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  content: const Text(
+                    "Weekly Notifications Scheduled.",
+                    style: TextStyle(fontFamily: 'Lora'),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // weekly set
+                        checkcount = 1;
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "OK",
+                        style: TextStyle(fontFamily: 'Lora'),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: const Text(
+              "Proceed",
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
-
-  int scheduleNum2 = 0;
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recipe Book'),
+        title: const Text(
+          'Recipe Book',
+          style: TextStyle(
+            fontFamily: 'Teko',
+            fontSize: 38,
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -219,25 +235,33 @@ class RecipeBookPageState extends State<RecipeBookPage> {
           ),
           IconButton(
               onPressed: () {
-                if (scheduleNum2 == 0) {
+                if ((checkcount == 0 || checkcount == 2)) {
                   scheduleAlert();
-                  scheduleNum2++;
-                } else if (scheduleNum2 == 1) {
+                  checkcount = 1;
+                } else if ((checkcount == 1)) {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) =>
-                        AlertDialog(
-                          content: Text(
-                              "Your weekly notification is already scheduled."),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("OK"),
-                            ),
-                          ],
+                    builder: (BuildContext context) => AlertDialog(
+                      content: const Text(
+                        "Your weekly notification is already scheduled.",
+                        style: TextStyle(
+                          fontFamily: 'Lora',
                         ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "OK",
+                            style: TextStyle(
+                              fontFamily: 'Lora',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
               },
@@ -247,13 +271,16 @@ class RecipeBookPageState extends State<RecipeBookPage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: searchController,
                     decoration: InputDecoration(
+                      labelStyle: const TextStyle(fontFamily: 'Lora'),
+                      hintStyle: const TextStyle(fontFamily: 'Lora'),
                       hintText: 'Search recipes...',
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
@@ -305,6 +332,7 @@ class RecipeBookPageState extends State<RecipeBookPage> {
                             Text(
                               "Add Recipe",
                               style: TextStyle(
+                                fontFamily: 'Lora',
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -337,6 +365,7 @@ class RecipeBookPageState extends State<RecipeBookPage> {
                                       child: Text(
                                         'No Image',
                                         style: TextStyle(
+                                          fontFamily: 'Lora',
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -344,11 +373,13 @@ class RecipeBookPageState extends State<RecipeBookPage> {
                                     ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 recipe['name'],
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
+                                  fontFamily: 'Lora',
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),

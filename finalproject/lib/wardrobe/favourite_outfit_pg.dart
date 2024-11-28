@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class FavoriteOutfitsPage extends StatefulWidget {
   final List<Map<String, dynamic>> favoriteOutfits;
@@ -17,7 +18,8 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
   void sortFavorites() {
     setState(() {
       if (sortOption == 'Date Liked') {
-        widget.favoriteOutfits.sort((a, b) => b['dateLiked'].compareTo(a['dateLiked']));
+        widget.favoriteOutfits
+            .sort((a, b) => b['dateLiked'].compareTo(a['dateLiked']));
       } else if (sortOption == 'Ascending') {
         widget.favoriteOutfits.sort((a, b) => a['title'].compareTo(b['title']));
       } else if (sortOption == 'Descending') {
@@ -29,7 +31,8 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
   void filterFavorites() {
     setState(() {
       if (filterOption != 'All') {
-        widget.favoriteOutfits.retainWhere((outfit) => outfit['type'] == filterOption);
+        widget.favoriteOutfits
+            .retainWhere((outfit) => outfit['type'] == filterOption);
       }
     });
   }
@@ -38,12 +41,16 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Outfit'),
-        content: Text('Are you sure you want to delete this outfit?'),
+        title: Text(
+          'Delete Outfit',
+          style: TextStyle(fontFamily: 'Lora'),
+        ),
+        content: Text('Are you sure you want to delete this outfit?',
+            style: TextStyle(fontFamily: 'Lora')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('Cancel', style: TextStyle(fontFamily: 'Lora')),
           ),
           TextButton(
             onPressed: () {
@@ -52,7 +59,7 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
               });
               Navigator.pop(context);
             },
-            child: Text('Delete'),
+            child: Text('Delete', style: TextStyle(fontFamily: 'Lora')),
           ),
         ],
       ),
@@ -63,12 +70,14 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Remove from Favorites'),
-        content: Text('Are you sure you want to unlike this outfit?'),
+        title:
+            Text('Remove from Favorites', style: TextStyle(fontFamily: 'Lora')),
+        content: Text('Are you sure you want to unlike this outfit?',
+            style: TextStyle(fontFamily: 'Lora')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('Cancel', style: TextStyle(fontFamily: 'Lora')),
           ),
           TextButton(
             onPressed: () {
@@ -77,7 +86,7 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
               });
               Navigator.pop(context);
             },
-            child: Text('Unlike'),
+            child: Text('Unlike', style: TextStyle(fontFamily: 'Lora')),
           ),
         ],
       ),
@@ -88,7 +97,10 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorite Outfits'),
+        title: Text(
+          'Favorite Outfits',
+          style: TextStyle(fontFamily: 'Teko', fontSize: 30),
+        ),
         actions: [
           IconButton(
             icon: Icon(isGridView ? Icons.list : Icons.grid_view),
@@ -110,33 +122,52 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
               });
             },
             itemBuilder: (context) => [
-              PopupMenuItem(value: 'Sort', child: Text('Sort by Date Liked')),
-              PopupMenuItem(value: 'Ascending', child: Text('Sort Ascending')),
-              PopupMenuItem(value: 'Descending', child: Text('Sort Descending')),
+              PopupMenuItem(
+                  value: 'Sort',
+                  child: Text('Sort by Date Liked',
+                      style: TextStyle(fontFamily: 'Lora'))),
+              PopupMenuItem(
+                  value: 'Ascending',
+                  child: Text('Sort Ascending',
+                      style: TextStyle(fontFamily: 'Lora'))),
+              PopupMenuItem(
+                  value: 'Descending',
+                  child: Text('Sort Descending',
+                      style: TextStyle(fontFamily: 'Lora'))),
               PopupMenuDivider(),
-              PopupMenuItem(value: 'All', child: Text('Filter: All')),
-              PopupMenuItem(value: 'Clothing', child: Text('Filter: Clothing')),
-              PopupMenuItem(value: 'Accessories', child: Text('Filter: Accessories')),
+              PopupMenuItem(
+                  value: 'All',
+                  child: Text('Filter: All',
+                      style: TextStyle(fontFamily: 'Lora'))),
+              PopupMenuItem(
+                  value: 'Clothing',
+                  child: Text('Filter: Clothing',
+                      style: TextStyle(fontFamily: 'Lora'))),
+              PopupMenuItem(
+                  value: 'Accessories',
+                  child: Text('Filter: Accessories',
+                      style: TextStyle(fontFamily: 'Lora'))),
             ],
           ),
         ],
       ),
       body: isGridView
           ? GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemCount: widget.favoriteOutfits.length,
-        itemBuilder: (context, index) {
-          final outfit = widget.favoriteOutfits[index];
-          return buildOutfitTile(outfit, index);
-        },
-      )
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              itemCount: widget.favoriteOutfits.length,
+              itemBuilder: (context, index) {
+                final outfit = widget.favoriteOutfits[index];
+                return buildOutfitTile(outfit, index);
+              },
+            )
           : ListView.builder(
-        itemCount: widget.favoriteOutfits.length,
-        itemBuilder: (context, index) {
-          final outfit = widget.favoriteOutfits[index];
-          return buildOutfitTile(outfit, index);
-        },
-      ),
+              itemCount: widget.favoriteOutfits.length,
+              itemBuilder: (context, index) {
+                final outfit = widget.favoriteOutfits[index];
+                return buildOutfitTile(outfit, index);
+              },
+            ),
     );
   }
 
@@ -168,17 +199,18 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
       child: Card(
         child: isGridView
             ? Column(
-          children: [
-            Image.network(outfit['image'], height: 100, fit: BoxFit.cover),
-            Text(outfit['title']),
-          ],
-        )
+                children: [
+                  Image.network(outfit['image'],
+                      height: 100, fit: BoxFit.cover),
+                  Text(outfit['title']),
+                ],
+              )
             : Row(
-          children: [
-            Image.network(outfit['image'], width: 100, fit: BoxFit.cover),
-            Expanded(child: Text(outfit['title'])),
-          ],
-        ),
+                children: [
+                  Image.network(outfit['image'], width: 100, fit: BoxFit.cover),
+                  Expanded(child: Text(outfit['title'])),
+                ],
+              ),
       ),
     );
   }

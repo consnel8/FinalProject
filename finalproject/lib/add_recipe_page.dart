@@ -15,7 +15,13 @@ class _AddRecipePageState extends State<AddRecipePage> {
   final TextEditingController instructionsController = TextEditingController();
   final TextEditingController imageUrlController = TextEditingController();
 
-  final List<String> mealTypes = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Dessert'];
+  final List<String> mealTypes = [
+    'Breakfast',
+    'Brunch',
+    'Lunch',
+    'Dinner',
+    'Dessert'
+  ];
   List<String> selectedMealTypes = [];
   bool isLoading = false;
 
@@ -24,7 +30,11 @@ class _AddRecipePageState extends State<AddRecipePage> {
   Future<void> saveRecipe() async {
     if (nameController.text.isEmpty || ingredientsController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all required fields.')),
+        const SnackBar(
+            content: Text(
+          'Please fill out all required fields.',
+          style: TextStyle(fontFamily: 'Lora'),
+        )),
       );
       return;
     }
@@ -32,9 +42,12 @@ class _AddRecipePageState extends State<AddRecipePage> {
     final newRecipe = {
       'name': nameController.text.trim(),
       'description': descriptionController.text.trim(),
-      'ingredients': ingredientsController.text.split(',').map((e) => e.trim()).toList(),
+      'ingredients':
+          ingredientsController.text.split(',').map((e) => e.trim()).toList(),
       'instructions': instructionsController.text.trim(),
-      'image': imageUrlController.text.isNotEmpty ? imageUrlController.text.trim() : null,
+      'image': imageUrlController.text.isNotEmpty
+          ? imageUrlController.text.trim()
+          : null,
       'mealTypes': selectedMealTypes,
       'favorite': false, // Default favorite status
       'createdAt': FieldValue.serverTimestamp(), // Timestamp for creation
@@ -47,12 +60,20 @@ class _AddRecipePageState extends State<AddRecipePage> {
     try {
       await _firestore.collection('recipes').add(newRecipe);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Recipe saved successfully!')),
+        const SnackBar(
+            content: Text(
+          'Recipe saved successfully!',
+          style: TextStyle(fontFamily: 'Lora'),
+        )),
       );
       Navigator.pop(context); // Return to the previous screen
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving recipe: $e')),
+        SnackBar(
+            content: Text(
+          'Error saving recipe: $e',
+          style: TextStyle(fontFamily: 'Lora'),
+        )),
       );
     } finally {
       setState(() {
@@ -65,7 +86,13 @@ class _AddRecipePageState extends State<AddRecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Recipe'),
+        title: const Text(
+          'Add Recipe',
+          style: TextStyle(
+            fontFamily: 'Teko',
+            fontSize: 38,
+          ),
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -75,34 +102,59 @@ class _AddRecipePageState extends State<AddRecipePage> {
                 children: [
                   TextField(
                     controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Recipe Name'),
+                    decoration: const InputDecoration(
+                        labelText: 'Recipe Name',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Lora',
+                        )),
                   ),
                   TextField(
                     controller: descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description'),
+                    decoration: const InputDecoration(
+                        labelText: 'Description',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Lora',
+                        )),
                   ),
                   TextField(
                     controller: ingredientsController,
-                    decoration: const InputDecoration(labelText: 'Ingredients (comma separated)'),
+                    decoration: const InputDecoration(
+                        labelText: 'Ingredients (comma separated)',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Lora',
+                        )),
                   ),
                   TextField(
                     controller: instructionsController,
-                    decoration: const InputDecoration(labelText: 'Instructions'),
+                    decoration: const InputDecoration(
+                        labelText: 'Instructions',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Lora',
+                        )),
                     maxLines: 4,
                   ),
                   TextField(
                     controller: imageUrlController,
-                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    decoration: const InputDecoration(
+                        labelText: 'Image URL',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Lora',
+                        )),
                   ),
                   const SizedBox(height: 20),
                   const Text(
                     'Select Meal Types:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Teko'),
                   ),
                   Column(
                     children: mealTypes.map((type) {
                       return CheckboxListTile(
-                        title: Text(type),
+                        title: Text(type,
+                            style: TextStyle(
+                                color: Color(0xff757575), fontFamily: 'Lora')),
                         value: selectedMealTypes.contains(type),
                         onChanged: (bool? selected) {
                           setState(() {
@@ -119,7 +171,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: saveRecipe,
-                    child: const Text('Save Recipe'),
+                    child: const Text('Save Recipe',
+                        style: TextStyle(fontFamily: 'Lora')),
                   ),
                 ],
               ),

@@ -18,7 +18,7 @@ class MainSettings extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings",
+        title: const Text("Settings",
             style: TextStyle(
               fontFamily: 'Teko',
               fontSize: 50,
@@ -33,18 +33,18 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Account",
+                  const Text("Account",
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Lora',
                       )),
                   IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
+                    icon: const Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => account.account_page()));
+                              builder: (context) => account.AccountPage()));
                     }, // end onPressed
                   ),
                 ], // end children
@@ -52,19 +52,19 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Notifications",
+                  const Text("Notifications",
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Lora',
                       )),
                   IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
+                    icon: const Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  notifications.notifications_page()));
+                                  notifications.NotificationsPage()));
                     }, // end press
                   ),
                 ], // end children
@@ -72,19 +72,19 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Appearance",
+                  const Text("Appearance",
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Lora',
                       )),
                   IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
+                    icon: const Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  appearance.appearance_page()));
+                                  appearance.AppearancePage()));
                     }, // end press
                   ),
                 ], // end children
@@ -92,19 +92,19 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Privacy and Safety",
+                  const Text("Privacy and Safety",
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Lora',
                       )),
                   IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
+                    icon: const Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  privsafety.privsafety_page()));
+                                  privsafety.PrivSafetyPage()));
                     }, // end press
                   ),
                 ], // end children
@@ -112,18 +112,18 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("About",
+                  const Text("About",
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Lora',
                       )),
                   IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
+                    icon: const Icon(Icons.arrow_forward_ios),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => aboutp.about_page()));
+                              builder: (context) => aboutp.AboutPage()));
                     }, // end press
                   ),
                 ], // end children

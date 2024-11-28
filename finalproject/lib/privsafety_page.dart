@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class privsafety_page extends StatefulWidget {
-  const privsafety_page({super.key});
+class PrivSafetyPage extends StatefulWidget {
+  const PrivSafetyPage({super.key});
 
   @override
-  State<privsafety_page> createState() => _PSPageState();
+  State<PrivSafetyPage> createState() => _PSPageState();
 }
 
-class _PSPageState extends State<privsafety_page> {
+class _PSPageState extends State<PrivSafetyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Privacy & Safety",
+          title: const Text("Privacy & Safety",
               style: TextStyle(
                 fontFamily: 'Teko',
                 fontSize: 50,
               ))),
       body: Center(
         child: Container(
-          padding: const EdgeInsets.fromLTRB(30, 0, 30, 300),
+          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -35,8 +35,8 @@ class _PSPageState extends State<privsafety_page> {
 
                   Container(
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                    child: Text(
-                      "Check Geolocation Permissions?\n",
+                    child: const Text(
+                      "Check Geolocation Permissions?",
                       style: TextStyle(
                         fontFamily: 'Lora',
                         fontSize: 18,
@@ -46,21 +46,37 @@ class _PSPageState extends State<privsafety_page> {
                 ],
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(50, 0, 30, 300),
-                    child: ElevatedButton(
-                      onPressed: checkPerms,
-                      child: Text(
-                        "Check Permissions",
-                        style: TextStyle(
-                          fontFamily: 'Lora',
-                        ),
+                  ElevatedButton(
+                    onPressed: checkPerms,
+                    child: const Text(
+                      "Check Permissions",
+                      style: TextStyle(
+                        fontFamily: 'Lora',
                       ),
                     ),
                   ),
                 ],
-              )
+              ),
+              const Row(
+                children: [
+                  Text(" "),
+                ],
+              ),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "By clicking the following buttons, you will be redirected to your"
+                    " device\nsettings page. From here, you can enable or disable your location.",
+                    style: TextStyle(
+                      fontFamily: 'Lora',
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

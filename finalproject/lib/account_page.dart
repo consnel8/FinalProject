@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class account_page extends StatefulWidget {
-  const account_page({super.key});
+class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
 
   @override
-  State<account_page> createState() => _AccountPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<account_page> {
+class _AccountPageState extends State<AccountPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -31,26 +31,56 @@ class _AccountPageState extends State<account_page> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                child: const Text(
-                  "Delete Data?",
-                  style: TextStyle(
-                    fontFamily: 'Lora',
-                    fontSize: 18,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                    child: const Text(
+                      "Delete Data?",
+                      style: TextStyle(
+                        fontFamily: 'Lora',
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: deletionAlert,
-                child: const Text(
-                  "Begin Data Deletion",
-                  style: TextStyle(
-                    fontFamily: 'Lora',
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: deletionAlert,
+                    child: const Text(
+                      "Begin Data Deletion",
+                      style: TextStyle(
+                        fontFamily: 'Lora',
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
+              const Row(
+                children: [
+                  Text(" "),
+                ],
+              ),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "By clicking the above button, you agree to the complete deletion of\n"
+                    "your data off the Life Palette"
+                    " app. All saved cloud data will be\ncompletely wiped. This data "
+                    "will not be able to be recovered.\n",
+                    style: TextStyle(
+                      fontFamily: 'Lora',
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -71,6 +101,9 @@ class _AccountPageState extends State<account_page> {
         ),
         content: const Text(
           "Are you sure you'd like to delete your data? This action cannot be undone.",
+          style: TextStyle(
+            fontFamily: 'Lora',
+          ),
         ),
         actions: <Widget>[
           TextButton(
@@ -124,14 +157,27 @@ class _AccountPageState extends State<account_page> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Login Required"),
+          title: const Text(
+            "Login Required",
+            style: TextStyle(
+              fontFamily: 'Lora',
+            ),
+          ),
           content: const Text(
             "You need to be logged in to delete your data. Please log in and try again.",
+            style: TextStyle(
+              fontFamily: 'Lora',
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("OK"),
+              child: const Text(
+                "OK",
+                style: TextStyle(
+                  fontFamily: 'Lora',
+                ),
+              ),
             ),
           ],
         );
@@ -176,7 +222,12 @@ class _AccountPageState extends State<account_page> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("OK"),
+              child: const Text(
+                "OK",
+                style: TextStyle(
+                  fontFamily: 'Lora',
+                ),
+              ),
             ),
           ],
         );

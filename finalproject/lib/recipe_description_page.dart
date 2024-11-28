@@ -36,11 +36,22 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Recipe'),
-          content: const Text('Are you sure you want to delete this recipe?'),
+          title: const Text(
+            'Delete Recipe',
+            style: TextStyle(
+              fontFamily: 'Lora',
+            ),
+          ),
+          content: const Text(
+            'Are you sure you want to delete this recipe?',
+            style: TextStyle(fontFamily: 'Lora'),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(fontFamily: 'Lora'),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -48,7 +59,7 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
             TextButton(
               child: const Text(
                 'Delete',
-                style: TextStyle(color: Color(0xFFB8170B)),
+                style: TextStyle(color: Color(0xFFB8170B), fontFamily: 'Lora'),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -64,9 +75,11 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
 
   void _toggleFavoriteRecipe() {
     setState(() {
-      widget.recipe['favorite'] = !(widget.recipe['favorite'] ?? false); // Toggle favorite status
+      widget.recipe['favorite'] =
+          !(widget.recipe['favorite'] ?? false); // Toggle favorite status
     });
-    widget.onUpdateRecipe(widget.recipe); // Update the favorite status in Firestore
+    widget.onUpdateRecipe(
+        widget.recipe); // Update the favorite status in Firestore
   }
 
   @override
@@ -75,7 +88,10 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.recipe['name'] ?? 'Recipe'),
+        title: Text(
+          widget.recipe['name'] ?? 'Recipe',
+          style: const TextStyle(fontFamily: 'Teko', fontSize: 28),
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -125,6 +141,7 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
                     'No Image',
                     textAlign: TextAlign.center,
                     style: TextStyle(
+                      fontFamily: 'Lora',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -134,23 +151,45 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
             const SizedBox(height: 16),
             Text(
               widget.recipe['name'] ?? 'Recipe',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Lora'),
             ),
             const SizedBox(height: 8),
-            Text(widget.recipe['description'] ?? 'No description available.'),
+            Text(
+              widget.recipe['description'] ?? 'No description available.',
+              style: const TextStyle(fontFamily: 'Lora'),
+            ),
             const SizedBox(height: 16),
             const Text(
               'Ingredients:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Lora'),
             ),
             ...((widget.recipe['ingredients'] as List<dynamic>?)
-                    ?.map((ingredient) => Text('- $ingredient'))
+                    ?.map((ingredient) => Text(
+                          '- $ingredient',
+                          style: TextStyle(
+                            fontFamily: 'Lora',
+                          ),
+                        ))
                     .toList() ??
-                [const Text('No ingredients listed.')]),
+                [
+                  const Text(
+                    'No ingredients listed.',
+                    style: TextStyle(fontFamily: 'Lora'),
+                  )
+                ]),
             const SizedBox(height: 16),
             const Text(
               'Cooking Instructions:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Lora'),
             ),
             ..._buildCookingInstructions(widget.recipe['instructions']),
           ],
@@ -161,12 +200,18 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
 
   List<Widget> _buildCookingInstructions(String? instructions) {
     if (instructions == null || instructions.isEmpty) {
-      return [const Text('No instructions provided.')];
+      return [
+        const Text(
+          'No instructions provided.',
+          style: TextStyle(fontFamily: 'Lora'),
+        )
+      ];
     }
 
     final steps = instructions.split(','); // Split the string by commas
     return List<Widget>.generate(steps.length, (index) {
-      return Text('${index + 1}. ${steps[index].trim()}'); // Display as "1. Step", "2. Step", etc.
+      return Text(
+          '${index + 1}. ${steps[index].trim()}'); // Display as "1. Step", "2. Step", etc.
     });
   }
 }

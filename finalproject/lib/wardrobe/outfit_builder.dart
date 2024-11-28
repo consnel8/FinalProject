@@ -22,7 +22,8 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
     'Bottom': null,
     'Accessories': null,
   };
- // bool showOutfitOptions = false;
+
+  // bool showOutfitOptions = false;
   final ImagePicker _picker = ImagePicker();
 
   // Select image from gallery or camera
@@ -44,11 +45,11 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
       children: outfitParts.keys.map((part) {
         return outfitParts[part] != null
             ? Image.asset(
-          outfitParts[part]!,
-          height: 100,
-          width: 100,
-          fit: BoxFit.cover,
-        )
+                outfitParts[part]!,
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+              )
             : Icon(Icons.image, size: 50, color: Colors.grey);
       }).toList(),
     );
@@ -60,7 +61,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
         selectedItemType != null &&
         selectedCategory != null &&
         outfitParts.values.any((image) => image != null)) {
-      try{
+      try {
         final newOutfit = {
           'title': descriptionController.text,
           'category': selectedCategory,
@@ -72,31 +73,38 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
         await FirebaseFirestore.instance.collection('outfits').add(newOutfit);
         widget.onSave(newOutfit);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Outfit saved successfully!')),
+          SnackBar(
+              content: Text('Outfit saved successfully!',
+                  style: TextStyle(fontFamily: 'Lora'))),
         );
         Navigator.pop(context);
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving outfit: $error')),
+          SnackBar(
+              content: Text('Error saving outfit: $error',
+                  style: TextStyle(fontFamily: 'Lora'))),
         );
       }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please fill all fields and select images for at least one parts')),
-        );
-      }
-
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Please fill all fields and select images for at least one parts',
+                style: TextStyle(fontFamily: 'Lora'))),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Outfit Builder'),
+        title: Text('Outfit Builder',
+            style: TextStyle(fontFamily: 'Teko', fontSize: 30)),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
-           // onPressed: saveOutfit,
+            icon: const Icon(Icons.save),
+            // onPressed: saveOutfit,
             onPressed: () {
               // Call onSave when the user saves the outfit
               final outfit = Outfit(name: 'Winter Outfit', imageUrl: '...');
@@ -119,7 +127,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               ),
             Text(
               'Select Outfit Type',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontFamily: 'Teko'),
             ),
             SizedBox(height: 10),
             Row(
@@ -133,15 +141,18 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                         builder: (_) => Column(
                           children: [
                             ListTile(
-                              title: Text('Upload from Photo Gallery'),
+                              title: Text('Upload from Photo Gallery',
+                                  style: TextStyle(fontFamily: 'Lora')),
                               onTap: () => selectImage('Complete Outfit'),
                             ),
                             ListTile(
-                              title: Text('Capture Image'),
+                              title: Text('Capture Image',
+                                  style: TextStyle(fontFamily: 'Lora')),
                               onTap: () => selectImage('Complete Outfit'),
                             ),
                             ListTile(
-                              title: Text('Upload file'),
+                              title: Text('Upload file',
+                                  style: TextStyle(fontFamily: 'Lora')),
                               onTap: () => selectImage('Complete Outfit'),
                             )
                           ],
@@ -150,7 +161,8 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                     },
                     child: Card(
                       child: Container(
-                        width: double.infinity, // Make the card stretch within Expanded
+                        width: double.infinity,
+                        // Make the card stretch within Expanded
                         height: 150,
                         padding: EdgeInsets.all(16),
                         child: Column(
@@ -158,7 +170,8 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                           children: [
                             Icon(Icons.upload_file, size: 40),
                             SizedBox(height: 8),
-                            Text('Upload Complete Outfit'),
+                            Text('Upload Complete Outfit',
+                                style: TextStyle(fontFamily: 'Lora')),
                           ],
                         ),
                       ),
@@ -174,22 +187,28 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                     },
                     child: Card(
                       child: Container(
-                        width: double.infinity, // Make the card stretch within Expanded
+                        width: double.infinity,
+                        // Make the card stretch within Expanded
                         height: 150,
                         padding: EdgeInsets.all(16),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GlitteringIcon(
-                              icon: Icons.star,  // Use your desired icon here// Use your desired icon here
-                              size: 50,           // Main icon size
-                              cardHeight: 300,    // Pass the card height as a non-null value
-                              cardWidth: 300,    // Pass the card height as a non-null value
+                              icon: Icons.star,
+                              // Use your desired icon here// Use your desired icon here
+                              size: 50,
+                              // Main icon size
+                              cardHeight: 300,
+                              // Pass the card height as a non-null value
+                              cardWidth:
+                                  300, // Pass the card height as a non-null value
                             ),
-                           // Icon(Icons.star, size: 50, color: Colors.yellow,),
+                            // Icon(Icons.star, size: 50, color: Colors.yellow,),
 
                             SizedBox(height: 8),
-                            Text('Build an Outfit'),
+                            Text('Build an Outfit',
+                                style: TextStyle(fontFamily: 'Lora')),
                           ],
                         ),
                       ),
@@ -199,67 +218,68 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               ],
             ),
             SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  children: outfitParts.keys.map((part) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: GestureDetector(
-                        onTap: () => selectImage(part),
-                        child: Container(
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              outfitParts[part] != null
-                                  ? Image.asset(
-                                outfitParts[part]!,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              )
-                                  : Icon(Icons.image,
-                                  size: 100, color: Colors.grey),
-                              Positioned(
-                                bottom: 10,
-                                right: 10,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  child: IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed: () => selectImage(part),
-                                  ),
+            Expanded(
+              child: ListView(
+                children: outfitParts.keys.map((part) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: GestureDetector(
+                      onTap: () => selectImage(part),
+                      child: Container(
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            outfitParts[part] != null
+                                ? Image.asset(
+                                    outfitParts[part]!,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  )
+                                : Icon(Icons.image,
+                                    size: 100, color: Colors.grey),
+                            Positioned(
+                              bottom: 10,
+                              right: 10,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () => selectImage(part),
                                 ),
                               ),
-                              Positioned(
-                                top: 10,
-                                left: 10,
-                                child: Text(part,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              child: Text(part,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  );
+                }).toList(),
               ),
+            ),
             SizedBox(height: 20),
             // Description field
             Text(
               'Description',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontFamily: 'Teko'),
             ),
             TextField(
               controller: descriptionController,
               decoration: InputDecoration(
+                hintStyle: TextStyle(fontFamily: 'Lora'),
                 hintText: 'Name (Description)',
+                helperStyle: TextStyle(fontFamily: 'Lora'),
                 helperText: '180 characters max',
               ),
               maxLength: 180,
@@ -268,43 +288,55 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
             // Item type dropdown
             ListTile(
               leading: Icon(Icons.shopping_cart_outlined),
-              title: Text('Type of Item'),
-              subtitle: Text('Clothing, Shoe, Jewellery, etc.'),
+              title: Text('Type of Item',
+                  style: TextStyle(fontFamily: 'Teko', fontSize: 20)),
+              subtitle: Text('Clothing, Shoe, Jewellery, etc.',
+                  style: TextStyle(fontFamily: 'Lora')),
               trailing: DropdownButton<String>(
                 value: selectedItemType,
                 items: <String>['Clothing', 'Shoe', 'Jewellery', 'Dresses']
                     .map((String value) => DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                ))
+                          value: value,
+                          child:
+                              Text(value, style: TextStyle(fontFamily: 'Lora')),
+                        ))
                     .toList(),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedItemType = newValue;
                   });
                 },
-                hint: Text('Select'),
+                hint: Text('Select', style: TextStyle(fontFamily: 'Lora')),
               ),
             ),
             // Category dropdown
             ListTile(
               leading: Icon(Icons.star_border),
-              title: Text('Category'),
-              subtitle: Text('Winter, Casual, Formal, etc.'),
+              title: Text('Category',
+                  style: TextStyle(fontFamily: 'Teko', fontSize: 20)),
+              subtitle: Text('Winter, Casual, Formal, etc.',
+                  style: TextStyle(fontFamily: 'Lora')),
               trailing: DropdownButton<String>(
                 value: selectedCategory,
-                items: <String>['Winter/Fall','Summer/Spring' , 'Casual', 'Formal', 'Accessories']
+                items: <String>[
+                  'Winter/Fall',
+                  'Summer/Spring',
+                  'Casual',
+                  'Formal',
+                  'Accessories'
+                ]
                     .map((String value) => DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                ))
+                          value: value,
+                          child:
+                              Text(value, style: TextStyle(fontFamily: 'Lora')),
+                        ))
                     .toList(),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedCategory = newValue;
                   });
                 },
-                hint: Text('Select'),
+                hint: Text('Select', style: TextStyle(fontFamily: 'Lora')),
               ),
             ),
           ],
@@ -314,11 +346,12 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
   }
 
   void onSave(Outfit outfit) {
-  // Logic to save the outfit
-  print('Outfit saved: ${outfit.name}');
-  // To Add my  database or to add  update logic here
+    // Logic to save the outfit
+    print('Outfit saved: ${outfit.name}');
+    // To Add my  database or to add  update logic here
   }
 }
+
 class Outfit {
   final String name;
   final String imageUrl;

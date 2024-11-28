@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class about_page extends StatefulWidget {
-  const about_page({super.key});
+class AboutPage extends StatefulWidget {
+  const AboutPage({super.key});
 
   @override
-  State<about_page> createState() => _AboutPageState();
+  State<AboutPage> createState() => _AboutPageState();
 }
 
-class _AboutPageState extends State<about_page> {
+class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("About",
+          title: const Text("About",
               style: TextStyle(
                 fontFamily: 'Teko',
                 fontSize: 50,
@@ -28,7 +28,7 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
-                    child: Text(
+                    child: const Text(
                       "About The Team",
                       style: TextStyle(
                         fontSize: 20,
@@ -39,7 +39,7 @@ class _AboutPageState extends State<about_page> {
                   ),
                 ], // end children
               ),
-              Row(
+              const Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("\n"),
@@ -50,14 +50,14 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: Text("Megan Brandreth",
+                    child: const Text("Megan Brandreth",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(38, 0, 10, 10),
-                    child: Text("GitHub: mbrandreth",
+                    child: const Text("GitHub: mbrandreth",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
@@ -69,14 +69,14 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: Text("Eisha Rizvi",
+                    child: const Text("Eisha Rizvi",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(82, 0, 10, 10),
-                    child: Text("GitHub: eisharizvi",
+                    child: const Text("GitHub: eisharizvi",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
@@ -88,14 +88,14 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: Text("Syeda Muqadas",
+                    child: const Text("Syeda Muqadas",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(50, 0, 10, 10),
-                    child: Text("GitHub: Syeda-Muqadas",
+                    child: const Text("GitHub: Syeda-Muqadas",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
@@ -107,14 +107,14 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: Text("Connor Snelgrove",
+                    child: const Text("Connor Snelgrove",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(33, 0, 10, 10),
-                    child: Text("GitHub: consnel8",
+                    child: const Text("GitHub: consnel8",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
@@ -126,14 +126,14 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: Text("Zara Farrukh",
+                    child: const Text("Zara Farrukh",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(68, 0, 10, 10),
-                    child: Text("GitHub: zarafarrukh",
+                    child: const Text("GitHub: zarafarrukh",
                         style: TextStyle(
                           fontFamily: 'Lora',
                         )),
@@ -145,7 +145,8 @@ class _AboutPageState extends State<about_page> {
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: Text("\nThis project was created for Ontario Tech\n"
+                    child: const Text(
+                        "\nThis project was created for Ontario Tech\n"
                         "University's CSCI 4100 Mobile Development course\n"
                         "during the fall of 2024."),
                   ),

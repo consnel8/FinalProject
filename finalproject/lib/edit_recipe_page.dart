@@ -16,7 +16,13 @@ class _EditRecipePageState extends State<EditRecipePage> {
   late TextEditingController instructionsController;
   late TextEditingController imageUrlController;
 
-  final List<String> mealTypes = ['Breakfast', 'Brunch', 'Lunch', 'Dinner', 'Dessert'];
+  final List<String> mealTypes = [
+    'Breakfast',
+    'Brunch',
+    'Lunch',
+    'Dinner',
+    'Dessert'
+  ];
   late List<String> selectedMealTypes;
 
   @override
@@ -24,11 +30,13 @@ class _EditRecipePageState extends State<EditRecipePage> {
     super.initState();
     // Initialize controllers with existing recipe data
     nameController = TextEditingController(text: widget.recipe['name']);
-    descriptionController = TextEditingController(text: widget.recipe['description']);
+    descriptionController =
+        TextEditingController(text: widget.recipe['description']);
     ingredientsController = TextEditingController(
       text: (widget.recipe['ingredients'] as List<dynamic>? ?? []).join(', '),
     );
-    instructionsController = TextEditingController(text: widget.recipe['instructions']);
+    instructionsController =
+        TextEditingController(text: widget.recipe['instructions']);
     imageUrlController = TextEditingController(text: widget.recipe['image']);
 
     // Initialize selectedMealTypes
@@ -40,21 +48,26 @@ class _EditRecipePageState extends State<EditRecipePage> {
       'id': widget.recipe['id'], // Ensure Firestore document ID is preserved
       'name': nameController.text,
       'description': descriptionController.text,
-      'ingredients': ingredientsController.text.split(',').map((e) => e.trim()).toList(),
+      'ingredients':
+          ingredientsController.text.split(',').map((e) => e.trim()).toList(),
       'instructions': instructionsController.text,
       'image': imageUrlController.text,
       'mealTypes': selectedMealTypes,
       'favorite': widget.recipe['favorite'],
     };
 
-    Navigator.pop(context, editedRecipe); // Return the edited recipe to the parent
+    Navigator.pop(
+        context, editedRecipe); // Return the edited recipe to the parent
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Recipe'),
+        title: const Text(
+          'Edit Recipe',
+          style: TextStyle(fontFamily: 'Teko', fontSize: 38),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -62,34 +75,48 @@ class _EditRecipePageState extends State<EditRecipePage> {
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: 'Recipe Name'),
+              decoration: const InputDecoration(
+                  labelText: 'Recipe Name',
+                  labelStyle: TextStyle(fontFamily: 'Lora')),
             ),
             TextField(
               controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(
+                  labelText: 'Description',
+                  labelStyle: TextStyle(fontFamily: 'Lora')),
             ),
             TextField(
               controller: ingredientsController,
-              decoration: const InputDecoration(labelText: 'Ingredients (comma separated)'),
+              decoration: const InputDecoration(
+                  labelText: 'Ingredients (comma separated)',
+                  labelStyle: TextStyle(fontFamily: 'Lora')),
             ),
             TextField(
               controller: instructionsController,
-              decoration: const InputDecoration(labelText: 'Instructions'),
+              decoration: const InputDecoration(
+                  labelText: 'Instructions',
+                  labelStyle: TextStyle(fontFamily: 'Lora')),
               maxLines: 4,
             ),
             TextField(
               controller: imageUrlController,
-              decoration: const InputDecoration(labelText: 'Image URL'),
+              decoration: const InputDecoration(
+                  labelText: 'Image URL',
+                  labelStyle: TextStyle(fontFamily: 'Lora')),
             ),
             const SizedBox(height: 20),
             const Text(
               'Select Meal Types:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 23, fontFamily: 'Teko'),
             ),
             Column(
               children: mealTypes.map((type) {
                 return CheckboxListTile(
-                  title: Text(type),
+                  title: Text(
+                    type,
+                    style:
+                        TextStyle(fontFamily: 'Lora', color: Color(0xFF757575)),
+                  ),
                   value: selectedMealTypes.contains(type),
                   onChanged: (bool? selected) {
                     setState(() {
@@ -106,7 +133,10 @@ class _EditRecipePageState extends State<EditRecipePage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: saveEditedRecipe,
-              child: const Text('Save Changes'),
+              child: const Text(
+                'Save Changes',
+                style: TextStyle(fontFamily: 'Lora'),
+              ),
             ),
           ],
         ),

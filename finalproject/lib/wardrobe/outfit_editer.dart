@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class EditOutfitPage extends StatefulWidget {
   final Map<String, dynamic> outfit;
   final Function(Map<String, dynamic>) onSave;
+
   const EditOutfitPage({super.key, required this.outfit, required this.onSave});
 
   @override
@@ -17,12 +18,15 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
   String? selectedItemType;
   String? selectedCategory;
   TextEditingController descriptionController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.outfit['title']);
-    _categoryController = TextEditingController(text: widget.outfit['category']);
-    _descriptionController = TextEditingController(text: widget.outfit['description'] ?? '');
+    _categoryController =
+        TextEditingController(text: widget.outfit['category']);
+    _descriptionController =
+        TextEditingController(text: widget.outfit['description'] ?? '');
     _imageUrl = widget.outfit['image'];
   }
 
@@ -33,31 +37,39 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
     _descriptionController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit  Outfit'),
+        title: const Text(
+          'Edit  Outfit',
+          style: TextStyle(fontFamily: 'Teko', fontSize: 30),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.image), onPressed: () {
-            // Will implement image selection functionality here
-          }),
-         // IconButton(icon: Icon(Icons.share), onPressed: () {
-            //  Will implement share functionality here
-         // }),
-          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {
-            //this gives option to delete entire outfit
-          }),
+          IconButton(
+              icon: const Icon(Icons.image),
+              onPressed: () {
+                // Will implement image selection functionality here
+              }),
+          // IconButton(icon: Icon(Icons.share), onPressed: () {
+          //  Will implement share functionality here
+          // }),
+          IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () {
+                //this gives option to delete entire outfit
+              }),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-         // crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image Section
             Center(
@@ -93,12 +105,14 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
             // Description Section
             const Text(
               'Description',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontFamily: 'Teko'),
             ),
             TextField(
               controller: descriptionController,
               decoration: const InputDecoration(
+                hintStyle: TextStyle(fontFamily: 'Lora'),
                 hintText: 'Name (Description)',
+                helperStyle: TextStyle(fontFamily: 'Lora'),
                 helperText: '180 characters max',
               ),
               maxLength: 180,
@@ -107,43 +121,51 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
             // Type of Item Dropdown
             ListTile(
               leading: const Icon(Icons.shopping_cart_outlined),
-              title: const Text('Type of Item'),
-              subtitle: const Text('Clothing, Shoe, Jewellery, etc.'),
+              title: const Text('Type of Item',
+                  style: TextStyle(fontFamily: 'Teko', fontSize: 18)),
+              subtitle: const Text('Clothing, Shoe, Jewellery, etc.',
+                  style: TextStyle(fontFamily: 'Lora')),
               trailing: DropdownButton<String>(
                 value: selectedItemType,
                 items: <String>['Clothing', 'Shoe', 'Jewellery']
                     .map((String value) => DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                ))
+                          value: value,
+                          child:
+                              Text(value, style: TextStyle(fontFamily: 'Lora')),
+                        ))
                     .toList(),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedItemType = newValue;
                   });
                 },
-                hint: const Text('Select'),
+                hint:
+                    const Text('Select', style: TextStyle(fontFamily: 'Lora')),
               ),
             ),
             // Category Dropdown
             ListTile(
               leading: const Icon(Icons.star_border),
-              title: const Text('Category'),
-              subtitle: const Text('Winters, Casual, Formal, etc.'),
+              title: const Text('Category',
+                  style: TextStyle(fontFamily: 'Teko', fontSize: 18)),
+              subtitle: const Text('Winters, Casual, Formal, etc.',
+                  style: TextStyle(fontFamily: 'Lora')),
               trailing: DropdownButton<String>(
                 value: selectedCategory,
                 items: <String>['Winters', 'Casual', 'Formal']
                     .map((String value) => DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                ))
+                          value: value,
+                          child:
+                              Text(value, style: TextStyle(fontFamily: 'Lora')),
+                        ))
                     .toList(),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedCategory = newValue;
                   });
                 },
-                hint: const Text('Select'),
+                hint:
+                    const Text('Select', style: TextStyle(fontFamily: 'Lora')),
               ),
             ),
             const Spacer(),
@@ -154,7 +176,8 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
                 TextButton.icon(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.cancel, color: Colors.grey),
-                  label: const Text('Cancel'),
+                  label: const Text('Cancel',
+                      style: TextStyle(fontFamily: 'Lora')),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -167,7 +190,8 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
                     } else {
                       //if fields empty throw error
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Please fill all the fields'),
+                        content: Text('Please fill all the fields',
+                            style: TextStyle(fontFamily: 'Lora')),
                       ));
                     }
                   },
@@ -179,7 +203,8 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
                   ),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text('Save Changes'),
+                    child: Text('Save Changes',
+                        style: TextStyle(fontFamily: 'Lora')),
                   ),
                 ),
               ],

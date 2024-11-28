@@ -90,7 +90,7 @@ class _JournalPageState extends State<JournalPage> {
         return Icons.snowboarding;
       case 'angry':
         return Icons.sentiment_very_dissatisfied;
-    default:
+      default:
         return Icons.sentiment_very_satisfied;
     }
   }
@@ -129,26 +129,6 @@ class _JournalPageState extends State<JournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
-      /*
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Color(0xFFbe3b88), // Header color and selected date
-              onPrimary: Colors.white,    // Text color on the header
-              surface: Colors.white,      // Background color of the picker
-              onSurface: Colors.black,    // Text color in the calendar grid
-              onSecondary: Color(0xFFbe3b88), // For active elements like buttons
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Color(0xFFDCB65D)), // Button color
-            ),
-          ),
-          child: child!,
-        );
-      },
-
-       */
     );
 
     return picked;
@@ -188,6 +168,8 @@ class _JournalPageState extends State<JournalPage> {
     return months[month - 1];
   }
 
+  int checkcount2 = 0;
+
   void scheduleAlert() {
     showDialog(
       context: context,
@@ -200,13 +182,18 @@ class _JournalPageState extends State<JournalPage> {
           ),
         ),
         content: const Text(
-            "Would you like to schedule daily notifications to journal?"),
+          "Would you like to schedule daily notifications to journal?",
+          style: TextStyle(
+            fontFamily: 'Lora',
+          ),
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
+              checkcount2 = 2;
               Navigator.pop(context);
             },
-            child: Text(
+            child: const Text(
               "Cancel",
               style: TextStyle(
                 fontFamily: 'Lora',
@@ -221,19 +208,26 @@ class _JournalPageState extends State<JournalPage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  content: Text("Daily Notification Scheduled."),
+                  content: const Text(
+                    "Daily Notification Scheduled.",
+                    style: TextStyle(fontFamily: 'Lora'),
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () {
+                        checkcount2 = 1;
                         Navigator.pop(context);
                       },
-                      child: Text("OK"),
+                      child: const Text(
+                        "OK",
+                        style: TextStyle(fontFamily: 'Lora'),
+                      ),
                     ),
                   ],
                 ),
               );
             },
-            child: Text(
+            child: const Text(
               "Proceed",
               style: TextStyle(
                 fontFamily: 'Lora',
@@ -245,8 +239,6 @@ class _JournalPageState extends State<JournalPage> {
       ),
     );
   }
-
-  int scheduleNum = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -262,21 +254,26 @@ class _JournalPageState extends State<JournalPage> {
         actions: [
           IconButton(
               onPressed: () {
-                if (scheduleNum == 0) {
+                if ((checkcount2 == 0 || checkcount2 == 2)) {
                   scheduleAlert();
-                  scheduleNum++;
-                } else if (scheduleNum == 1) {
+                  checkcount2 = 1;
+                } else if ((checkcount2 == 1)) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      content:
-                          Text("Your daily notification is already scheduled."),
+                      content: const Text(
+                        "Your daily notification is already scheduled.",
+                        style: TextStyle(fontFamily: 'Lora'),
+                      ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text("OK"),
+                          child: const Text(
+                            "OK",
+                            style: TextStyle(fontFamily: 'Lora'),
+                          ),
                         ),
                       ],
                     ),
@@ -298,7 +295,7 @@ class _JournalPageState extends State<JournalPage> {
                 alignment: Alignment.center,
                 child: Text(
                   'PERSONAL JOURNAL',
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 25, fontFamily: 'Teko'),
                 ),
               ),
             ),
@@ -319,7 +316,10 @@ class _JournalPageState extends State<JournalPage> {
       ),
       body: _entries.isEmpty
           ? const Center(
-              child: Text('Start your journey by adding a new entry.'))
+              child: Text(
+              'Start your journey by adding a new entry.',
+              style: TextStyle(fontFamily: 'Lora'),
+            ))
           : Scrollbar(
               child: ListView.separated(
                 itemCount: _entries.length,
@@ -332,17 +332,22 @@ class _JournalPageState extends State<JournalPage> {
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(entry.title,
-                            style: const TextStyle(
-                                color: Color(0xFFBE3B88),
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
+                        Text(
+                          entry.title,
+                          style: const TextStyle(
+                              color: Color(0xFFBE3B88),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Teko'),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
                             Text(shortContent,
-                                style: const TextStyle(color: Color(0xFF787878), fontSize: 16)),
+                                style: const TextStyle(
+                                    color: Color(0xFF787878),
+                                    fontSize: 16,
+                                    fontFamily: 'Lora')),
                             const SizedBox(width: 10),
                           ],
                         ),
@@ -361,7 +366,8 @@ class _JournalPageState extends State<JournalPage> {
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(formatDate(entry.date),
-                          style: const TextStyle(color: Color(0xFF2e2e2e))),
+                          style: const TextStyle(
+                              color: Color(0xFF2e2e2e), fontFamily: 'Lora')),
                     ),
                     onTap: () {
                       _navigateToEditPage(context, entry);

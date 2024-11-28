@@ -18,12 +18,12 @@ import 'firebase_options.dart';
 import 'suggestions_page.dart';
 
 void main() async {
-WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 // Initialize Firebase with the options from firebase_options.dart
-await Firebase.initializeApp(
-options: DefaultFirebaseOptions.currentPlatform,
-);
-runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
       builder: (theme, darkTheme) => MaterialApp(
         theme: colours.AppTheme.light,
         darkTheme: colours.AppTheme.dark,
-        themeMode: theme == colours.AppTheme.light ? ThemeMode.light : ThemeMode.dark,
+        themeMode:
+            theme == colours.AppTheme.light ? ThemeMode.light : ThemeMode.dark,
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
       ),
@@ -135,7 +136,8 @@ class HomeScreen extends StatelessWidget {
             FeatureCard(
               imagePath: 'assets/wardrobe_icon.png',
               title: 'VIRTUAL WARDROBE',
-              description: 'Effortlessly manage your clothing collection and plan outfits.',
+              description:
+                  'Effortlessly manage your clothing collection and plan outfits.',
               onTap: () => _navigateToVirtualWardrobe(context),
             ),
             FeatureCard(
@@ -147,18 +149,20 @@ class HomeScreen extends StatelessWidget {
             FeatureCard(
               imagePath: 'assets/journal_icon.png',
               title: 'JOURNAL',
-              description: 'Reflect on your day by writing entries, tracking moods, and capturing your thoughts.',
+              description:
+                  'Reflect on your day by writing entries, tracking moods, and capturing your thoughts.',
               onTap: () => _navigateToJournal(context),
             ),
             FeatureCard(
               imagePath: 'assets/suggestions_icon.png',
               title: 'SUGGESTIONS',
-              description: 'Get recommendations based on your location for places near you to eat, shop, and explore.',
+              description:
+                  'Get recommendations based on your location for places near you to eat, shop, and explore.',
               onTap: () => _navigateToSuggestions(context),
             ),
             const SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(16), 
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 195, 179, 150),
                 borderRadius: BorderRadius.circular(10),
@@ -190,12 +194,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToVirtualWardrobe(BuildContext context){
+  void _navigateToVirtualWardrobe(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const OutfitDashboardPage()),
     );
   }
+
   void _navigateToRecipeBook(BuildContext context) {
     Navigator.push(
       context,
@@ -250,19 +255,24 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(dialogContext); // Close the dialog
                   ScaffoldMessenger.of(parentContext).showSnackBar(
-                    const SnackBar(content: Text('Creating New Wardrobe Entry...')),
+                    const SnackBar(
+                        content: Text('Creating New Wardrobe Entry...')),
                   );
                   Future.delayed(const Duration(seconds: 3), () {
-                    Navigator.of(parentContext).push(
+                    Navigator.of(parentContext)
+                        .push(
                       MaterialPageRoute(
-                        builder: (context) =>  OutfitBuilderPage(onSave: (outfit) {
+                        builder: (context) =>
+                            OutfitBuilderPage(onSave: (outfit) {
                           // Add save logic here
                         }), // Navigate to wardrobe page
                       ),
-                    ).then((result) {
+                    )
+                        .then((result) {
                       if (result != null) {
                         Navigator.of(parentContext).pushReplacement(
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
                         );
                       }
                     });
@@ -285,17 +295,22 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(dialogContext); // Close the dialog
                   ScaffoldMessenger.of(parentContext).showSnackBar(
-                    const SnackBar(content: Text('Creating New Recipe Entry...')),
+                    const SnackBar(
+                        content: Text('Creating New Recipe Entry...')),
                   );
                   Future.delayed(const Duration(seconds: 3), () {
-                    Navigator.of(parentContext).push(
+                    Navigator.of(parentContext)
+                        .push(
                       MaterialPageRoute(
-                        builder: (context) => const AddRecipePage(), // Navigate to recipe page
+                        builder: (context) =>
+                            const AddRecipePage(), // Navigate to recipe page
                       ),
-                    ).then((result) {
+                    )
+                        .then((result) {
                       if (result != null) {
                         Navigator.of(parentContext).pushReplacement(
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
                         );
                       }
                     });
@@ -318,38 +333,48 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(dialogContext); // Close the dialog
                   ScaffoldMessenger.of(parentContext).showSnackBar(
-                    const SnackBar(content: Text('Creating New Journal Entry...')),
+                    const SnackBar(
+                        content: Text('Creating New Journal Entry...')),
                   );
                   Future.delayed(const Duration(seconds: 3), () {
-                    Navigator.of(parentContext).push(
+                    Navigator.of(parentContext)
+                        .push(
                       MaterialPageRoute(
                         builder: (context) => EditJournalPage(),
                       ),
-                    ).then((result) async {
+                    )
+                        .then((result) async {
                       if (result != null && result is JournalEntry) {
                         // Load the current entries
                         final prefs = await SharedPreferences.getInstance();
-                        final String? entriesString = prefs.getString('journal_entries');
+                        final String? entriesString =
+                            prefs.getString('journal_entries');
                         List<JournalEntry> entries = [];
 
                         if (entriesString != null) {
-                          final List<dynamic> entriesJson = json.decode(entriesString);
-                          entries = entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
+                          final List<dynamic> entriesJson =
+                              json.decode(entriesString);
+                          entries = entriesJson
+                              .map((entry) => JournalEntry.fromJson(entry))
+                              .toList();
                         }
 
                         // Add the new entry and save back
                         entries.add(result);
                         entries.sort((a, b) => b.date.compareTo(a.date));
-                        await prefs.setString('journal_entries',
-                            json.encode(entries.map((entry) => entry.toJson()).toList()));
+                        await prefs.setString(
+                            'journal_entries',
+                            json.encode(entries
+                                .map((entry) => entry.toJson())
+                                .toList()));
 
                         // Reload the home screen
                         Navigator.of(parentContext).pushReplacement(
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
                         );
                       }
                     });
-
                   });
                 },
               ),

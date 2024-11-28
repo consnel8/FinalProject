@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../SettingsPage.dart';
@@ -9,28 +8,48 @@ import 'outfit_builder.dart';
 import 'outfit_editer.dart';
 import 'outfit_screen.dart';
 
-
 class OutfitDashboardPage extends StatefulWidget {
   const OutfitDashboardPage({super.key});
-
 
   @override
   _OutfitDashboardPageState createState() => _OutfitDashboardPageState();
 }
 
 class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
-  final List<String> categories = ['All Categories', 'Formal', 'Casual', 'Dresses','Accessories', 'Winter/Fall', 'Summer/Spring'];
+  final List<String> categories = [
+    'All Categories',
+    'Formal',
+    'Casual',
+    'Dresses',
+    'Accessories',
+    'Winter/Fall',
+    'Summer/Spring'
+  ];
   String selectedCategory = 'All Categories';
   bool editMode = false;
   List<Map<String, dynamic>> outfits = [
-    {'title': ' Casual Outfit', 'category': 'Casual',
+    {
+      'title': ' Casual Outfit',
+      'category': 'Casual',
       'image': 'assets/Outfit.jpg',
-      'isFavorite': false},
-    {'title': 'Collage', 'category': 'Formal', 'image': 'assets/collage.jpg', 'isFavorite': true},
-    {'title': 'Heels', 'category': 'Shoes', 'image': 'assets/shoes.jpg', 'isFavorite': true}
+      'isFavorite': false
+    },
+    {
+      'title': 'Collage',
+      'category': 'Formal',
+      'image': 'assets/collage.jpg',
+      'isFavorite': true
+    },
+    {
+      'title': 'Heels',
+      'category': 'Shoes',
+      'image': 'assets/shoes.jpg',
+      'isFavorite': true
+    }
   ];
 
-  List<Map<String, dynamic>> favoriteOutfits = []; // List to store favorite outfits
+  List<Map<String, dynamic>> favoriteOutfits =
+      []; // List to store favorite outfits
 
   void navigateToOutfitBuilder() {
     Navigator.push(
@@ -58,16 +77,20 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
       }
     });
   }
+
   void addOutfit(Map<String, dynamic> outfit) {
     setState(() {
       outfits.add(outfit); // Adding new outfit to the list
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final filteredOutfits = selectedCategory == 'All Categories'
         ? outfits
-        : outfits.where((outfit) => outfit['category'] == selectedCategory).toList();
+        : outfits
+            .where((outfit) => outfit['category'] == selectedCategory)
+            .toList();
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Outfit Dashboard')),
@@ -75,8 +98,8 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
           icon: const Icon(Icons.menu),
           onPressed: () {
             Navigator.push(
-                context,
-              MaterialPageRoute(builder: (context) =>  SettingsPage()),
+              context,
+              MaterialPageRoute(builder: (context) => SettingsPage()),
             );
           },
         ),
@@ -97,120 +120,124 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FavoriteOutfitsPage(favoriteOutfits: favoriteOutfits),
+                  builder: (context) =>
+                      FavoriteOutfitsPage(favoriteOutfits: favoriteOutfits),
                 ),
               );
             },
           ),
           IconButton(
-              icon:  Icon(Icons.account_circle),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => about_page(),
-                    ),
-                  );
-                },
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AboutPage(),
+                ),
+              );
+            },
           )
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 10),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: categories.map((category) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: ChoiceChip(
-                    label: Text(category),
-                    selected: selectedCategory == category,
-                    onSelected: (bool selected) {
-                      setState(() {
-                        selectedCategory = selected ? category : 'All Categories';
-                      });
-                    },
-                  ),
-                );
-              }).toList(),
-            ),
+      body: Column(children: [
+        SizedBox(height: 10),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: categories.map((category) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: ChoiceChip(
+                  label: Text(category),
+                  selected: selectedCategory == category,
+                  onSelected: (bool selected) {
+                    setState(() {
+                      selectedCategory = selected ? category : 'All Categories';
+                    });
+                  },
+                ),
+              );
+            }).toList(),
           ),
-          Expanded(
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(8.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: outfits
-                  .where((outfit) => selectedCategory == 'All Categories' || outfit['category'] == selectedCategory)
-                  .toList()
-                  .length,
-              itemBuilder: (context, index) {
-                // Filter the outfits based on selectedCategory
-                final filteredOutfits = outfits
-                    .where((outfit) => selectedCategory == 'All Categories' || outfit['category'] == selectedCategory)
-                    .toList();
+        ),
+        Expanded(
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(8.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: outfits
+                .where((outfit) =>
+                    selectedCategory == 'All Categories' ||
+                    outfit['category'] == selectedCategory)
+                .toList()
+                .length,
+            itemBuilder: (context, index) {
+              // Filter the outfits based on selectedCategory
+              final filteredOutfits = outfits
+                  .where((outfit) =>
+                      selectedCategory == 'All Categories' ||
+                      outfit['category'] == selectedCategory)
+                  .toList();
 
-                final outfit = filteredOutfits[index];
-                if (selectedCategory != 'All Categories' &&
-                    outfit['category'] != selectedCategory) {
-                  return Container(); // Empty container for filtered-out items
-                }
+              final outfit = filteredOutfits[index];
+              if (selectedCategory != 'All Categories' &&
+                  outfit['category'] != selectedCategory) {
+                return Container(); // Empty container for filtered-out items
+              }
 
-                return GestureDetector(
-                    onTap: () {
-                      // Navigate to OutfitScreen when tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OutfitScreen(
-                            outfit: outfit, // Provide the outfit object
-                            onDeleteOutfit: () {
-                              // Handle delete action will implement later
-                            },
-                            onToggleFavorite: (bool isFavorite) {
-                              // Handle toggle favorite action
-                            },
-                            onUpdateOutfit: (updatedOutfit) {
-                              // Handle update action
-                            },
-                          ),
-                        ),
-                      );
-
-                    },
-                    onLongPress: () {
-                      // Navigate to EditOutfitPage when long pressed
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditOutfitPage(
-                            outfit: outfit, // Pass the outfit being edited
-                            onSave: (updatedOutfit) {
-                              // Handle save action
-                            },
-                          ),
-                        ),
-                      );
-
-                    },
-                child:  Stack(
+              return GestureDetector(
+                onTap: () {
+                  // Navigate to OutfitScreen when tapped
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OutfitScreen(
+                        outfit: outfit, // Provide the outfit object
+                        onDeleteOutfit: () {
+                          // Handle delete action will implement later
+                        },
+                        onToggleFavorite: (bool isFavorite) {
+                          // Handle toggle favorite action
+                        },
+                        onUpdateOutfit: (updatedOutfit) {
+                          // Handle update action
+                        },
+                      ),
+                    ),
+                  );
+                },
+                onLongPress: () {
+                  // Navigate to EditOutfitPage when long pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditOutfitPage(
+                        outfit: outfit, // Pass the outfit being edited
+                        onSave: (updatedOutfit) {
+                          // Handle save action
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Stack(
                   children: [
                     Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(10)),
                               child: Image.network(
                                 outfit['image'] as String? ?? '',
                                 fit: BoxFit.cover,
@@ -227,42 +254,44 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(outfit['title'] as String? ?? '',
-                                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
                                     Text(outfit['category'] as String? ?? '',
-                                        style: const TextStyle(color: Colors.grey)),
+                                        style: const TextStyle(
+                                            color: Colors.grey)),
                                   ],
                                 ),
-                                Row(
-
-                                    mainAxisSize: MainAxisSize.min,
-                                    children:[
-                                      IconButton(
-                                        icon: Icon(
-                                          outfit['isFavorite'] ? Icons.favorite : Icons.favorite_border,
-                                          color: outfit['isFavorite'] ? Colors.red : Colors.grey,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            outfit['isFavorite'] = !outfit['isFavorite'];
-                                            if (outfit['isFavorite']) {
-                                              favoriteOutfits.add(outfit);
-                                            } else {
-                                              favoriteOutfits.remove(outfit);
-                                            }
-                                          });
-                                        },
-                                      ),
-                                    ]
-                                )
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      outfit['isFavorite']
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: outfit['isFavorite']
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        outfit['isFavorite'] =
+                                            !outfit['isFavorite'];
+                                        if (outfit['isFavorite']) {
+                                          favoriteOutfits.add(outfit);
+                                        } else {
+                                          favoriteOutfits.remove(outfit);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ])
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-
-                    if(editMode)
-                       Positioned(
+                    if (editMode)
+                      Positioned(
                         top: 8,
                         right: 8,
                         child: PopupMenuButton<String>(
@@ -272,7 +301,8 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditOutfitPage(
-                                    outfit: outfit, // Pass the outfit being edited
+                                    outfit: outfit,
+                                    // Pass the outfit being edited
                                     onSave: (updatedOutfit) {
                                       // Handle save action
                                       setState(() {
@@ -286,7 +316,8 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                             } else if (option == 'Delete') {
                               setState(() {
                                 outfits.remove(outfit);
-                                favoriteOutfits.remove(outfit); // Remove from favorites if present
+                                favoriteOutfits.remove(
+                                    outfit); // Remove from favorites if present
                               });
                             } else if (option == 'Toggle Favorite') {
                               setState(() {
@@ -300,34 +331,38 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                             }
                           },
                           itemBuilder: (context) => [
-                            const PopupMenuItem(value: 'Edit', child: Text('Edit')),
-                            const PopupMenuItem(value: 'Delete', child: Text('Delete')),
+                            const PopupMenuItem(
+                                value: 'Edit', child: Text('Edit')),
+                            const PopupMenuItem(
+                                value: 'Delete', child: Text('Delete')),
                             PopupMenuItem(
                               value: 'Toggle Favorite',
-                              child: Text(outfit['isFavorite'] ? 'Remove from Favorites' : 'Add to Favorites'),
+                              child: Text(outfit['isFavorite']
+                                  ? 'Remove from Favorites'
+                                  : 'Add to Favorites'),
                             ),
                           ],
                         ),
                       ),
                   ],
                 ),
-                );
-              },
-            ),
+              );
+            },
           ),
-         ]
         ),
+      ]),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add Outfit'),
-          BottomNavigationBarItem(icon: Icon(Icons.edit), label: 'Edit Wardrobe'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.edit), label: 'Edit Wardrobe'),
         ],
         onTap: (index) {
           if (index == 0) {
             Navigator.push(
               context,
-                MaterialPageRoute(builder: (content) =>  HomeScreen()),
+              MaterialPageRoute(builder: (content) => HomeScreen()),
             );
           } else if (index == 1) {
             navigateToOutfitBuilder();
@@ -340,17 +375,16 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
       ),
       floatingActionButton: editMode
           ? FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            editMode = false; // Exit edit mode
-          });
-        },
-        child: const Icon(Icons.done),
-      )
+              onPressed: () {
+                setState(() {
+                  editMode = false; // Exit edit mode
+                });
+              },
+              child: const Icon(Icons.done),
+            )
           : null,
     );
   }
-
 }
 
 // Outfit Card Widget
@@ -360,7 +394,8 @@ class OutfitCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onToggleFavorite;
 
-  const OutfitCard({super.key, 
+  const OutfitCard({
+    super.key,
     required this.outfit,
     required this.onEdit,
     required this.onDelete,
@@ -379,7 +414,8 @@ class OutfitCard extends StatelessWidget {
             children: [
               Expanded(
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(10)),
                   child: Image.network(
                     outfit['image'] as String? ?? '',
                     fit: BoxFit.cover,
@@ -459,6 +495,7 @@ class OutfitCard extends StatelessWidget {
     );
   }
 }
+
 //outfit searching in outfit dashboard page
 class OutfitSearchDelegate extends SearchDelegate {
   final List<Map<String, dynamic>> outfits;
@@ -468,7 +505,8 @@ class OutfitSearchDelegate extends SearchDelegate {
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
-      IconButton(//search bar icons
+      IconButton(
+        //search bar icons
         icon: Icon(query.isEmpty ? Icons.search : Icons.clear),
         onPressed: () {
           if (query.isNotEmpty) {
@@ -495,13 +533,15 @@ class OutfitSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     final results = outfits
         .where((outfit) =>
-    outfit['title']
-        .toLowerCase()
-        .contains(query.toLowerCase()) || // Exact match
-        outfit['title']
-            .toLowerCase()
-            .startsWith(query.toLowerCase()) || // Partial match
-        query.split(' ').any((word) => outfit['title'].toLowerCase().contains(word.toLowerCase()))) // Word by word match
+            outfit['title']
+                .toLowerCase()
+                .contains(query.toLowerCase()) || // Exact match
+            outfit['title']
+                .toLowerCase()
+                .startsWith(query.toLowerCase()) || // Partial match
+            query.split(' ').any((word) => outfit['title']
+                .toLowerCase()
+                .contains(word.toLowerCase()))) // Word by word match
         .toList();
 
     if (results.isEmpty) {
@@ -539,7 +579,6 @@ class OutfitSearchDelegate extends SearchDelegate {
                 ),
               ),
             );
-
           },
         );
       },
@@ -550,8 +589,12 @@ class OutfitSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     final suggestions = outfits
         .where((outfit) =>
-    outfit['title'].toLowerCase().startsWith(query.toLowerCase()) || // Partial match
-        outfit['title'].toLowerCase().contains(query.toLowerCase())) // Fuzzy match
+            outfit['title']
+                .toLowerCase()
+                .startsWith(query.toLowerCase()) || // Partial match
+            outfit['title']
+                .toLowerCase()
+                .contains(query.toLowerCase())) // Fuzzy match
         .toList();
 
     return ListView.builder(
@@ -561,17 +604,18 @@ class OutfitSearchDelegate extends SearchDelegate {
         return ListTile(
           title: Text(outfit['title'] as String? ?? ''),
           trailing: const Text(
-            '↖',  //icon to complete the word instead of typing it all
+            '↖', //icon to complete the word instead of typing it all
             style: TextStyle(
               fontSize: 24, // Adjust size as needed
               color: Colors.black, // Adjust color if necessary
             ),
           ),
-         // title: Text(outfit['title'] as String? ?? ''),
+          // title: Text(outfit['title'] as String? ?? ''),
           //trailing: Icon(Icons.arrow_right),
           onTap: () {
             query = outfit['title'];
-            showResults(context); // Show results directly when suggestion is tapped
+            showResults(
+                context); // Show results directly when suggestion is tapped
           },
         );
       },

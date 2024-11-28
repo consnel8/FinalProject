@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'outfit_screen.dart';
 
-
-
 class OutfitSearchDelegate extends SearchDelegate {
   final List<Map<String, dynamic>> outfits;
 
@@ -34,7 +32,8 @@ class OutfitSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     final results = outfits
-        .where((outfit) => outfit['title'].toLowerCase().contains(query.toLowerCase()))
+        .where((outfit) =>
+            outfit['title'].toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
@@ -42,7 +41,8 @@ class OutfitSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final outfit = results[index];
         return ListTile(
-          title: Text(outfit['title'] as String? ?? ''),
+          title: Text(outfit['title'] as String? ?? '',
+              style: TextStyle(fontFamily: 'Lora')),
           onTap: () {
             close(context, null); // Close search on item tap
             Navigator.push(
@@ -62,7 +62,6 @@ class OutfitSearchDelegate extends SearchDelegate {
                 ),
               ),
             );
-
           },
         );
       },
@@ -72,7 +71,8 @@ class OutfitSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     final suggestions = outfits
-        .where((outfit) => outfit['title'].toLowerCase().contains(query.toLowerCase()))
+        .where((outfit) =>
+            outfit['title'].toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
@@ -80,7 +80,8 @@ class OutfitSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final outfit = suggestions[index];
         return ListTile(
-          title: Text(outfit['title'] as String? ?? ''),
+          title: Text(outfit['title'] as String? ?? '',
+              style: TextStyle(fontFamily: 'Lora')),
           onTap: () {
             query = outfit['title'];
             showResults(context); // Show results when suggestion is tapped
