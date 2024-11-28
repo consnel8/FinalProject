@@ -102,7 +102,12 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   Column(
                     children: mealTypes.map((type) {
                       return CheckboxListTile(
-                        title: Text(type),
+                        title: Text(
+                          type,
+                          style: const TextStyle(
+                            color: Color(0xffe17aa0), // Custom color for meal type text
+                          ),
+                        ),
                         value: selectedMealTypes.contains(type),
                         onChanged: (bool? selected) {
                           setState(() {
