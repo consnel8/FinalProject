@@ -17,7 +17,7 @@ class _AccountPageState extends State<account_page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Account",
           style: TextStyle(
             fontFamily: 'Teko',
@@ -33,7 +33,7 @@ class _AccountPageState extends State<account_page> {
             children: [
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                child: Text(
+                child: const Text(
                   "Delete Data?",
                   style: TextStyle(
                     fontFamily: 'Lora',
@@ -77,7 +77,7 @@ class _AccountPageState extends State<account_page> {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text(
+            child: const Text(
               "Cancel",
               style: TextStyle(
                 fontFamily: 'Lora',
@@ -88,10 +88,10 @@ class _AccountPageState extends State<account_page> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await _deleteUserData();
+              await _checkAndDeleteData();
             },
-            child: Text(
-              "Proceed",
+            child: const Text(
+              "Delete",
               style: TextStyle(
                 fontFamily: 'Lora',
                 fontSize: 18,
@@ -103,16 +103,45 @@ class _AccountPageState extends State<account_page> {
     );
   }
 
-  Future<void> _deleteUserData() async {
+  Future<void> _checkAndDeleteData() async {
     final user = _auth.currentUser;
 
     if (user == null) {
-      _showMessage("No user is logged in.");
+      // If no user is logged in, show a prompt.
+      _showLoginRequiredMessage();
       return;
     }
 
     try {
-      final userDocRef = _firestore.collection('users').doc(user.uid);
+      await _deleteUserData(user.uid);
+    } catch (e) {
+      _showMessage("An error occurred: $e");
+    }
+  }
+
+  void _showLoginRequiredMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Login Required"),
+          content: const Text(
+            "You need to be logged in to delete your data. Please log in and try again.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteUserData(String uid) async {
+    try {
+      final userDocRef = _firestore.collection('users').doc(uid);
 
       // Delete subcollections and documents
       final subcollections = ['recipes', 'journal', 'wardrobe'];
@@ -127,7 +156,10 @@ class _AccountPageState extends State<account_page> {
       await userDocRef.delete();
 
       // Optionally, delete the user's authentication record
-      await user.delete();
+      final user = _auth.currentUser;
+      if (user != null) {
+        await user.delete();
+      }
 
       _showMessage("Your data has been successfully deleted.");
     } catch (e) {
