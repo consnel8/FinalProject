@@ -6,7 +6,7 @@ class AppearancePage extends StatefulWidget {
 
   @override
   State<AppearancePage> createState() => _AppearancePageState();
-}
+} // end AppearancePage
 
 class _AppearancePageState extends State<AppearancePage> {
   static const List<Widget> display = <Widget>[
@@ -14,6 +14,7 @@ class _AppearancePageState extends State<AppearancePage> {
     Text('Dark'),
   ];
 
+  // both of these are used for the back and forth select button for light/dark
   final List<bool> _selectedDisplay = <bool>[true, false];
   bool vertical = false;
 
@@ -40,7 +41,7 @@ class _AppearancePageState extends State<AppearancePage> {
                       child: const Text("Change Display?\n",
                           style: TextStyle(fontFamily: 'Lora', fontSize: 18)),
                     ),
-                  ],
+                  ], // end children
                 ),
                 Row(
                   children: <Widget>[
@@ -50,17 +51,25 @@ class _AppearancePageState extends State<AppearancePage> {
                           direction: vertical ? Axis.vertical : Axis.horizontal,
                           onPressed: (int index) {
                             setState(() {
+                              /*
+                              based on a true or false, where true
+                              is light mode and false is dark mode, we determine
+                              which was selected by the user
+                               */
                               for (int i = 0; i < 2; i++) {
                                 _selectedDisplay[i] = i == index;
-                              }
+                              } // end for
                               if (index == 0) {
                                 AdaptiveTheme.of(context).setLight();
-                              }
+                                // AdaptiveTheme sets our mode based on ThemeMode
+                                // specifications
+                              } // end if
                               if (index == 1) {
                                 AdaptiveTheme.of(context).setDark();
-                              }
-                            });
+                              } // end if
+                            }); // end setState
                           },
+                          // end onPressed
                           constraints: const BoxConstraints(
                             minHeight: 40,
                             minWidth: 80,
@@ -70,9 +79,9 @@ class _AppearancePageState extends State<AppearancePage> {
                     )
                   ],
                 )
-              ],
+              ], // end children
             ),
           ),
         ));
-  }
-}
+  } // end build
+} // end _AppearancePageState

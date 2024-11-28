@@ -7,7 +7,7 @@ class AccountPage extends StatefulWidget {
 
   @override
   State<AccountPage> createState() => _AccountPageState();
-}
+} // end AccountPage
 
 class _AccountPageState extends State<AccountPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -44,7 +44,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                   ),
-                ],
+                ], // end children
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,17 +59,17 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                   ),
-                ],
+                ], // end children
               ),
               const Row(
                 children: [
-                  Text(" "),
-                ],
+                  Text(" "), // spacer
+                ], // end children
               ),
               const Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  Text( // explains what the button will do
                     "By clicking the above button, you agree to the complete deletion of\n"
                     "your data off the Life Palette"
                     " app. All saved cloud data will be\ncompletely wiped. This data "
@@ -79,16 +79,17 @@ class _AccountPageState extends State<AccountPage> {
                       fontSize: 10,
                     ),
                   ),
-                ],
+                ], // end children
               )
-            ],
+            ], // end children
           ),
         ),
       ),
     );
-  }
+  } // end build
 
-  void deletionAlert() {
+  void deletionAlert() { // creates a pop up alert informing the user of impending
+    // deletion and confirms their intent
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -109,7 +110,7 @@ class _AccountPageState extends State<AccountPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-            },
+            }, // end onPressed
             child: const Text(
               "Cancel",
               style: TextStyle(
@@ -122,7 +123,7 @@ class _AccountPageState extends State<AccountPage> {
             onPressed: () async {
               Navigator.pop(context);
               await _checkAndDeleteData();
-            },
+            }, // end onPresed
             child: const Text(
               "Delete",
               style: TextStyle(
@@ -133,8 +134,8 @@ class _AccountPageState extends State<AccountPage> {
           ),
         ],
       ),
-    );
-  }
+    ); // end showDialogue
+  } // end deletionAlert
 
   Future<void> _checkAndDeleteData() async {
     final user = _auth.currentUser;
@@ -143,14 +144,14 @@ class _AccountPageState extends State<AccountPage> {
       // If no user is logged in, show a prompt.
       _showLoginRequiredMessage();
       return;
-    }
+    } // end if
 
     try {
       await _deleteUserData(user.uid);
     } catch (e) {
       _showMessage("An error occurred: $e");
-    }
-  }
+    } // end try-catch
+  } // end _checkAndDeleteData
 
   void _showLoginRequiredMessage() {
     showDialog(
@@ -179,11 +180,11 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             ),
-          ],
+          ], // end actions
         );
-      },
-    );
-  }
+      }, // end builder
+    ); // end showDialogue
+  } // _showLoginRequiredMessage
 
   Future<void> _deleteUserData(String uid) async {
     try {
@@ -195,8 +196,8 @@ class _AccountPageState extends State<AccountPage> {
         final querySnapshot = await userDocRef.collection(subcollection).get();
         for (var doc in querySnapshot.docs) {
           await doc.reference.delete();
-        }
-      }
+        } // end for
+      } // end for
 
       // Delete the main document
       await userDocRef.delete();
@@ -205,13 +206,13 @@ class _AccountPageState extends State<AccountPage> {
       final user = _auth.currentUser;
       if (user != null) {
         await user.delete();
-      }
+      } // end for
 
       _showMessage("Your data has been successfully deleted.");
     } catch (e) {
       _showMessage("An error occurred while deleting data: $e");
-    }
-  }
+    } // end catch
+  } // end _deleteUserData
 
   void _showMessage(String message) {
     showDialog(
@@ -229,9 +230,9 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             ),
-          ],
+          ], // end actions
         );
-      },
-    );
-  }
-}
+      }, // end builder
+    ); // end showDialogue
+  } // end _showMessage
+} // _AccountPageState

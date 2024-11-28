@@ -1,3 +1,4 @@
+// imports
 import 'package:flutter/material.dart';
 import 'privsafety_page.dart' as privsafety;
 import 'notifications_page.dart' as notifications;
@@ -10,7 +11,7 @@ class SettingsPage extends StatefulWidget {
 
   @override
   State<SettingsPage> createState() => MainSettings();
-}
+} // end SettingsPage
 
 // MAIN PAGE CLASS
 class MainSettings extends State<SettingsPage> {
@@ -44,6 +45,7 @@ class MainSettings extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              // redirect to Account page
                               builder: (context) => account.AccountPage()));
                     }, // end onPressed
                   ),
@@ -63,6 +65,7 @@ class MainSettings extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              // redirect to Notifications page
                               builder: (context) =>
                                   notifications.NotificationsPage()));
                     }, // end press
@@ -83,6 +86,7 @@ class MainSettings extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              // redirect to Appearance page
                               builder: (context) =>
                                   appearance.AppearancePage()));
                     }, // end press
@@ -103,6 +107,7 @@ class MainSettings extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              // redirect to Privacy and Safety page
                               builder: (context) =>
                                   privsafety.PrivSafetyPage()));
                     }, // end press
@@ -123,6 +128,7 @@ class MainSettings extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                              // redirect to About page
                               builder: (context) => aboutp.AboutPage()));
                     }, // end press
                   ),

@@ -1,3 +1,4 @@
+// imports
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -10,13 +11,12 @@ class NotificationsPage extends StatefulWidget {
 
   @override
   State<NotificationsPage> createState() => _NotificationsPageState();
-}
+} // end NotificationsPage
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  bool enabledisable = true;
-  bool dailyTrue = false;
-  bool weeklyTrue = false;
-  String enableSTR = "Enable";
+  bool enabledisable =
+      true; // tracks whether our notifications are enabled or disabled
+  String enableSTR = "Enable"; // cosmetic, updates if enabling or disabling
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       ),
                     ),
                   ),
-                ],
+                ], // end children
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,19 +60,23 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       ),
                     ),
                   ),
-                ],
+                ], // end children
               ),
               const Row(
                 children: [
                   Text(
-                    "\nBy clicking the following buttons, you will be redirected to your"
-                    " device\nsettings page. System notifications for this app can be deleted here.",
+                    // explanation about what the button click does
+                    "\nBy clicking the following buttons, you will be redirected"
+                    " to your"
+                    " device\nsettings page. System notifications for this app "
+                    "can be enabled or\n"
+                    "disabled here.",
                     style: TextStyle(
                       fontFamily: 'Lora',
                       fontSize: 10,
                     ),
                   ),
-                ],
+                ], // end children
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,13 +85,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                     child: Text(
                       "$enableSTR In-App Notifications?",
+                      // our cosmetic enable/disable text update
                       style: const TextStyle(
                         fontFamily: 'Lora',
                         fontSize: 17,
                       ),
                     ),
                   ),
-                ],
+                ], // end children
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,17 +101,28 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     value: enabledisable,
                     onChanged: (bool value) {
                       if (enabledisable == true) {
+                        // when true, user wants to disable notifications
                         setState(() {
                           enabledisable = false;
-                          enableSTR = "Enable";
+                          enableSTR =
+                              "Enable"; // sets what next action on switch will
+                          // do
                           PermissionHandler.disableNotif();
                         });
                       } else if (enabledisable == false) {
+                        // if the user is enabling notifications
                         setState(() {
+                          /*
+                          Users are given the option of enabling only daily
+                          notifications, only weekly notifications, both sets of
+                          notifications, or none at all.
+                           */
                           showDialog(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
                               content: const Text(
+                                // user is given the choice to customize which
+                                // notifications they want
                                 "Choose which notifications to enable.",
                                 style: TextStyle(
                                   fontFamily: 'Lora',
@@ -117,7 +133,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   onPressed: () {
                                     PermissionHandler.enableDaily();
                                     Navigator.pop(context);
-                                  },
+                                  }, // end onPressed
                                   child: const Text(
                                     "Only Daily Notifications",
                                     style: TextStyle(
@@ -129,7 +145,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   onPressed: () {
                                     PermissionHandler.enableWeekly();
                                     Navigator.pop(context);
-                                  },
+                                  }, // end onPressed
                                   child: const Text(
                                     "Only Weekly Notifications",
                                     style: TextStyle(
@@ -142,7 +158,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                     PermissionHandler.enableDaily();
                                     PermissionHandler.enableWeekly();
                                     Navigator.pop(context);
-                                  },
+                                  }, // end onPressed
                                   child: const Text(
                                     "Daily and Weekly Notifications",
                                     style: TextStyle(
@@ -153,7 +169,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                  },
+                                  }, // end onPressed
                                   child: const Text(
                                     "Cancel",
                                     style: TextStyle(
@@ -161,64 +177,76 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                     ),
                                   ),
                                 ),
-                              ],
+                              ], // end actions
                             ),
-                          );
+                          ); // end ShowDialogue
+
+                          // these two are flipping for the next switch update
                           enabledisable = true;
                           enableSTR = "Disable";
-                        });
-                      }
-                    },
+                        }); // end setState
+                      } // end else if
+                    }, // end onChanged
                   ),
-                ],
+                ], // end children
               ),
               const Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "\nChoose to enable and disable in-app notifications. When enabling,\nchoose which "
+                    // explanation about what the button click does
+                    "\nChoose to enable and disable in-app notifications. When "
+                    "enabling,\nchoose which "
                     "notifications to enable, if any.",
                     style: TextStyle(
                       fontFamily: 'Lora',
                       fontSize: 10,
                     ),
                   ),
-                ],
+                ], // end children
               )
-            ],
+            ], // end children
           ),
         ),
       ),
     );
-  }
+  } // end build
 
   Future<bool> checkPerms() async {
+    // opens system settings for app permissions
     return await openAppSettings();
-  }
-}
+  } // end checkPerms
+} // end _NotificationsPageState
+
+// Notification processes were put into a separate class to account for use in
+// other pages, making access easier
 
 class PermissionHandler {
   static late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   static Future<void> enableDaily() async {
+    // enables the daily notifications
     scheduleDailyNotification();
-  }
+  } // end enableDaily
 
   static Future<void> enableWeekly() async {
+    // enables the weekly notifications
     scheduleWeeklyNotification();
-  }
+  } // end enableWeekly
 
   static Future<void> disableNotif() async {
+    // disables all notifications
     await flutterLocalNotificationsPlugin.cancelAll();
-  }
+  } // end disableNotif
 
   static Future<void> onSelectNotification(String? payload) async {
     if (payload != null) {
       print("Notification payload $payload");
-    }
-  }
+    } // end if
+  } // end onSelectNotification
 
   static Future<void> scheduleDailyNotification() async {
+    // daily notification
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'daily_channel_id',
@@ -226,11 +254,11 @@ class PermissionHandler {
       channelDescription: "Daily notification at preset time",
       importance: Importance.max,
       priority: Priority.high,
-    );
+    ); // end AndroidNotificationDetails
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
-    );
+    ); // end platformChannelSpecifics
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       1,
@@ -241,8 +269,8 @@ class PermissionHandler {
       matchDateTimeComponents: DateTimeComponents.time,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
-    );
-  }
+    ); // end zonedSchedule
+  } // end scheduleDailyNotification
 
   static tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
@@ -250,9 +278,9 @@ class PermissionHandler {
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(Duration(days: 1));
-    }
+    } // end if
     return scheduledDate;
-  }
+  } // end _nextInstanceOfTime
 
   static tz.TZDateTime _nextInstanceOfTime2(int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
@@ -260,11 +288,12 @@ class PermissionHandler {
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(Duration(days: 7));
-    }
+    } // end if
     return scheduledDate;
-  }
+  } // end _nextInstanceOfTime2
 
   static Future<void> scheduleWeeklyNotification() async {
+    // weekly notification
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'weekly_channel_id',
@@ -272,11 +301,11 @@ class PermissionHandler {
       channelDescription: "Weekly notification at preset time",
       importance: Importance.max,
       priority: Priority.high,
-    );
+    ); // end Android Notification Details
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
-    );
+    ); // end NotificationDetails
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       2,
@@ -287,10 +316,11 @@ class PermissionHandler {
       matchDateTimeComponents: DateTimeComponents.time,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
-    );
-  }
+    ); // end zonedSchedule
+  } // end scheduleWeeklyNotification
 
   static Future<void> requestNotificationPermission() async {
+    // checks perms
     if (Platform.isAndroid) {
       if (await Permission.notification.isDenied) {
         PermissionStatus status = await Permission.notification.request();
@@ -298,8 +328,8 @@ class PermissionHandler {
           print("Notification permission denied");
         } else if (status.isGranted) {
           print("Notification permission granted");
-        }
-      }
-    }
-  } // end requestNotifPerm
-}
+        } // end else if
+      } // end if
+    } // end if
+  } // end requestNotificationPermission
+} // end Permission Handler
