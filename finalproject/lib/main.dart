@@ -1,12 +1,11 @@
+// Import statements
 import 'dart:async';
 import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:finalproject/wardrobe/outfit_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'recipe_book_page.dart'; // Import the recipe book page
-import 'add_recipe_page.dart'; // Import the add recipe page
+import 'recipe_book_page.dart';
+import 'add_recipe_page.dart';
 import 'SettingsPage.dart';
 import 'colour_theme.dart' as colours;
 import 'journal_page.dart';
@@ -16,7 +15,7 @@ import 'edit_journal_page.dart';
 import 'wardrobe/outfits_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-//import virtual wardrobe page here
+import 'suggestions_page.dart';
 
 void main() async {
 WidgetsFlutterBinding.ensureInitialized();
@@ -86,6 +85,17 @@ class _SplashScreenState extends State<SplashScreen> {
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good morning! A new day brings new opportunities. Step forward with confidence and let your light shine!';
+    } else if (hour < 18) {
+      return 'Good Afternoon! Let the warmth of the afternoon sun remind you that progress is built moment by moment. Keep going!';
+    } else {
+      return 'Good Night! Close your eyes, let go of today’s worries, and trust in the magic of a new dawn. Sweet dreams!';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +154,31 @@ class HomeScreen extends StatelessWidget {
               imagePath: 'assets/suggestions_icon.png',
               title: 'SUGGESTIONS',
               description: 'Get recommendations based on your location for places near you to eat, shop, and explore.',
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SuggestionsPage())),
+              onTap: () => _navigateToSuggestions(context),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(16), 
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 195, 179, 150),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Text(
+                _getGreeting(),
+                style: const TextStyle(
+                  fontFamily: 'Teko',
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
@@ -176,12 +210,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToBlankPage(BuildContext context, String title) {
+  void _navigateToSuggestions(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => BlankPage(title: title),
-      ),
+      MaterialPageRoute(builder: (context) => SuggestionsPage()),
     );
   }
 
@@ -385,167 +417,6 @@ class FeatureCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class BlankPage extends StatelessWidget {
-  final String title;
-
-  const BlankPage({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title, style: const TextStyle(fontFamily: 'Teko', fontWeight: FontWeight.bold)),
-      ),
-      body: Center(
-        child: Text('This is a blank page for $title.', style: const TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.bold)),
-      ),
-    );
-  }
-}
-
-// Suggestions Page
-class SuggestionsPage extends StatefulWidget {
-  @override
-  _SuggestionsPageState createState() => _SuggestionsPageState();
-}
-
-class _SuggestionsPageState extends State<SuggestionsPage> {
-  List<dynamic> nearbyPlaces = [];
-  bool isLoading = true;
-  String errorMessage = '';
-
-  final String foursquareApiKey = "fsq3GOZ7uhN/MS2jobaLIO0xPFO8b5M7gVzLp3YK79MmSU0=";
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchNearbyPlaces();
-  }
-
-  Future<void> _fetchNearbyPlaces() async {
-    try {
-      Position position = await _determinePosition();
-      double latitude = position.latitude;
-      double longitude = position.longitude;
-
-      String url =
-          'https://api.foursquare.com/v3/places/nearby?ll=$latitude,$longitude&radius=5000&limit=20';
-
-      var response = await http.get(
-        Uri.parse(url),
-        headers: {
-          "Authorization": foursquareApiKey,
-          "Accept": "application/json",
-        },
-      );
-
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        if (data['results'] != null) {
-          Set<dynamic> allPlaces = {};
-
-          for (var place in data['results']) {
-            allPlaces.add(place);
-          }
-
-          setState(() {
-            nearbyPlaces = allPlaces.toList();
-            isLoading = false;
-          });
-        }
-      } else {
-        throw 'Failed to load data with status code ${response.statusCode}';
-      }
-    } catch (error) {
-      setState(() {
-        errorMessage = 'An error occurred: $error';
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw 'Location services are disabled.';
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        throw 'Location permissions are denied';
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      throw 'Location permissions are permanently denied';
-    }
-
-    return await Geolocator.getCurrentPosition();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Nearby Places to Eat, Shop & Explore',
-          style: TextStyle(
-            fontFamily: 'Teko',
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-          ),
-        ),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-        ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage.isNotEmpty
-          ? Center(
-        child: Text(
-          errorMessage,
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
-          ),
-        ),
-      )
-          : ListView.builder(
-        itemCount: nearbyPlaces.length,
-        itemBuilder: (context, index) {
-          var place = nearbyPlaces[index];
-          String name = place['name'] ?? 'Unknown Name';
-          String address = place['location']?['address'] ?? 'Unknown Address';
-          String category = place['categories'] != null
-              ? place['categories'][0]['name'] ?? 'Unknown Category'
-              : 'Unknown Category';
-
-          return ListTile(
-            title: Text(
-              name,
-              style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(
-              '$category\n$address',
-              style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.light ? Colors.black54 : Colors.white70,
-              ),
-            ),
-          );
-        },
       ),
     );
   }
