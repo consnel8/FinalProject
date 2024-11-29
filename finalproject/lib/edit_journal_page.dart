@@ -61,6 +61,19 @@ class _EditJournalPageState extends State<EditJournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Color(0xFF55acee), // Header color
+        colorScheme: ColorScheme.light(primary: Color(0xFF55acee)),
+        textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+        foregroundColor: Color(0xFFBE3B88),
+        ),),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -69,6 +82,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
       });
     }
   }
+
 
   void _showMoodPicker() async {
     final String? mood = await showDialog<String>(
@@ -142,129 +156,132 @@ class _EditJournalPageState extends State<EditJournalPage> {
               ]
             : null,
       ),
-      body: Container(
 
+      body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/journal_diary_icon.jpg'), // Background image
-            fit: BoxFit.cover, // Ensure the image covers the screen
+            fit: BoxFit.cover, // Ensure the image covers the entire screen
           ),
         ),
-
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelStyle: TextStyle(fontFamily: 'Lora'),
-                  hintStyle: TextStyle(fontFamily: 'Lora'),
-                  hintText: 'Title',
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: Colors.transparent,
-                ),
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFbe3b88),
-                  fontFamily: 'RobotoMono',
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Date Picker Text Field
-              GestureDetector(
-                onTap: () => _selectDate(context), // Trigger date picker on tap
-                child: AbsorbPointer(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: TextEditingController(
-                            text: _selectedDate != null
-                                ? '${_selectedDate!.toLocal()}'.split(' ')[0]
-                                : 'Select Date',
-                          ),
-                          decoration: InputDecoration(
-                            labelStyle: TextStyle(fontFamily: 'Lora'),
-                            labelText: 'Select Date',
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(
-                            color: Color(0xFFbe3b88),
-                            // Style the text in the field
-                            fontFamily: 'Lora',
-                          ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _titleController,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(fontFamily: 'Lora'),
+                        hintStyle: TextStyle(fontFamily: 'Lora'),
+                        hintText: 'Title',
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.transparent,
+                      ),
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFbe3b88),
+                        fontFamily: 'RobotoMono',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () => _selectDate(context), // Trigger date picker on tap
+                      child: AbsorbPointer(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: TextEditingController(
+                                  text: _selectedDate != null
+                                      ? '${_selectedDate!.toLocal()}'.split(' ')[0]
+                                      : 'Select Date',
+                                ),
+                                decoration: InputDecoration(
+                                  labelStyle: TextStyle(fontFamily: 'Lora'),
+                                  labelText: 'Select Date',
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  border: InputBorder.none,
+                                ),
+                                style: TextStyle(
+                                  color: Color(0xFFbe3b88),
+                                  fontFamily: 'Lora',
+                                ),
+                              ),
+                            ),
+                            if (_selectedMood != null)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0, bottom: 15.0),
+                                child: Text(
+                                  'Mood: $_selectedMood',
+                                  style: TextStyle(
+                                    fontFamily: 'Lora',
+                                    fontSize: 16,
+                                    color: Color(0xFFbe3b88),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
-                      if (_selectedMood != null)
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 8.0, bottom: 15.0),
-                          child: Text(
-                            'Mood: $_selectedMood',
-                            style: TextStyle(
-                              fontFamily: 'Lora',
-                              fontSize: 16,
-                              color: Color(0xFFbe3b88),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _contentController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        hintText: 'Your journal entry...',
+                        hintStyle: TextStyle(
+                          height: 3,
+                          fontFamily: 'Lora',
                         ),
-                    ],
-                  ),
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        contentPadding: EdgeInsets.only(left: 15.0, top: -20.0),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'FuzzyBubbles',
+                        color: Colors.black,
+                        height: 1.8, // line spacing
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Display the picked or captured image if any
+                    if (_imageFile != null)
+                      Image.file(
+                        _imageFile!,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    if (widget.entry?.imageUrl != null && _imageFile == null)
+                      widget.entry!.imageUrl!.startsWith('assets/')
+                          ? Image.asset(
+                        widget.entry!.imageUrl!,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.file(
+                        File(widget.entry!.imageUrl!),
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _contentController,
-                maxLines: 10,
-                decoration: InputDecoration(
-                  hintText: 'Your journal entry...',
-                  hintStyle: TextStyle(
-                    height: 3,
-                    fontFamily: 'Lora',
-                  ),
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  contentPadding: EdgeInsets.only(left: 15.0, top: -20.0),
-                ),
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'FuzzyBubbles',
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Display the picked or captured image if any
-              if (_imageFile != null)
-                Image.file(
-                  _imageFile!,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-// If there is no picked image but an image URL is provided from the entry
-              if (widget.entry?.imageUrl != null && _imageFile == null)
-                widget.entry!.imageUrl!.startsWith('assets/')
-                    ? Image.asset(
-                  widget.entry!.imageUrl!, // For asset images
-                  height: 200,
-                  fit: BoxFit.cover,
-                )
-                    : Image.file(
-                  File(widget.entry!.imageUrl!), // For file images
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+
       bottomNavigationBar: BottomAppBar(
         color: const Color(0xFF393634),
         child: Row(
