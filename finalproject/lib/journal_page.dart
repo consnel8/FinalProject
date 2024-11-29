@@ -315,13 +315,6 @@ class _JournalPageState extends State<JournalPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text(
-          "Schedule Daily Notifications",
-          style: TextStyle(
-            fontFamily: 'Lora',
-            fontSize: 18,
-          ),
-        ),
         content: const Text(
           "Would you like to schedule daily notifications to journal?",
           style: TextStyle(
@@ -418,6 +411,7 @@ class _JournalPageState extends State<JournalPage> {
                         ),
                         TextButton(
                           onPressed: () {
+                            checkcount2 = 0;
                             const snackBar = SnackBar(
                                 content: Text("Disabled daily notification"));
                             PermissionHandler.disableDaily();

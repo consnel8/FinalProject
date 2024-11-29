@@ -308,12 +308,13 @@ class PermissionHandler {
   } // end onSelectNotification
 
   static Future<void> scheduleDailyNotification() async {
+    var when = tz.TZDateTime.now(tz.local).add(Duration(seconds: 3));
     // daily notification
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'daily_channel_id',
       'Daily Notification',
-      channelDescription: "Daily notification at preset time",
+      channelDescription: 'Daily notification at preset time',
       importance: Importance.max,
       priority: Priority.high,
     ); // end AndroidNotificationDetails
@@ -323,38 +324,21 @@ class PermissionHandler {
     ); // end platformChannelSpecifics
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      1,
-      "Journaling Time!",
-      "Let's pen in a new journal entry for today!",
-      _nextInstanceOfTime(21, 30),
+      0,
+      'Journaling Time!',
+      'Let\'s pen in a new journal entry for today!',
+      when,
       platformChannelSpecifics,
-      matchDateTimeComponents: DateTimeComponents.time,
+      androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.wallClockTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
     ); // end zonedSchedule
   } // end scheduleDailyNotification
 
-  static tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(Duration(days: 1));
-    } // end if
-    return scheduledDate;
-  } // end _nextInstanceOfTime
-
-  static tz.TZDateTime _nextInstanceOfTime2(int hour, int minute) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(Duration(days: 7));
-    } // end if
-    return scheduledDate;
-  } // end _nextInstanceOfTime2
 
   static Future<void> scheduleWeeklyNotification() async {
+    var then = tz.TZDateTime.now(tz.local).add(Duration(hours: 168));
+
     // weekly notification
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -373,7 +357,7 @@ class PermissionHandler {
       2,
       "Time to Cook?",
       "How about we work on a new recipe for this week?",
-      _nextInstanceOfTime2(15, 00),
+      then,
       platformChannelSpecifics,
       matchDateTimeComponents: DateTimeComponents.time,
       uiLocalNotificationDateInterpretation:

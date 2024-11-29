@@ -148,13 +148,6 @@ class RecipeBookPageState extends State<RecipeBookPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text(
-          "Schedule Weekly Notifications",
-          style: TextStyle(
-            fontFamily: 'Lora',
-            fontSize: 18,
-          ),
-        ),
         content: const Text(
           "Would you like to schedule weekly notifications to try a new recipe?",
           style: TextStyle(fontFamily: 'Lora'),
@@ -262,6 +255,7 @@ class RecipeBookPageState extends State<RecipeBookPage> {
                         ),
                         TextButton(
                           onPressed: () {
+                            checkcount = 0;
                             const snackBar = SnackBar(
                                 content: Text("Disabled weekly notifications"));
                             PermissionHandler.disableWeekly();
