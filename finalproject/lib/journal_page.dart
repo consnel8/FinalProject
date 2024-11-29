@@ -24,22 +24,33 @@ class _JournalPageState extends State<JournalPage> {
 
   // Load journal entries from SharedPreferences
   Future<void> _loadEntries() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? entriesString = prefs.getString('journal_entries');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? entriesString = prefs.getString('journal_entries');
 
-    if (entriesString != null) {
-      final List<dynamic> entriesJson = json.decode(entriesString);
-      setState(() {
-        _entries =
-            entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
-      });
-    } else {
-      _entries = [];
+      if (entriesString != null) {
+        final List<dynamic> entriesJson = json.decode(entriesString);
+        setState(() {
+          _entries =
+              entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
+        });
+      } else {
+        _entries = [];
+      }
+
+      // Ensure at least one sample entry is present
+      if (_entries.isEmpty) {
+        _addSampleEntry();
+      }
     }
-
-    // Ensure at least one sample entry is present
-    if (_entries.isEmpty) {
-      _addSampleEntry();
+    catch (e) {
+    // Show error message via Snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+    content: Text('Error loading journal entries: $e'),
+    backgroundColor: Colors.red,
+    ),
+    );
     }
   }
 
@@ -48,7 +59,7 @@ class _JournalPageState extends State<JournalPage> {
     _entries.addAll([
       JournalEntry(
         title: 'Welcome!',
-        content: 'This is a sample entry to help you get started.',
+        content: 'This is a sample entry to help you begin journaling! Select your mood, capture a picture and tap the save icon.',
         date: DateTime.now(),
         imageUrl: 'assets/journal_icon.png', // First pre-written entry
       ),
@@ -129,10 +140,25 @@ class _JournalPageState extends State<JournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData(
+            primaryColor: Color(0xFF55acee), // Header color
+            colorScheme: ColorScheme.light(primary: Color(0xFF55acee)),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFFBE3B88),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     return picked;
   }
+
 
   String formatDate(DateTime date) {
     final now = DateTime.now();
@@ -295,7 +321,7 @@ class _JournalPageState extends State<JournalPage> {
                 alignment: Alignment.center,
                 child: Text(
                   'PERSONAL JOURNAL',
-                  style: TextStyle(fontSize: 25, fontFamily: 'Teko'),
+                  style: TextStyle(fontSize: 28, fontFamily: 'Teko'),
                 ),
               ),
             ),
@@ -338,16 +364,20 @@ class _JournalPageState extends State<JournalPage> {
                               color: Color(0xFFBE3B88),
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              fontFamily: 'Teko'),
+                              fontFamily: 'RobotoMono'),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Text(shortContent,
+                            Expanded(
+                              child: Text(
+                                shortContent,
                                 style: const TextStyle(
                                     color: Color(0xFF787878),
                                     fontSize: 16,
-                                    fontFamily: 'Lora')),
+                                    fontFamily: 'Lora'),
+                              ),
+                            ),
                             const SizedBox(width: 10),
                           ],
                         ),
@@ -357,7 +387,7 @@ class _JournalPageState extends State<JournalPage> {
                             padding: const EdgeInsets.only(top: 8),
                             child: Image.asset(
                               entry.imageUrl!,
-                              height: 150, // Set a fixed height for the image
+                              height: 150,
                               fit: BoxFit.cover,
                             ),
                           )
@@ -367,7 +397,7 @@ class _JournalPageState extends State<JournalPage> {
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(formatDate(entry.date),
                           style: const TextStyle(
-                              color: Color(0xFF2e2e2e), fontFamily: 'Lora')),
+                              color: Color(0xff252525), fontFamily: 'Lora')),
                     ),
                     onTap: () {
                       _navigateToEditPage(context, entry);
