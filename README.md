@@ -1,21 +1,75 @@
 # LIFE PALETTE
-## CSCI 4100U Final Project - Life Palette App
+<img src="finalproject/assets/logo.png" alt="Life Palette Logo" width="200" />
 
-### Project Overview
-Together we are creating a lifestyle companion app called “Life Palette”, which is meant to be an all-in-one solution to improve day-to-day troubles for users. The app will be packed with numerous features, looking to take what is often managed through numerous different apps and integrate it into one controlled space for ease of use. Key features include virtual wardrobe management, recipe cataloging, and a personal journal – all implemented with a focus on minimalism and simplicity in mind. Designed as an advanced personal storage and high-functionality notes app with a focus on personal improvement and well-being, we seek to create a sleek, seamless experience for all users.
+## Your All-in-One Companion
+Welcome to **Life Palette** – your all-in-one vintage-inspired lifestyle companion app. Life Palette is designed to simplify and enhance day-to-day activities, integrating multiple functionalities into one seamless platform. Whether you're organizing your wardrobe, managing recipes, or journaling your thoughts, Life Palette helps you stay on top of your day-to-day life with ease and simplicity.  
 
-### Features
-Wardrobe Management: Users will be able to manually register clothing in their wardrobe by taking photos of garments and organizing them with the use of tags and clothing categories (i.e. tops, bottoms, warm weather clothing, basics, etc.). Users will be able to easily browse through their collection of clothes from anywhere while on the go. 
+Packed with features for personal improvement and well-being, Life Palette focuses on **minimalism** and **efficiency**. It’s your ultimate tool to streamline your lifestyle and bring a sense of balance and control.
+<div align="center">
+  <img src="finalproject/assets/LifePalette.png" alt="LifePalette" width="200" />
+  <img src="finalproject/assets/dark_journal.png" alt="DarkMode Personal Journal" width="200" />
+  <img src="finalproject/assets/LifePalette_shortcut.png" alt="LifePalette Shortcut" width="200" />
+</div>
 
-Recipe Catalog: A recipe storage feature where users will be able to log their favourite meals and organize them with various tags for categorization. Users will be able to easily view quick statistics about the recipes (time to prepare, personal rating, etc.), and once clicked on, the recipe will show a full detail display, including steps, any images, and any personal comments or edits. Recipes may be favourited so that they may be viewed separately in the event of search filtering. 
+## Features  
+### 🧥 **Wardrobe Management**  
+Take control of your wardrobe with Life Palette.  
+- **Add your clothes** by uploading photos of garments.
+- **Organize with tags and categories** such as tops, bottoms, warm weather clothes, and basics.  
+- **Browse your collection** anytime, anywhere. Never wonder what to wear again!  
 
-Personal Journal: Users will be prompted to log their daily mood(s), activities, and thoughts throughout their day, creating a space for personal reflection and insight. Users will be able to view date-specific entries through search functionality, as well as see various mood and activity trends as more entries are made and data is collected. As a potential future addition, the inclusion of several journaling prompts could be added to help prompt users who may have difficulty journaling their thoughts and feelings without a specific goal in mind.
+#### image of wardrobe here
+
+### 🍳 **Recipe Catalog**, powered by **Firestore** for seamless data management.
+Keep your favorite meals organized with our recipe storage feature.  
+- **Using Firestore,** save recipes and categorize them by type, meal time, or ingredients.  
+- **View key stats** like preparation time, difficulty, and your personal rating.  
+- **Full recipe display** includes cooking steps, images, and comments.  
+- **Favorite recipes** to easily find them later.
+
+### recipe catalogue image here
+
+### 📔 **Personal Journal**  
+Reflect on your day and track your mood with Life Palette’s personal journaling feature.  
+- **Log daily moods** and activities for self-reflection, with **local data storage** using SharedPreferences. 
+-  **Built-in camera** feature to capture images and add to entries.  
+- **Use data charts** to analyse mood trends over time to gain insights into your mental well-being.  
+- **Snackbars** provide real-time feedback for actions like saving or deleting entries.  
+- **Search entries** by date, allowing you to revisit past moments. 
+<div align= "center">
+  <img src="finalproject/assets/journal_home.png" alt="Personal Journal Entries" width="200" />
+  <img src="finalproject/assets/journal.png" alt="Personal Journal" width="200" />
+  <img src="finalproject/assets/mood_trends.png" alt="Journal Mood Trends" width="200" />
+</div>
+
+### ⚙️ **Settings for Customized Experience**
+- Enable **snackbars** and **notifications** for key updates and reminders.
+- Activate **dark mode** or change appearance to fit your needs.
+- **Cloud data** deletion.
+<div align="center">
+  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="200" />
+  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="200" />
+</div>
+
+## How to Run the Project
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/consnel8/LifePalette.git
+2. Open Android Studio then open and choose the project folder:
+   ```bash
+   cd LifePalette
+4. Install dependencies:
+   ```bash
+   pub get
+5. Run:
+   ```
+   Shift+F10
 
 
-
-**Group Members/Contributers**
-- Megan Brandreth, mbrandreth
-- Zara Farrukh, zarafarrukh
-- Connor Snelgrove, consnel8
-- Eisha Rizvi, eisharizvi
-- Syeda Muqadas, Syeda-Muqadas
+## **Group Members/Contributors**  
+- Megan Brandreth, mbrandreth  
+- Zara Farrukh, zarafarrukh  
+- Connor Snelgrove, consnel8  
+- Eisha Rizvi, eisharizvi  
+- Syeda Muqadas, Syeda-Muqadas  
