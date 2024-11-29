@@ -132,7 +132,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 TextButton(
                                   onPressed: () {
                                     PermissionHandler.enableDaily();
+                                    const snackBar = SnackBar(
+                                        content: Text(
+                                            "Daily Notifications have been enabled"));
                                     Navigator.pop(context);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   }, // end onPressed
                                   child: const Text(
                                     "Only Daily Notifications",
@@ -144,7 +149,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 TextButton(
                                   onPressed: () {
                                     PermissionHandler.enableWeekly();
+                                    const snackBar = SnackBar(
+                                        content: Text(
+                                            "Weekly Notifications have been enabled"));
                                     Navigator.pop(context);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   }, // end onPressed
                                   child: const Text(
                                     "Only Weekly Notifications",
@@ -157,7 +167,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   onPressed: () {
                                     PermissionHandler.enableDaily();
                                     PermissionHandler.enableWeekly();
+                                    const snackBar = SnackBar(
+                                        content: Text("Daily and Weekly "
+                                            "Notifications have been enabled"));
                                     Navigator.pop(context);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   }, // end onPressed
                                   child: const Text(
                                     "Daily and Weekly Notifications",
