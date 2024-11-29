@@ -57,9 +57,9 @@ Discover places to eat, shop, and explore with tailored recommendations based on
 - Utilizes **HTTP requests** to fetch and display nearby attractions and amenities in real time.
 - Effortlessly **plan your outings** without leaving the app, by **adding places**.
  <div align="center">
-  <img src="finalproject/assets/suggestions.png" alt="Suggestions" width="200" />
-  <img src="finalproject/assets/nearby_places.png" alt="Explore Nearby Places" width="200" />
-  <img src="finalproject/assets/add_place.png" alt="Add Places" width="200" />
+  <img src="finalproject/assets/suggestions.png" alt="Suggestions" width="170" />
+  <img src="finalproject/assets/nearby_places.png" alt="Explore Nearby Places" width="170" />
+  <img src="finalproject/assets/add_place.png" alt="Add Places" width="170" />
 </div>
 
 ## How to Run the Project
