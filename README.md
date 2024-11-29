@@ -37,9 +37,9 @@ Reflect on your day and track your mood with Life Palette’s personal journalin
 - **Snackbars** provide real-time feedback for actions like saving or deleting entries.  
 - **Search entries** by date, allowing you to revisit past moments. 
 <div align= "center">
-  <img src="finalproject/assets/journal_home.png" alt="Personal Journal Entries" width="200" />
-  <img src="finalproject/assets/journal.png" alt="Personal Journal" width="200" />
-  <img src="finalproject/assets/mood_trends.png" alt="Journal Mood Trends" width="200" />
+  <img src="finalproject/assets/journal_home.png" alt="Personal Journal Entries" width="170" />
+  <img src="finalproject/assets/journal.png" alt="Personal Journal" width="170" />
+  <img src="finalproject/assets/mood_trends.png" alt="Journal Mood Trends" width="170" />
 </div>
 
 ### ⚙️ **Settings**
@@ -48,8 +48,8 @@ Customize your experience.
 - Activate **dark mode** or change appearance to fit your needs.
 - **Cloud data** deletion.
 <div align="center">
-  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="200" />
-  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="200" />
+  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="170" />
+  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="170" />
 </div>
 
 ### 🌟 **Personalized Suggestions**
