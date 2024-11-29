@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'journal_entry_model.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 
 class EditJournalPage extends StatefulWidget {
   final JournalEntry? entry;
@@ -40,6 +42,13 @@ class _EditJournalPageState extends State<EditJournalPage> {
     }
   }
 
+  String _formatSelectedDate(DateTime? date) {
+    if (date == null) return 'Select Date';
+
+    final timeAgo = timeago.format(date);
+    final formattedDate = DateFormat('MMM dd, yyyy').format(date);
+    return '$timeAgo | $formattedDate';
+  }
 
   // Method to pick an image from the camera
   Future<void> _captureImage() async {
@@ -120,7 +129,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
           },
         ),
         title: const Text('Journal Entry',
-            style: TextStyle(fontFamily: 'Teko', fontSize: 38)),
+            style: TextStyle(fontFamily: 'RobotoMono', fontSize: 25)),
         actions: widget.entry != null
             ? [
                 IconButton(
@@ -133,14 +142,12 @@ class _EditJournalPageState extends State<EditJournalPage> {
                         title: const Text('Delete Entry',
                             style: TextStyle(fontFamily: 'Lora')),
                         content: const Text(
-                            'Are you sure you want to delete this entry?',
-                            style: TextStyle(fontFamily: 'Lora')),
+                            'Are you sure you want to delete this entry?',),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
                             // Cancel
-                            child: const Text('Cancel',
-                                style: TextStyle(fontFamily: 'Lora')),
+                            child: const Text('Cancel',),
                           ),
                           TextButton(
                             onPressed: () {
@@ -148,8 +155,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                               Navigator.pop(context,
                                   'delete'); // Signal deletion to parent
                             },
-                            child: const Text('Delete',
-                                style: TextStyle(fontFamily: 'Lora')),
+                            child: const Text('Delete',),
                           ),
                         ],
                       ),
@@ -189,42 +195,41 @@ class _EditJournalPageState extends State<EditJournalPage> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFbe3b88),
                         fontFamily: 'RobotoMono',
+                        fontStyle: FontStyle.normal,
                       ),
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
-                      onTap: () => _selectDate(context), // Trigger date picker on tap
+                      onTap: () => _selectDate(context),
                       child: AbsorbPointer(
                         child: Row(
                           children: [
                             Expanded(
                               child: TextField(
                                 controller: TextEditingController(
-                                  text: _selectedDate != null
-                                      ? '${_selectedDate!.toLocal()}'.split(' ')[0]
-                                      : 'Select Date',
+                                  text: _formatSelectedDate(_selectedDate),
                                 ),
                                 decoration: InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Lora'),
+                                  labelStyle: TextStyle(fontFamily: 'Lora', fontSize: 30,),
                                   labelText: 'Select Date',
                                   filled: true,
                                   fillColor: Colors.transparent,
                                   border: InputBorder.none,
                                 ),
                                 style: TextStyle(
-                                  color: Color(0xFFbe3b88),
+                                  color: Color(0xFF444444),
                                   fontFamily: 'Lora',
                                 ),
                               ),
                             ),
                             if (_selectedMood != null)
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0, bottom: 15.0),
+                                padding: const EdgeInsets.only(left: 8.0, bottom: 25.0),
                                 child: Text(
                                   'Mood: $_selectedMood',
                                   style: TextStyle(
-                                    fontFamily: 'Lora',
-                                    fontSize: 16,
+                                    fontFamily: 'IndieFlower',
+                                    fontSize: 20,
                                     color: Color(0xFFbe3b88),
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -247,14 +252,14 @@ class _EditJournalPageState extends State<EditJournalPage> {
                         border: InputBorder.none,
                         filled: true,
                         fillColor: Colors.transparent,
-                        contentPadding: EdgeInsets.only(left: 15.0, top: -20.0),
+                        contentPadding: EdgeInsets.only(left: 15.0, top: -28.0),
                       ),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'FuzzyBubbles',
                         color: Colors.black,
-                        height: 1.8, // line spacing
+                        height: 1.70, // line spacing
                       ),
                     ),
                     const SizedBox(height: 16),
