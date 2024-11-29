@@ -260,6 +260,22 @@ class RecipeBookPageState extends State<RecipeBookPage> {
                             ),
                           ),
                         ),
+                        TextButton(
+                          onPressed: () {
+                            const snackBar = SnackBar(
+                                content: Text("Disabled weekly notifications"));
+                            PermissionHandler.disableWeekly();
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          },
+                          child: const Text(
+                            "Disable",
+                            style: TextStyle(
+                              fontFamily: 'Lora',
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );

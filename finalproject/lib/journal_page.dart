@@ -43,15 +43,14 @@ class _JournalPageState extends State<JournalPage> {
       if (_entries.isEmpty) {
         _addSampleEntry();
       }
-    }
-    catch (e) {
-    // Show error message via Snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-    content: Text('Error loading journal entries: $e'),
-    backgroundColor: Colors.red,
-    ),
-    );
+    } catch (e) {
+      // Show error message via Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error loading journal entries: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -60,7 +59,8 @@ class _JournalPageState extends State<JournalPage> {
     _entries.addAll([
       JournalEntry(
         title: 'Welcome!',
-        content: 'This is a sample entry to help you begin journaling! Log moods, view mood trends and insights, capture a picture for your entry and tap the save icon.',
+        content:
+            'This is a sample entry to help you begin journaling! Log moods, view mood trends and insights, capture a picture for your entry and tap the save icon.',
         date: DateTime.now(),
         imageUrl: 'assets/journal_icon.png', // First pre-written entry
       ),
@@ -77,7 +77,8 @@ class _JournalPageState extends State<JournalPage> {
       ),
       JournalEntry(
         title: 'Rainy Day Reflections',
-        content: 'It’s a gloomy, rainy day outside, and I’ve been feeling a little off today. Sometimes it’s hard to shake off the feeling of '
+        content:
+            'It’s a gloomy, rainy day outside, and I’ve been feeling a little off today. Sometimes it’s hard to shake off the feeling of '
             'being overwhelmed with everything that’s going on. But I’m reminding myself that it’s okay to have these days. Tomorrow is a '
             'new day, and I’m ready to tackle whatever comes my way.',
         date: DateTime.now().subtract(Duration(days: 3)),
@@ -85,7 +86,8 @@ class _JournalPageState extends State<JournalPage> {
       ),
       JournalEntry(
         title: 'Productivity Boost',
-        content: 'I woke up early today and started working on my personal projects. It feels amazing to be so productive and focused. '
+        content:
+            'I woke up early today and started working on my personal projects. It feels amazing to be so productive and focused. '
             'I managed to complete two major tasks that I’ve been procrastinating on. I’m learning to take breaks in between, so I don’t burn '
             'myself out. The balance is key, and today I’ve got it just right.',
         date: DateTime.now().subtract(Duration(days: 4)),
@@ -93,14 +95,16 @@ class _JournalPageState extends State<JournalPage> {
       ),
       JournalEntry(
         title: 'A Quiet Sunday',
-        content: 'Today was all about taking it slow. I spent the morning reading a book, followed by a long walk in the park. It’s important '
+        content:
+            'Today was all about taking it slow. I spent the morning reading a book, followed by a long walk in the park. It’s important '
             'to recharge, and today was the perfect opportunity to do that. I feel refreshed and ready to take on the week ahead.',
         date: DateTime.now().subtract(Duration(days: 5)),
         mood: 'Relaxed 🧘',
       ),
       JournalEntry(
         title: 'Challenges at Work',
-        content: 'Today was a challenging day at work. There were some unexpected obstacles in the project I’m working on. It’s moments like these '
+        content:
+            'Today was a challenging day at work. There were some unexpected obstacles in the project I’m working on. It’s moments like these '
             'that really test your patience and problem-solving skills. I know I’ll get through it, but it’s definitely a reminder of how important '
             'it is to stay calm under pressure.',
         date: DateTime.now().subtract(Duration(days: 6)),
@@ -108,69 +112,80 @@ class _JournalPageState extends State<JournalPage> {
       ),
       JournalEntry(
         title: 'Gratitude Check',
-        content: 'I took a moment today to reflect on all the things I’m grateful for: my family, my friends, my health, and the opportunities I have. '
+        content:
+            'I took a moment today to reflect on all the things I’m grateful for: my family, my friends, my health, and the opportunities I have. '
             'Sometimes, we get caught up in what’s not going well, but today I focused on the positives. It made such a difference in my mindset.',
         date: DateTime.now().subtract(Duration(days: 7)),
         mood: 'Grateful 🙏',
       ),
       JournalEntry(
         title: 'Exciting News',
-        content: 'Today was full of excitement! I received great news about a project I’ve been working on for weeks. It’s incredibly fulfilling to see '
+        content:
+            'Today was full of excitement! I received great news about a project I’ve been working on for weeks. It’s incredibly fulfilling to see '
             'hard work pay off. Celebrated the achievement with friends!',
         date: DateTime.now().subtract(Duration(days: 2)),
         mood: 'Excited 🎉',
       ),
       JournalEntry(
         title: 'Peaceful Evening',
-        content: 'Had a calm and peaceful evening today. Listened to some soothing music, lit a candle, and just enjoyed the quiet moment.',
+        content:
+            'Had a calm and peaceful evening today. Listened to some soothing music, lit a candle, and just enjoyed the quiet moment.',
         date: DateTime.now().subtract(Duration(days: 7)),
         mood: 'Relaxed 🧘',
       ),
       JournalEntry(
         title: 'Energetic Morning',
-        content: 'Started the day with a quick jog in the park. The fresh air and morning sunlight were rejuvenating. Feeling so energized!',
+        content:
+            'Started the day with a quick jog in the park. The fresh air and morning sunlight were rejuvenating. Feeling so energized!',
         date: DateTime.now().subtract(Duration(days: 8)),
         mood: 'Happy 😊',
       ),
       JournalEntry(
         title: 'Tough Decisions',
-        content: 'Faced some tough decisions today. It’s hard to know if I’m making the right call, but I’m trusting my instincts and taking it one step at a time.',
+        content:
+            'Faced some tough decisions today. It’s hard to know if I’m making the right call, but I’m trusting my instincts and taking it one step at a time.',
         date: DateTime.now().subtract(Duration(days: 9)),
         mood: 'Stressed 😓',
       ),
       JournalEntry(
         title: 'Simple Joys',
-        content: 'Enjoyed a delicious cup of coffee and an inspiring book. Sometimes it’s the little things that bring the most happiness.',
+        content:
+            'Enjoyed a delicious cup of coffee and an inspiring book. Sometimes it’s the little things that bring the most happiness.',
         date: DateTime.now().subtract(Duration(days: 10)),
         mood: 'Grateful 🙏',
       ),
       JournalEntry(
         title: 'Milestone Achieved',
-        content: 'Reached a significant milestone in my fitness journey today. All the hard work has been worth it!',
+        content:
+            'Reached a significant milestone in my fitness journey today. All the hard work has been worth it!',
         date: DateTime.now().subtract(Duration(days: 11)),
         mood: 'Motivated 🎯',
       ),
       JournalEntry(
         title: 'Catch-Up Day',
-        content: 'Spent the day catching up on emails and chores. Not the most exciting, but necessary to feel organized.',
+        content:
+            'Spent the day catching up on emails and chores. Not the most exciting, but necessary to feel organized.',
         date: DateTime.now().subtract(Duration(days: 12)),
         mood: 'Neutral 😐',
       ),
       JournalEntry(
         title: 'Surprise Gift',
-        content: 'Received a thoughtful gift from a friend today. It’s moments like these that remind me of how lucky I am to have amazing people around.',
+        content:
+            'Received a thoughtful gift from a friend today. It’s moments like these that remind me of how lucky I am to have amazing people around.',
         date: DateTime.now().subtract(Duration(days: 13)),
         mood: 'Happy 😊',
       ),
       JournalEntry(
         title: 'Teamwork Triumph',
-        content: 'Collaborated with the team today to overcome a major hurdle. Feeling accomplished and grateful for their support.',
+        content:
+            'Collaborated with the team today to overcome a major hurdle. Feeling accomplished and grateful for their support.',
         date: DateTime.now().subtract(Duration(days: 14)),
         mood: 'Grateful 🙏',
       ),
       JournalEntry(
         title: 'Weekend Fun',
-        content: 'Had a blast at the amusement park with friends. So much laughter and fun!',
+        content:
+            'Had a blast at the amusement park with friends. So much laughter and fun!',
         date: DateTime.now().subtract(Duration(days: 15)),
         mood: 'Excited 🎉',
       ),
@@ -259,7 +274,6 @@ class _JournalPageState extends State<JournalPage> {
 
     return picked;
   }
-
 
   String formatDate(DateTime date) {
     final now = DateTime.now();
@@ -402,6 +416,22 @@ class _JournalPageState extends State<JournalPage> {
                             style: TextStyle(fontFamily: 'Lora'),
                           ),
                         ),
+                        TextButton(
+                          onPressed: () {
+                            const snackBar = SnackBar(
+                                content: Text("Disabled daily notification"));
+                            PermissionHandler.disableDaily();
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          },
+                          child: const Text(
+                            "Disable",
+                            style: TextStyle(
+                              fontFamily: 'Lora',
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -522,7 +552,8 @@ class _JournalPageState extends State<JournalPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => JournalInsightsPage(entries: _entries),
+                      builder: (context) =>
+                          JournalInsightsPage(entries: _entries),
                     ),
                   );
                 }),

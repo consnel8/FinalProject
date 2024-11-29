@@ -19,6 +19,45 @@ class _NotificationsPageState extends State<NotificationsPage> {
   String enableSTR = "Enable"; // cosmetic, updates if enabling or disabling
 
   @override
+  void initState() {
+    super.initState();
+
+    // Initialize the notification plugin
+    PermissionHandler.flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Define Android-specific settings (like using app icon for notifications)
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    // Combine Android-specific initialization settings
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+
+    //for both platforms
+    // const InitializationSettings initializationSettings = InitializationSettings(
+    //   android: initializationSettingsAndroid,
+    //   iOS: initializationSettingsIOS,
+    // );
+
+    // Initialize the notification plugin with the defined settings
+    PermissionHandler.flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
+        // Handle notification tap event
+        PermissionHandler.onSelectNotification(notificationResponse.payload);
+        print("test");
+        //you call other functions here
+      },
+    );
+
+    // Request notification permission if running on Android 13+
+    if (Platform.isAndroid) {
+      PermissionHandler.requestNotificationPermission();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -219,7 +258,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     ),
                   ),
                 ], // end children
-              )
+              ),
             ], // end children
           ),
         ),
@@ -244,10 +283,18 @@ class PermissionHandler {
     scheduleDailyNotification();
   } // end enableDaily
 
+  static Future<void> disableDaily() async {
+    await flutterLocalNotificationsPlugin.cancel(1);
+  } // end disableDaily
+
   static Future<void> enableWeekly() async {
     // enables the weekly notifications
     scheduleWeeklyNotification();
   } // end enableWeekly
+
+  static Future<void> disableWeekly() async {
+    await flutterLocalNotificationsPlugin.cancel(2);
+  } // end disableWeekly
 
   static Future<void> disableNotif() async {
     // disables all notifications
