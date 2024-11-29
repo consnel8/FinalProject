@@ -18,7 +18,7 @@ Take control of your wardrobe with Life Palette.
 - **Organize with tags and categories** such as tops, bottoms, warm weather clothes, and basics.  
 - **Browse your collection** anytime, anywhere. Never wonder what to wear again!  
 
-#### image of wardrobe here
+<!--images of wardrobe-->
 
 ### 🍳 **Recipe Catalog**, powered by **Firestore** for seamless data management.
 Keep your favorite meals organized with our recipe storage feature.  
@@ -27,7 +27,7 @@ Keep your favorite meals organized with our recipe storage feature.
 - **Full recipe display** includes cooking steps, images, and comments.  
 - **Favorite recipes** to easily find them later.
 
-### recipe catalogue image here
+<!--recipe catalogue images here-->
 
 ### 📔 **Personal Journal**  
 Reflect on your day and track your mood with Life Palette’s personal journaling feature.  
@@ -37,18 +37,29 @@ Reflect on your day and track your mood with Life Palette’s personal journalin
 - **Snackbars** provide real-time feedback for actions like saving or deleting entries.  
 - **Search entries** by date, allowing you to revisit past moments. 
 <div align= "center">
-  <img src="finalproject/assets/journal_home.png" alt="Personal Journal Entries" width="200" />
-  <img src="finalproject/assets/journal.png" alt="Personal Journal" width="200" />
-  <img src="finalproject/assets/mood_trends.png" alt="Journal Mood Trends" width="200" />
+  <img src="finalproject/assets/journal_home.png" alt="Personal Journal Entries" width="170" />
+  <img src="finalproject/assets/journal.png" alt="Personal Journal" width="170" />
+  <img src="finalproject/assets/mood_trends.png" alt="Journal Mood Trends" width="170" />
 </div>
 
-### ⚙️ **Settings for Customized Experience**
+### 🌟 **Personalized Suggestions**
+Discover places to eat, shop, and explore with tailored recommendations based on your location.
+- Utilizes **HTTP requests** to fetch and display nearby attractions and amenities in real time.
+- Effortlessly **plan your outings** without leaving the app, by **adding places**.
+ <div align="center">
+  <img src="finalproject/assets/suggestions.png" alt="Suggestions" width="170" />
+  <img src="finalproject/assets/nearby_places.png" alt="Explore Nearby Places" width="170" />
+  <img src="finalproject/assets/add_place.png" alt="Add Places" width="170" />
+</div>
+
+### ⚙️ **Settings**
+Customize your experience.
 - Enable **snackbars** and **notifications** for key updates and reminders.
 - Activate **dark mode** or change appearance to fit your needs.
 - **Cloud data** deletion.
 <div align="center">
-  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="200" />
-  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="200" />
+  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="170" />
+  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="170" />
 </div>
 
 ## How to Run the Project

@@ -333,6 +333,20 @@ class _EditJournalPageState extends State<EditJournalPage> {
                       mood: _selectedMood,
                     );
 
+                    // Snackbar when saving edited/new entry
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                              '✨ Entry saved! Time to reflect',
+                          style: TextStyle(fontFamily: 'Lora', ),
+                        ),
+                        duration: Duration(seconds: 5),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Color(0xffc5c5c5),
+                        margin: EdgeInsets.all(16.0),
+                      ),
+                    );
+
                     Navigator.pop(context, updatedEntry);
                   },
                 ),
