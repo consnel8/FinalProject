@@ -42,16 +42,6 @@ Reflect on your day and track your mood with Life Palette’s personal journalin
   <img src="finalproject/assets/mood_trends.png" alt="Journal Mood Trends" width="170" />
 </div>
 
-### ⚙️ **Settings**
-Customize your experience.
-- Enable **snackbars** and **notifications** for key updates and reminders.
-- Activate **dark mode** or change appearance to fit your needs.
-- **Cloud data** deletion.
-<div align="center">
-  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="170" />
-  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="170" />
-</div>
-
 ### 🌟 **Personalized Suggestions**
 Discover places to eat, shop, and explore with tailored recommendations based on your location.
 - Utilizes **HTTP requests** to fetch and display nearby attractions and amenities in real time.
@@ -60,6 +50,16 @@ Discover places to eat, shop, and explore with tailored recommendations based on
   <img src="finalproject/assets/suggestions.png" alt="Suggestions" width="170" />
   <img src="finalproject/assets/nearby_places.png" alt="Explore Nearby Places" width="170" />
   <img src="finalproject/assets/add_place.png" alt="Add Places" width="170" />
+</div>
+
+### ⚙️ **Settings**
+Customize your experience.
+- Enable **snackbars** and **notifications** for key updates and reminders.
+- Activate **dark mode** or change appearance to fit your needs.
+- **Cloud data** deletion.
+<div align="center">
+  <img src="finalproject/assets/Settings_Light.png" alt="Settings" width="170" />
+  <img src="finalproject/assets/settings.png" alt="Settings Dark Mode" width="170" />
 </div>
 
 ## How to Run the Project
