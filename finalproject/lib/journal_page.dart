@@ -69,13 +69,10 @@ class _JournalPageState extends State<JournalPage> {
             'Today felt like a small victory. I finally finished that coding project '
             'I have been working on for weeks. It was not perfect, but seeing it all come together gave me a huge sense'
             'of accomplishment. I took some time to celebrate this milestone by treating myself to my favourite coffee at the cute cafe nearby.'
-            'I cannot wait to see what next week has to offer for me!Today felt like a small victory. I finally finished that coding project '
-                'I have been working on for weeks. It was not perfect, but seeing it all come together gave me a huge sense'
-                'of accomplishment. I took some time to celebrate this milestone by treating myself to my favourite coffee at the cute cafe nearby.'
-                'I cannot wait to see what next week has to offer for me!',
+            'I cannot wait to see what next week has to offer for me!',
         date: DateTime.now().subtract(Duration(days: 1)),
         imageUrl: 'assets/journal_entry2.jpg',
-        mood: 'Happy',
+        mood: 'Motivated 🎯',
       ),
     ]);
 

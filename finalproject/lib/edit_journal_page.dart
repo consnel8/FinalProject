@@ -23,20 +23,23 @@ class _EditJournalPageState extends State<EditJournalPage> {
   void initState() {
     super.initState();
 
-    // Initialize the text controllers with the existing journal entry (if any)
     if (widget.entry != null) {
       _titleController.text = widget.entry!.title;
       _contentController.text = widget.entry!.content;
-      _imageFile = widget.entry!.imageUrl != null
-          ? File(widget.entry!.imageUrl!)
-          : null; // Load existing image if present
-      _selectedDate = widget.entry!.date; // Load existing date if present
-      _selectedMood = widget.entry!.mood; // Prepopulate the mood if editing
+
+      // Only set _imageFile if the image URL is not an asset
+      if (widget.entry!.imageUrl != null &&
+          !widget.entry!.imageUrl!.startsWith('assets/')) {
+        _imageFile = File(widget.entry!.imageUrl!);
+      }
+
+      _selectedDate = widget.entry!.date;
+      _selectedMood = widget.entry!.mood;
     } else {
-      _selectedDate =
-          DateTime.now(); // Default to the current date if no entry is provided
+      _selectedDate = DateTime.now();
     }
   }
+
 
   // Method to pick an image from the camera
   Future<void> _captureImage() async {
@@ -259,19 +262,19 @@ class _EditJournalPageState extends State<EditJournalPage> {
                     if (_imageFile != null)
                       Image.file(
                         _imageFile!,
-                        height: 200,
+                        height: 150,
                         fit: BoxFit.cover,
                       ),
                     if (widget.entry?.imageUrl != null && _imageFile == null)
                       widget.entry!.imageUrl!.startsWith('assets/')
                           ? Image.asset(
                         widget.entry!.imageUrl!,
-                        height: 200,
+                        height: 150,
                         fit: BoxFit.cover,
                       )
                           : Image.file(
                         File(widget.entry!.imageUrl!),
-                        height: 200,
+                        height: 150,
                         fit: BoxFit.cover,
                       ),
                   ],
@@ -314,19 +317,15 @@ class _EditJournalPageState extends State<EditJournalPage> {
               icon: const Icon(Icons.save),
               iconSize: 35.0,
               onPressed: () {
-                // Save the journal entry with title, content, image, and selected date
                 final updatedEntry = JournalEntry(
                   title: _titleController.text,
                   content: _contentController.text,
-                  imageUrl: _imageFile?.path,
-                  // Save the file path as the image URL
+                  imageUrl: _imageFile?.path ?? widget.entry?.imageUrl,
                   date: _selectedDate ?? DateTime.now(),
-                  // Use selected date or default to now
                   mood: _selectedMood,
                 );
 
-                Navigator.pop(
-                    context, updatedEntry); // Return the updated entry
+                Navigator.pop(context, updatedEntry);
               },
             ),
           ],
@@ -349,7 +348,7 @@ class MoodPickerDialog extends StatelessWidget {
       title: const Text('Select Mood', style: TextStyle(fontFamily: 'Lora')),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: ['Happy', 'Motivated', 'Sad', 'Excited'].map((mood) {
+        children: ['Happy 😊', 'Motivated 🎯', 'Sad 😢', 'Excited 🎉'].map((mood) {
           return RadioListTile<String>(
             title: Text(
               mood,
