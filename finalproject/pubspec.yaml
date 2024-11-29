@@ -54,6 +54,8 @@ dependencies:
   cloud_firestore: ^5.4.4
   firebase_storage: ^12.3.4
   timeago: ^3.7.0
+  fl_chart: ^0.69.2
+  word_cloud: ^1.0.3
 
 
 dev_dependencies:
@@ -92,6 +94,9 @@ flutter:
     - assets/collage.jpg
     - assets/Outfit.jpg
     - assets/shoes.jpg
+    - assets/camera.png
+    - assets/mood.png
+    - assets/save.png
   fonts:
     - family: Teko
       fonts:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'edit_journal_page.dart';
 import 'journal_entry_model.dart';
+import 'journal_insights_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // For encoding/decoding the list
 import 'notifications_page.dart';
@@ -54,12 +55,12 @@ class _JournalPageState extends State<JournalPage> {
     }
   }
 
-// Add a sample entry
+// Sample entries
   void _addSampleEntry() {
     _entries.addAll([
       JournalEntry(
         title: 'Welcome!',
-        content: 'This is a sample entry to help you begin journaling! Select your mood, capture a picture and tap the save icon.',
+        content: 'This is a sample entry to help you begin journaling! Log moods, view mood trends and insights, capture a picture for your entry and tap the save icon.',
         date: DateTime.now(),
         imageUrl: 'assets/journal_icon.png', // First pre-written entry
       ),
@@ -73,6 +74,105 @@ class _JournalPageState extends State<JournalPage> {
         date: DateTime.now().subtract(Duration(days: 1)),
         imageUrl: 'assets/journal_entry2.jpg',
         mood: 'Motivated 🎯',
+      ),
+      JournalEntry(
+        title: 'Rainy Day Reflections',
+        content: 'It’s a gloomy, rainy day outside, and I’ve been feeling a little off today. Sometimes it’s hard to shake off the feeling of '
+            'being overwhelmed with everything that’s going on. But I’m reminding myself that it’s okay to have these days. Tomorrow is a '
+            'new day, and I’m ready to tackle whatever comes my way.',
+        date: DateTime.now().subtract(Duration(days: 3)),
+        mood: 'Sad 🌧️',
+      ),
+      JournalEntry(
+        title: 'Productivity Boost',
+        content: 'I woke up early today and started working on my personal projects. It feels amazing to be so productive and focused. '
+            'I managed to complete two major tasks that I’ve been procrastinating on. I’m learning to take breaks in between, so I don’t burn '
+            'myself out. The balance is key, and today I’ve got it just right.',
+        date: DateTime.now().subtract(Duration(days: 4)),
+        mood: 'Motivated 🎯',
+      ),
+      JournalEntry(
+        title: 'A Quiet Sunday',
+        content: 'Today was all about taking it slow. I spent the morning reading a book, followed by a long walk in the park. It’s important '
+            'to recharge, and today was the perfect opportunity to do that. I feel refreshed and ready to take on the week ahead.',
+        date: DateTime.now().subtract(Duration(days: 5)),
+        mood: 'Relaxed 🧘',
+      ),
+      JournalEntry(
+        title: 'Challenges at Work',
+        content: 'Today was a challenging day at work. There were some unexpected obstacles in the project I’m working on. It’s moments like these '
+            'that really test your patience and problem-solving skills. I know I’ll get through it, but it’s definitely a reminder of how important '
+            'it is to stay calm under pressure.',
+        date: DateTime.now().subtract(Duration(days: 6)),
+        mood: 'Stressed 😓',
+      ),
+      JournalEntry(
+        title: 'Gratitude Check',
+        content: 'I took a moment today to reflect on all the things I’m grateful for: my family, my friends, my health, and the opportunities I have. '
+            'Sometimes, we get caught up in what’s not going well, but today I focused on the positives. It made such a difference in my mindset.',
+        date: DateTime.now().subtract(Duration(days: 7)),
+        mood: 'Grateful 🙏',
+      ),
+      JournalEntry(
+        title: 'Exciting News',
+        content: 'Today was full of excitement! I received great news about a project I’ve been working on for weeks. It’s incredibly fulfilling to see '
+            'hard work pay off. Celebrated the achievement with friends!',
+        date: DateTime.now().subtract(Duration(days: 2)),
+        mood: 'Excited 🎉',
+      ),
+      JournalEntry(
+        title: 'Peaceful Evening',
+        content: 'Had a calm and peaceful evening today. Listened to some soothing music, lit a candle, and just enjoyed the quiet moment.',
+        date: DateTime.now().subtract(Duration(days: 7)),
+        mood: 'Relaxed 🧘',
+      ),
+      JournalEntry(
+        title: 'Energetic Morning',
+        content: 'Started the day with a quick jog in the park. The fresh air and morning sunlight were rejuvenating. Feeling so energized!',
+        date: DateTime.now().subtract(Duration(days: 8)),
+        mood: 'Happy 😊',
+      ),
+      JournalEntry(
+        title: 'Tough Decisions',
+        content: 'Faced some tough decisions today. It’s hard to know if I’m making the right call, but I’m trusting my instincts and taking it one step at a time.',
+        date: DateTime.now().subtract(Duration(days: 9)),
+        mood: 'Stressed 😓',
+      ),
+      JournalEntry(
+        title: 'Simple Joys',
+        content: 'Enjoyed a delicious cup of coffee and an inspiring book. Sometimes it’s the little things that bring the most happiness.',
+        date: DateTime.now().subtract(Duration(days: 10)),
+        mood: 'Grateful 🙏',
+      ),
+      JournalEntry(
+        title: 'Milestone Achieved',
+        content: 'Reached a significant milestone in my fitness journey today. All the hard work has been worth it!',
+        date: DateTime.now().subtract(Duration(days: 11)),
+        mood: 'Motivated 🎯',
+      ),
+      JournalEntry(
+        title: 'Catch-Up Day',
+        content: 'Spent the day catching up on emails and chores. Not the most exciting, but necessary to feel organized.',
+        date: DateTime.now().subtract(Duration(days: 12)),
+        mood: 'Neutral 😐',
+      ),
+      JournalEntry(
+        title: 'Surprise Gift',
+        content: 'Received a thoughtful gift from a friend today. It’s moments like these that remind me of how lucky I am to have amazing people around.',
+        date: DateTime.now().subtract(Duration(days: 13)),
+        mood: 'Happy 😊',
+      ),
+      JournalEntry(
+        title: 'Teamwork Triumph',
+        content: 'Collaborated with the team today to overcome a major hurdle. Feeling accomplished and grateful for their support.',
+        date: DateTime.now().subtract(Duration(days: 14)),
+        mood: 'Grateful 🙏',
+      ),
+      JournalEntry(
+        title: 'Weekend Fun',
+        content: 'Had a blast at the amusement park with friends. So much laughter and fun!',
+        date: DateTime.now().subtract(Duration(days: 15)),
+        mood: 'Excited 🎉',
       ),
     ]);
 
@@ -417,7 +517,15 @@ class _JournalPageState extends State<JournalPage> {
             IconButton(
                 icon: const Icon(Icons.insights),
                 iconSize: 35.0,
-                onPressed: () {}),
+                onPressed: () {
+                  // Navigate to the insights page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => JournalInsightsPage(entries: _entries),
+                    ),
+                  );
+                }),
             Container(
               height: 60, // Height of the separator
               width: 2, // Width of the separator

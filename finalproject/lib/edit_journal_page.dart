@@ -121,7 +121,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
     ),
     child: Scaffold(
       appBar: AppBar(
-        elevation: 1, // Remove the shadow for the diary look
+        elevation: 1,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -134,13 +134,15 @@ class _EditJournalPageState extends State<EditJournalPage> {
             ? [
                 IconButton(
                   icon: const Icon(Icons.delete),
+                  iconSize: 30,
+                  color: Colors.red,
                   onPressed: () {
                     // Confirm before deleting
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Delete Entry',
-                            style: TextStyle(fontFamily: 'Lora')),
+                            style: TextStyle(fontFamily: 'Teko', color:Colors.black,)),
                         content: const Text(
                             'Are you sure you want to delete this entry?',),
                         actions: [
@@ -290,52 +292,55 @@ class _EditJournalPageState extends State<EditJournalPage> {
         ),
       ),
 
-      bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF393634),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            // Mood Picker Button
-            IconButton(
-              icon: const Icon(Icons.mood),
-              iconSize: 35.0,
-              onPressed: _showMoodPicker,
-            ),
-            Container(
-              height: 60,
-              width: 2,
-              color: Colors.black,
-            ),
-            // Camera Button to capture an image
-            IconButton(
-              icon: const Icon(Icons.camera_alt),
-              iconSize: 35.0,
-              onPressed: _captureImage, // Capture an image
-            ),
-            Container(
-              height: 60, // Height of the separator
-              width: 2, // Width of the separator
-              color: Colors.black, // Color of the separator
-            ),
-            // Save Entry Button
-            IconButton(
-              icon: const Icon(Icons.save),
-              iconSize: 35.0,
-              onPressed: () {
-                final updatedEntry = JournalEntry(
-                  title: _titleController.text,
-                  content: _contentController.text,
-                  imageUrl: _imageFile?.path ?? widget.entry?.imageUrl,
-                  date: _selectedDate ?? DateTime.now(),
-                  mood: _selectedMood,
-                );
+        bottomNavigationBar: BottomAppBar(
+          color: const Color(0xFF393634),
+          child: Row(
+            children: [
+              Expanded(
+                child: IconButton(
+                  icon: Image.asset('assets/mood.png'),
+                  iconSize: 50,
+                  onPressed: _showMoodPicker,
+                ),
+              ),
+              Container(
+                height: 60,
+                width: 2,
+                color: Colors.black,
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Image.asset('assets/camera.png'),
+                  iconSize: 50,
+                  onPressed: _captureImage,
+                ),
+              ),
+              Container(
+                height: 60,
+                width: 2,
+                color: Colors.black,
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Image.asset('assets/save.png'),
+                  iconSize: 50,
+                  onPressed: () {
+                    final updatedEntry = JournalEntry(
+                      title: _titleController.text,
+                      content: _contentController.text,
+                      imageUrl: _imageFile?.path ?? widget.entry?.imageUrl,
+                      date: _selectedDate ?? DateTime.now(),
+                      mood: _selectedMood,
+                    );
 
-                Navigator.pop(context, updatedEntry);
-              },
-            ),
-          ],
-        ),
-      ),
+                    Navigator.pop(context, updatedEntry);
+                  },
+                ),
+              ),
+            ],
+          ),
+        )
+
     )
     );
   }
@@ -350,10 +355,12 @@ class MoodPickerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select Mood', style: TextStyle(fontFamily: 'Lora')),
+      title: const Text('Log Mood', style: TextStyle(fontFamily: 'Teko', color:Colors.black, fontSize: 30),),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: ['Happy 😊', 'Motivated 🎯', 'Sad 😢', 'Excited 🎉'].map((mood) {
+        children: ['Happy 😊', 'Motivated 🎯', 'Sad 🌧️',
+          'Stressed 😓', 'Relaxed 🧘', 'Grateful 🙏',
+          'Excited 🎉'].map((mood) {
           return RadioListTile<String>(
             title: Text(
               mood,
