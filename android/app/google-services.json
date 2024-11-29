@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "886046077029",
+    "project_id": "lifepalette-60cbb",
+    "storage_bucket": "lifepalette-60cbb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886046077029:android:e2a2e10a0af0cb85f8568c",
+        "android_client_info": {
+          "package_name": "com.example.LifePalette"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdLrm3ec_ijsyFodIt2GACP4a9AtTbiY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
