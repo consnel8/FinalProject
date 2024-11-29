@@ -48,7 +48,7 @@ class _JournalPageState extends State<JournalPage> {
     _entries.addAll([
       JournalEntry(
         title: 'Welcome!',
-        content: 'This is a sample entry to help you get started. Select your mood, capture a picture, begin journaling!',
+        content: 'This is a sample entry to help you begin journaling! Select your mood, capture a picture and tap the save icon.',
         date: DateTime.now(),
         imageUrl: 'assets/journal_icon.png', // First pre-written entry
       ),
@@ -129,10 +129,25 @@ class _JournalPageState extends State<JournalPage> {
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData(
+            primaryColor: Color(0xFF55acee), // Header color
+            colorScheme: ColorScheme.light(primary: Color(0xFF55acee)),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFFBE3B88), // Change date button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     return picked;
   }
+
 
   String formatDate(DateTime date) {
     final now = DateTime.now();
