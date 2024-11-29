@@ -135,6 +135,9 @@ flutter:
     - family: IndieFlower
       fonts:
         - asset: assets/fonts/IndieFlower-Regular.ttf
+    - family: FuzzyBubbles
+      fonts:
+        - asset: assets/fonts/FuzzyBubbles-Regular.ttf
 
 
 

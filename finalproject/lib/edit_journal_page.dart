@@ -102,7 +102,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
             Navigator.pop(context); // Handle back navigation
           },
         ),
-        title: const Text('Edit Entry',
+        title: const Text('Journal Entry',
             style: TextStyle(fontFamily: 'Teko', fontSize: 38)),
         actions: widget.entry != null
             ? [
@@ -231,12 +231,12 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   border: InputBorder.none,
                   filled: true,
                   fillColor: Colors.transparent,
-                  contentPadding: EdgeInsets.only(left: 15.0, top: 20.0),
+                  contentPadding: EdgeInsets.only(left: 15.0, top: -20.0),
                 ),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'IndieFlower',
+                  fontFamily: 'FuzzyBubbles',
                   color: Colors.black,
                 ),
               ),
@@ -248,12 +248,19 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   height: 200,
                   fit: BoxFit.cover,
                 ),
-              // Check if image is a local file or asset path
+// If there is no picked image but an image URL is provided from the entry
               if (widget.entry?.imageUrl != null && _imageFile == null)
                 widget.entry!.imageUrl!.startsWith('assets/')
-                    ? Image.asset(widget.entry!.imageUrl!) // For asset images
-                    : Image.file(File(widget.entry!.imageUrl!)),
-              // For file images
+                    ? Image.asset(
+                  widget.entry!.imageUrl!, // For asset images
+                  height: 200,
+                  fit: BoxFit.cover,
+                )
+                    : Image.file(
+                  File(widget.entry!.imageUrl!), // For file images
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
             ],
           ),
         ),
