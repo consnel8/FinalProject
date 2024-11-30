@@ -9,27 +9,21 @@ class JournalInsightsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate mood frequencies and insights
     Map<String, int> moodFrequency = _calculateMoodFrequency(entries);
     var totalEntries = entries.isNotEmpty ? entries.length : 1;
 
-    // Calculate mood percentages
     Map<String, double> moodPercentages = _calculateMoodPercentages(moodFrequency, totalEntries);
 
-    // Sort moods by frequency
     var sortedMoods = moodFrequency.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    // Prepare data for the charts
     List<BarChartGroupData> barChartData = _prepareBarChartData(sortedMoods);
     List<FlSpot> lineChartData = _prepareLineChartData(sortedMoods);
 
-    // Peak mood and personalized message
     String peakMood = sortedMoods.isNotEmpty ? sortedMoods.first.key : 'No data';
     int peakMoodCount = sortedMoods.isNotEmpty ? sortedMoods.first.value : 0;
     String personalizedMessage = _getPersonalizedMessage(peakMood);
 
-    // Detect dark mode
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -50,6 +44,7 @@ class JournalInsightsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Mood Trends Title with an elegant divider
               Text(
                 'Mood Trends Over Time',
                 style: TextStyle(
@@ -59,7 +54,8 @@ class JournalInsightsPage extends StatelessWidget {
                   color: isDarkMode ? Colors.white : Colors.black87,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 1),
+              Divider(color: isDarkMode ? Colors.white30 : Colors.black26), // Divider
 
               // Line Chart
               AspectRatio(
@@ -108,7 +104,7 @@ class JournalInsightsPage extends StatelessWidget {
                         ),
                       ),
                       leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false), // Remove left axis titles
+                        sideTitles: SideTitles(showTitles: false),
                       ),
                     ),
                     borderData: FlBorderData(show: true, border: Border.all(color: isDarkMode ? Colors.white : Colors.black12)),
@@ -118,49 +114,105 @@ class JournalInsightsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Mood Breakdown
+              // Mood Insights Section with improved separation
               Text(
-                'Mood Breakdown (in %):',
+                'Mood Insights (%)',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Lora',
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
-              if (moodPercentages.isNotEmpty)
-                ...moodPercentages.entries.map((mood) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      '${mood.key}: ${mood.value.toStringAsFixed(1)}%',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: isDarkMode ? Colors.white : Colors.black87,
+              const SizedBox(height: 10),
+              Divider(color: isDarkMode ? Colors.white30 : Colors.black26), // Divider
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Pie Chart
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: PieChart(
+                        PieChartData(
+                          sections: moodPercentages.entries.map((mood) {
+                            return PieChartSectionData(
+                              color: _getMoodColor(mood.key),
+                              value: mood.value,
+                              title: '${mood.value.toStringAsFixed(1)}%',
+                              radius: 80,
+                              titleStyle: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            );
+                          }).toList(),
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 6,
+                        ),
                       ),
                     ),
-                  );
-                }).toList(),
-              const SizedBox(height: 20),
+                  ),
+                  const SizedBox(width: 20),
 
-              // Peak Mood
+                  // Mood Legend with better separation
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: moodPercentages.entries.map((mood) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                margin: const EdgeInsets.only(right: 8.0),
+                                decoration: BoxDecoration(
+                                  color: _getMoodColor(mood.key),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              Text(
+                                '${mood.key}: ${mood.value.toStringAsFixed(1)}%',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: isDarkMode ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 0.1),
+
+              // Peak Mood Section with more emphasis
               Text(
                 'Peak Mood:',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Lora',
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
               Text(
-                '$peakMood (Count: $peakMoodCount)',
+                '$peakMood',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 19,
+                  fontFamily: 'Lora',
                   color: isDarkMode ? Colors.white : Colors.black87,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
 
-              // Personalized Message
+              // Personalized Message with emphasis
               Text(
                 personalizedMessage,
                 style: TextStyle(
@@ -171,15 +223,19 @@ class JournalInsightsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Bar Chart
+              // Mood Frequency Distribution with a divider before
               Text(
                 'Mood Frequency Distribution:',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Lora',
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
+              const SizedBox(height: 5),
+              Divider(color: isDarkMode ? Colors.white30 : Colors.black26), // Divider
+
               AspectRatio(
                 aspectRatio: 1.7,
                 child: BarChart(
@@ -208,7 +264,7 @@ class JournalInsightsPage extends StatelessWidget {
                         ),
                       ),
                       leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false), // Remove left axis titles
+                        sideTitles: SideTitles(showTitles: false),
                       ),
                     ),
                     borderData: FlBorderData(show: true),
@@ -283,19 +339,19 @@ class JournalInsightsPage extends StatelessWidget {
   Color _getMoodColor(String mood) {
     switch (mood.toLowerCase()) {
       case 'happy 😊':
-        return const Color(0xFFFFD700); // Soft yellow
+        return const Color(0xFFBB9C01); // Soft yellow
       case 'sad 🌧️':
-        return const Color(0xFF87CEEB); // Soft blue
+        return const Color(0xFF2F91BB); // Soft blue
       case 'motivated 🎯':
-        return const Color(0xFF98FB98); // Pale green
+        return const Color(0xFF4DC04D); // Pale green
       case 'excited 🎉':
-        return const Color(0xFFFFA07A); // Light coral
+        return const Color(0xFFFF8B5B); // Light coral
       case 'relaxed 🧘':
         return const Color(0xFFBA55D3); // Orchid
       case 'grateful 🙏':
-        return const Color(0xFF40E0D0); // Turquoise
+        return const Color(0xFF21B2A3); // Turquoise
       case 'stressed 😓':
-        return const Color(0xFFFF69B4); // Hot pink
+        return const Color(0xFFFF3564); // Hot pink
       default:
         return const Color(0xFFC0C0C0); // Light gray
     }
@@ -309,17 +365,17 @@ class JournalInsightsPage extends StatelessWidget {
       case 'happy 😊':
         return 'Keep spreading that joy! Your positivity is contagious!';
       case 'motivated 🎯':
-        return 'Great job! Keep pushing forward with that motivation!';
+        return 'You’ve had a positive and upbeat mood recently. Keep that energy flowing!';
       case 'excited 🎉':
         return 'Your excitement is fueling your progress! Keep it up!';
       case 'sad 🌧️':
-        return 'It’s okay to feel down sometimes. Take care of yourself and reach out if you need support.';
+        return 'It seems you’ve been feeling a bit down lately. Remember, better days are ahead!';
       case 'relaxed 🧘':
         return 'Enjoy the peace and calm you’ve found. Take this time to recharge!';
       case 'grateful 🙏':
         return 'Gratitude is a powerful force. Keep appreciating the little things!';
       default:
-        return 'Keep going! Every mood is part of your unique journey!';
+        return 'You’ve had a mix of moods recently. Keep going strong!';
     }
   }
 }
