@@ -50,7 +50,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
     return '$timeAgo | $formattedDate';
   }
 
-  // Method to pick an image from the camera
+  // Method to capture image
   Future<void> _captureImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);

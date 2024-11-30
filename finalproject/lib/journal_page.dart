@@ -5,6 +5,7 @@ import 'journal_insights_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // For encoding/decoding the list
 import 'notifications_page.dart';
+import 'dart:io';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({Key? key}) : super(key: key);
@@ -374,6 +375,17 @@ class _JournalPageState extends State<JournalPage> {
     );
   }
 
+
+  // Display image based on whether it's an asset or file path
+  Widget _buildImage(String imageUrl) {
+    if (imageUrl.startsWith('assets/')) {
+      return Image.asset(imageUrl); // Use asset for asset-based images
+    } else {
+      // Use file-based images for captured images
+      return Image.file(File(imageUrl));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -510,9 +522,15 @@ class _JournalPageState extends State<JournalPage> {
                         if (entry.imageUrl != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
-                            child: Image.asset(
+                            child: entry.imageUrl!.startsWith('assets/')
+                                ? Image.asset(
                               entry.imageUrl!,
                               height: 150,
+                              fit: BoxFit.cover,
+                            )
+                                : Image.file(
+                              File(entry.imageUrl!),
+                              height: 200,
                               fit: BoxFit.cover,
                             ),
                           )
