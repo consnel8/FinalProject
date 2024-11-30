@@ -22,12 +22,15 @@ Take control of your wardrobe with Life Palette.
 
 ### 🍳 **Recipe Catalog**, powered by **Firestore** for seamless data management.
 Keep your favorite meals organized with our recipe storage feature.  
-- **Using Firestore,** save recipes and categorize them by type, meal time, or ingredients.  
-- **View key stats** like preparation time, difficulty, and your personal rating.  
-- **Full recipe display** includes cooking steps, images, and comments.  
+- **Using Firestore,** save recipes and categorize them by meal type and search for a specifice recipe.
+- **View key stats** like preparation time and difficulty.
+- **Full recipe display** includes cooking steps, images, and a description.  
 - **Favorite recipes** to easily find them later.
-
-<!--recipe catalogue images here-->
+<div align= "center">
+  <img src="finalproject/assets/recipe_home.png" alt="Recipe Entries" width="170" />
+  <img src="finalproject/assets/recipe_description.png" alt="Recipe Description" width="170" />
+  <img src="finalproject/assets/recipe_edit.png" alt="Recipe Edit Page" width="170" />
+</div>
 
 ### 📔 **Personal Journal**  
 Reflect on your day and track your mood with Life Palette’s personal journaling feature.  

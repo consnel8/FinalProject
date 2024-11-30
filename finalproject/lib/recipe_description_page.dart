@@ -85,6 +85,8 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
   @override
   Widget build(BuildContext context) {
     final bool isFavorite = widget.recipe['favorite'] ?? false;
+    final int starRating = widget.recipe['difficulty'] ?? 3; // Default difficulty
+    final String prepTime = widget.recipe['prepTime'] ?? 'N/A';
 
     return Scaffold(
       appBar: AppBar(
@@ -115,6 +117,7 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Recipe Image
             if (widget.recipe['image'] != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
@@ -148,31 +151,98 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
                   ),
                 ),
               ),
+
             const SizedBox(height: 16),
+
+            // Recipe Name
             Text(
               widget.recipe['name'] ?? 'Recipe',
               style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Lora'),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lora',
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Prep Time
+            Row(
+              children: [
+                const Icon(Icons.timer, color: Colors.grey),
+                const SizedBox(width: 8),
+                Text(
+                  'Prep Time: $prepTime',
+                  style: const TextStyle(
+                    fontFamily: 'Lora',
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Difficulty Rating with Stars Only
+            const Text(
+              'Difficulty:',
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Row(
+              children: List.generate(
+                5,
+                (index) => Icon(
+                  index < starRating ? Icons.star : Icons.star_border,
+                  color: Colors.amber,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '(1 = Easy, 5 = Hard)',
+              style: TextStyle(
+                fontFamily: 'Lora',
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Description
+            const Text(
+              'Description:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lora',
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               widget.recipe['description'] ?? 'No description available.',
               style: const TextStyle(fontFamily: 'Lora'),
             ),
+
             const SizedBox(height: 16),
+
+            // Ingredients
             const Text(
               'Ingredients:',
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Lora'),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lora',
+              ),
             ),
             ...((widget.recipe['ingredients'] as List<dynamic>?)
                     ?.map((ingredient) => Text(
                           '- $ingredient',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'Lora',
                           ),
                         ))
@@ -183,13 +253,17 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
                     style: TextStyle(fontFamily: 'Lora'),
                   )
                 ]),
+
             const SizedBox(height: 16),
+
+            // Cooking Instructions
             const Text(
               'Cooking Instructions:',
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Lora'),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lora',
+              ),
             ),
             ..._buildCookingInstructions(widget.recipe['instructions']),
           ],
@@ -210,8 +284,7 @@ class _RecipeDescriptionPageState extends State<RecipeDescriptionPage> {
 
     final steps = instructions.split(','); // Split the string by commas
     return List<Widget>.generate(steps.length, (index) {
-      return Text(
-          '${index + 1}. ${steps[index].trim()}'); // Display as "1. Step", "2. Step", etc.
+      return Text('${index + 1}. ${steps[index].trim()}');
     });
   }
 }

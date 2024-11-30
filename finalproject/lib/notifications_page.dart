@@ -367,9 +367,9 @@ class PermissionHandler {
       "How about we work on a new recipe for this week?",
       then,
       platformChannelSpecifics,
-      matchDateTimeComponents: DateTimeComponents.time,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.wallClockTime,
+      UILocalNotificationDateInterpretation.absoluteTime,
     ); // end zonedSchedule
   } // end scheduleWeeklyNotification
 
@@ -384,7 +384,7 @@ class PermissionHandler {
           print("Notification permission granted");
           final exactAlarmStatus = await Permission.scheduleExactAlarm.request();
           if (exactAlarmStatus.isDenied) {
-            print("exact denied");
+            print("exact denied $exactAlarmStatus");
           } else if (exactAlarmStatus.isGranted){
             print("exact granted");
           }

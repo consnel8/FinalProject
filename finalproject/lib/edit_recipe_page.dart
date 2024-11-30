@@ -15,6 +15,7 @@ class _EditRecipePageState extends State<EditRecipePage> {
   late TextEditingController ingredientsController;
   late TextEditingController instructionsController;
   late TextEditingController imageUrlController;
+  late TextEditingController prepTimeController;
 
   final List<String> mealTypes = [
     'Breakfast',
@@ -24,11 +25,11 @@ class _EditRecipePageState extends State<EditRecipePage> {
     'Dessert'
   ];
   late List<String> selectedMealTypes;
+  late int selectedDifficulty;
 
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with existing recipe data
     nameController = TextEditingController(text: widget.recipe['name']);
     descriptionController =
         TextEditingController(text: widget.recipe['description']);
@@ -38,26 +39,29 @@ class _EditRecipePageState extends State<EditRecipePage> {
     instructionsController =
         TextEditingController(text: widget.recipe['instructions']);
     imageUrlController = TextEditingController(text: widget.recipe['image']);
+    prepTimeController =
+        TextEditingController(text: widget.recipe['prepTime'] ?? '');
 
-    // Initialize selectedMealTypes
     selectedMealTypes = List<String>.from(widget.recipe['mealTypes'] ?? []);
+    selectedDifficulty = widget.recipe['difficulty'] ?? 3; // Default difficulty
   }
 
   void saveEditedRecipe() {
     final editedRecipe = {
-      'id': widget.recipe['id'], // Ensure Firestore document ID is preserved
-      'name': nameController.text,
-      'description': descriptionController.text,
+      'id': widget.recipe['id'],
+      'name': nameController.text.trim(),
+      'description': descriptionController.text.trim(),
       'ingredients':
           ingredientsController.text.split(',').map((e) => e.trim()).toList(),
-      'instructions': instructionsController.text,
-      'image': imageUrlController.text,
+      'instructions': instructionsController.text.trim(),
+      'image': imageUrlController.text.trim(),
+      'prepTime': prepTimeController.text.trim(),
       'mealTypes': selectedMealTypes,
+      'difficulty': selectedDifficulty,
       'favorite': widget.recipe['favorite'],
     };
 
-    Navigator.pop(
-        context, editedRecipe); // Return the edited recipe to the parent
+    Navigator.pop(context, editedRecipe);
   }
 
   @override
@@ -76,46 +80,89 @@ class _EditRecipePageState extends State<EditRecipePage> {
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
-                  labelText: 'Recipe Name',
-                  labelStyle: TextStyle(fontFamily: 'Lora')),
+                labelText: 'Recipe Name',
+                labelStyle: TextStyle(fontFamily: 'Lora'),
+              ),
             ),
             TextField(
               controller: descriptionController,
               decoration: const InputDecoration(
-                  labelText: 'Description',
-                  labelStyle: TextStyle(fontFamily: 'Lora')),
+                labelText: 'Description',
+                labelStyle: TextStyle(fontFamily: 'Lora'),
+              ),
             ),
             TextField(
               controller: ingredientsController,
               decoration: const InputDecoration(
-                  labelText: 'Ingredients (comma separated)',
-                  labelStyle: TextStyle(fontFamily: 'Lora')),
+                labelText: 'Ingredients (comma separated)',
+                labelStyle: TextStyle(fontFamily: 'Lora'),
+              ),
             ),
             TextField(
               controller: instructionsController,
               decoration: const InputDecoration(
-                  labelText: 'Instructions',
-                  labelStyle: TextStyle(fontFamily: 'Lora')),
+                labelText: 'Instructions',
+                labelStyle: TextStyle(fontFamily: 'Lora'),
+              ),
               maxLines: 4,
             ),
             TextField(
               controller: imageUrlController,
               decoration: const InputDecoration(
-                  labelText: 'Image URL',
-                  labelStyle: TextStyle(fontFamily: 'Lora')),
+                labelText: 'Image URL',
+                labelStyle: TextStyle(fontFamily: 'Lora'),
+              ),
+            ),
+            TextField(
+              controller: prepTimeController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Preparation Time (in minutes)',
+                labelStyle: TextStyle(fontFamily: 'Lora'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Select Difficulty:',
+              style: TextStyle(fontSize: 18, fontFamily: 'Teko'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                5,
+                (index) => IconButton(
+                  icon: Icon(
+                    index < selectedDifficulty ? Icons.star : Icons.star_border,
+                    color: Colors.amber,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      selectedDifficulty = index + 1;
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '(1 = Easy, 5 = Hard)',
+              style: TextStyle(
+                  fontFamily: 'Lora', fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 20),
             const Text(
               'Select Meal Types:',
-              style: TextStyle(fontSize: 23, fontFamily: 'Teko'),
+              style: TextStyle(fontSize: 18, fontFamily: 'Teko'),
             ),
             Column(
               children: mealTypes.map((type) {
                 return CheckboxListTile(
                   title: Text(
                     type,
-                    style:
-                        TextStyle(fontFamily: 'Lora', color: Color(0xFF757575)),
+                    style: const TextStyle(
+                      color: Color(0xff757575),
+                      fontFamily: 'Lora',
+                    ),
                   ),
                   value: selectedMealTypes.contains(type),
                   onChanged: (bool? selected) {
