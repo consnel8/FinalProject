@@ -130,7 +130,8 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
+    body: SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,6 +190,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showNewEntryDialog(context),
         child: const Icon(Icons.add),
