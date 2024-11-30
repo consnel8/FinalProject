@@ -56,6 +56,7 @@ dependencies:
   timeago: ^3.7.0
   fl_chart: ^0.69.2
   word_cloud: ^1.0.3
+  timezone: ^0.9.4
 
 
 dev_dependencies:

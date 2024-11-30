@@ -15,8 +15,9 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   bool enabledisable =
-      true; // tracks whether our notifications are enabled or disabled
+      false; // tracks whether our notifications are enabled or disabled
   String enableSTR = "Enable"; // cosmetic, updates if enabling or disabling
+
 
   @override
   void initState() {
@@ -33,12 +34,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
     const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );
-
-    //for both platforms
-    // const InitializationSettings initializationSettings = InitializationSettings(
-    //   android: initializationSettingsAndroid,
-    //   iOS: initializationSettingsIOS,
-    // );
 
     // Initialize the notification plugin with the defined settings
     PermissionHandler.flutterLocalNotificationsPlugin.initialize(
@@ -276,11 +271,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
 // other pages, making access easier
 
 class PermissionHandler {
-  static late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static Future<void> enableDaily() async {
     // enables the daily notifications
-    scheduleDailyNotification();
+    print("enable daily call");
+    try {
+      scheduleDailyNotification();
+      print("enable daily successful");
+    } catch (e) {
+      print("enable daily call failed");
+    }
   } // end enableDaily
 
   static Future<void> disableDaily() async {
@@ -308,8 +309,9 @@ class PermissionHandler {
   } // end onSelectNotification
 
   static Future<void> scheduleDailyNotification() async {
-    var when = tz.TZDateTime.now(tz.local).add(Duration(seconds: 3));
     // daily notification
+    var when = tz.TZDateTime.now(tz.local).add(Duration(hours: 24));
+
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'daily_channel_id',
@@ -323,16 +325,22 @@ class PermissionHandler {
       android: androidPlatformChannelSpecifics,
     ); // end platformChannelSpecifics
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      'Journaling Time!',
-      'Let\'s pen in a new journal entry for today!',
-      when,
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    ); // end zonedSchedule
+    try {
+      print("Scheduling daily notification...");
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Journaling Time!',
+        'Let\'s pen in a new journal entry for today!',
+        when,
+        platformChannelSpecifics,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+      ); // end zonedSchedule
+      print("successful");
+    } catch (e) {
+      print("Error scheduling daily notification: $e");
+    }
   } // end scheduleDailyNotification
 
 
@@ -374,6 +382,12 @@ class PermissionHandler {
           print("Notification permission denied");
         } else if (status.isGranted) {
           print("Notification permission granted");
+          final exactAlarmStatus = await Permission.scheduleExactAlarm.request();
+          if (exactAlarmStatus.isDenied) {
+            print("exact denied");
+          } else if (exactAlarmStatus.isGranted){
+            print("exact granted");
+          }
         } // end else if
       } // end if
     } // end if

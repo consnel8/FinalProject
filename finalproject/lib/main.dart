@@ -1,6 +1,7 @@
 // Import statements
 import 'dart:async';
 import 'dart:convert';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:finalproject/wardrobe/outfit_builder.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
