@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'outfit_model.dart';
 import 'glimmering_star_icon.dart';
+import 'outfit_service.dart';
+import 'package:finalproject/main.dart';
 
 class OutfitBuilderPage extends StatefulWidget {
-  final Function(Map<String, dynamic>) onSave;
+  final Function(Outfit) onSave;
 
   OutfitBuilderPage({required this.onSave});
 
@@ -17,6 +22,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
   String? selectedItemType;
   String? selectedCategory;
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
   Map<String, String?> outfitParts = {
     'Top': null,
     'Bottom': null,
@@ -25,8 +31,12 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
 
   // bool showOutfitOptions = false;
   final ImagePicker _picker = ImagePicker();
+  final OutfitService _outfitService = OutfitService();
+  //final Map<String, String> outfitParts = {};
+  bool isSaving = false;
 
-  // Select image from gallery or camera
+
+  /* Select image from gallery or camera
   Future<void> selectImage(String part) async {
     final XFile? image = await _picker.pickImage(
       source: ImageSource.gallery, // Or ImageSource.camera for capturing
@@ -35,6 +45,80 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
       setState(() {
         outfitParts[part] = image.path; // Store the image path
       });
+    }
+  }*/
+  // Select image from gallery or camera and optionally upload
+  Future<void> selectImage(String part, {bool uploadToStorage = true}) async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery, // Use ImageSource.camera for capturing
+    );
+
+    if (image != null) {
+      if (uploadToStorage) {
+        // Upload the image to Firebase Storage
+        setState(() => isSaving = true);
+        final imageUrl = await _outfitService.uploadImage(File(image.path));
+        if (imageUrl != null) {
+          setState(() {
+            outfitParts[part] = imageUrl; // Store the uploaded image URL
+            isSaving = false;
+          });
+        } else {
+          setState(() => isSaving = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload image')),
+          );
+        }
+      } else {
+        // Simply store the local image path
+        setState(() {
+          outfitParts[part] = image.path;
+        });
+      }
+    }
+  }
+
+  Future<void> selectAndUploadImage(String part, ImageSource source) async {
+    try {
+      File? selectedFile;
+
+      if (source == ImageSource.gallery || source == ImageSource.camera) {
+        final XFile? pickedImage = await _picker.pickImage(source: source);
+        if (pickedImage != null) {
+          selectedFile = File(pickedImage.path);
+        }
+      } else {
+        final FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['jpg', 'jpeg', 'png'],
+        );
+        if (result != null && result.files.single.path != null) {
+          selectedFile = File(result.files.single.path!);
+        }
+      }
+
+      if (selectedFile != null) {
+        setState(() => isSaving = true);
+
+        final imageUrl = await _outfitService.uploadImage(selectedFile);
+
+        if (imageUrl != null) {
+          setState(() {
+            outfitParts[part] = imageUrl;
+            isSaving = false;
+          });
+        } else {
+          setState(() => isSaving = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload image')),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() => isSaving = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error selecting/uploading image: $e')),
+      );
     }
   }
 
@@ -55,45 +139,39 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
     );
   }
 
-  // Save outfit to the dashboard
-  Future<void> saveOutfit() async {
-    if (descriptionController.text.isNotEmpty &&
-        selectedItemType != null &&
-        selectedCategory != null &&
-        outfitParts.values.any((image) => image != null)) {
-      try {
-        final newOutfit = {
-          'title': descriptionController.text,
-          'category': selectedCategory,
-          'type': selectedItemType,
-          'parts': outfitParts,
-          'isFavorite': false, // Default favorite state
-          'createdAt': Timestamp.now(),
-        };
-        await FirebaseFirestore.instance.collection('outfits').add(newOutfit);
-        widget.onSave(newOutfit);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Outfit saved successfully!',
-                  style: TextStyle(fontFamily: 'Lora'))),
-        );
-        Navigator.pop(context);
-      } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Error saving outfit: $error',
-                  style: TextStyle(fontFamily: 'Lora'))),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Please fill all fields and select images for at least one parts',
-                style: TextStyle(fontFamily: 'Lora'))),
+
+
+  Future<void> saveOutfit({
+    required String title,
+    required String description,
+    required String category,
+    required String typeOfItem,
+    required String imageUrl,
+  }) async {
+    final outfitService = OutfitService(); // Initialize the service
+
+    try {
+      final newOutfit = Outfit(
+        id: '', // Auto-generated ID from Firestore
+        title: title,
+        description: description,
+        category: category,
+        typeOfItem: typeOfItem,
+        imageUrl: imageUrl,
+        isFavorite: false, // Default value
+        dateLiked: DateTime.now(), // Setting the current date
       );
+
+      // Use the service to save the outfit
+      await outfitService.saveOutfit(newOutfit);
+
+      print('Outfit saved successfully!');
+    } catch (e) {
+      print('Error saving outfit: $e');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,15 +181,42 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
             style: TextStyle(fontFamily: 'Teko', fontSize: 30)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save),
-            // onPressed: saveOutfit,
-            onPressed: () {
-              // Call onSave when the user saves the outfit
-              final outfit = Outfit(name: 'Winter Outfit', imageUrl: '...');
-              onSave(outfit);
-              Navigator.pop(context); // Return to the previous screen
+            icon: isSaving
+                ? SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+                : Icon(Icons.save),
+            onPressed: isSaving ? null : () async {
+              // Call saveOutfit and wait for it to complete
+              try {
+                // Get values from your form (replace these with actual values)
+                String title = titleController.text; // Assuming you have a title controller
+                String description = descriptionController.text; // Description controller
+                String category = selectedCategory!; // Assuming you have a category
+                String typeOfItem = selectedItemType!; // Assuming you have an item type
+                String imageUrl = outfitParts['Complete Outfit'] ?? '';
+
+                await saveOutfit(
+                  title: title,
+                  description: description,
+                  category: category,
+                  typeOfItem: typeOfItem,
+                  imageUrl: imageUrl,
+                ); // Ensure this runs asynchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Outfit saved successfully!')),
+                );
+                Navigator.pop(context); // Return to the previous screen
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error saving outfit: $e')),
+                );
+              }
             },
-          ),
+          )
+
         ],
       ),
       body: Padding(
@@ -139,21 +244,33 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                       showModalBottomSheet(
                         context: context,
                         builder: (_) => Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             ListTile(
                               title: Text('Upload from Photo Gallery',
                                   style: TextStyle(fontFamily: 'Lora')),
-                              onTap: () => selectImage('Complete Outfit'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                selectAndUploadImage('Complete Outfit', ImageSource.gallery);
+                              }
                             ),
                             ListTile(
                               title: Text('Capture Image',
                                   style: TextStyle(fontFamily: 'Lora')),
-                              onTap: () => selectImage('Complete Outfit'),
+                              onTap: () {
+                                Navigator.pop(context); // Close the modal
+                                selectAndUploadImage('Complete Outfit', ImageSource.camera);
+                              },
+                             // onTap: () => selectImage('Complete Outfit'),
                             ),
                             ListTile(
                               title: Text('Upload file',
                                   style: TextStyle(fontFamily: 'Lora')),
-                              onTap: () => selectImage('Complete Outfit'),
+                              onTap: () {
+                                Navigator.pop(context); // Close the modal
+                                selectAndUploadImage('Complete Outfit', ImageSource.gallery);
+                              },
+                              //onTap: () => selectImage('Complete Outfit'),
                             )
                           ],
                         ),
@@ -271,6 +388,17 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
             SizedBox(height: 20),
             // Description field
             Text(
+              'Title',
+              style: TextStyle(fontSize: 22, fontFamily: 'Teko'),
+            ),
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(fontFamily: 'Lora'),
+                hintText: 'Add Title',
+              ),
+            ),
+            Text(
               'Description',
               style: TextStyle(fontSize: 22, fontFamily: 'Teko'),
             ),
@@ -278,7 +406,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               controller: descriptionController,
               decoration: InputDecoration(
                 hintStyle: TextStyle(fontFamily: 'Lora'),
-                hintText: 'Name (Description)',
+                hintText: 'Add Description',
                 helperStyle: TextStyle(fontFamily: 'Lora'),
                 helperText: '180 characters max',
               ),
@@ -339,22 +467,15 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                 hint: Text('Select', style: TextStyle(fontFamily: 'Lora')),
               ),
             ),
+
+
+
           ],
         ),
       ),
     );
+
   }
 
-  void onSave(Outfit outfit) {
-    // Logic to save the outfit
-    print('Outfit saved: ${outfit.name}');
-    // To Add my  database or to add  update logic here
-  }
-}
 
-class Outfit {
-  final String name;
-  final String imageUrl;
-
-  Outfit({required this.name, required this.imageUrl});
 }

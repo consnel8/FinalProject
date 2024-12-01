@@ -6,10 +6,11 @@ import '../SettingsPage.dart';
 import '../about_page.dart';
 import '../main.dart';
 import 'favourite_outfit_pg.dart';
-import 'outfit_builder.dart';
+import 'outfit_builder.dart' as builder;
 import 'outfit_editer.dart';
 import 'outfit_screen.dart';
-import '../services/outfit_service.dart';
+import 'outfit_service.dart';
+import 'outfit_model.dart';
 
 
 class OutfitDashboardPage extends StatefulWidget {
@@ -48,32 +49,13 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
   String selectedCategory = 'All Categories';
   bool editMode = false;
 
- /* List<Map<String, dynamic>> outfits = [
-    {
-      'title': ' Casual Outfit',
-      'category': 'Casual',
-      'image': 'assets/Outfit.jpg',
-      'isFavorite': false
-    },
-    {
-      'title': 'Collage',
-      'category': 'Formal',
-      'image': 'assets/collage.jpg',
-      'isFavorite': true
-    },
-    {
-      'title': 'Heels',
-      'category': 'Shoes',
-      'image': 'assets/shoes.jpg',
-      'isFavorite': true
-    }*/
   List<Outfit> favoriteOutfits = [];
 
   void navigateToOutfitBuilder() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OutfitBuilderPage(
+        builder: (context) => builder.OutfitBuilderPage(
           onSave: (newOutfit) {
             setState(() {
               outfits.add(newOutfit as Outfit);
@@ -84,7 +66,7 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
     );
   }
 
-  void toggleFavorite(Outfit outfit) {
+  void toggleFavorite(Outfit outfit) async {
     setState(() {
       outfit.isFavorite = !outfit.isFavorite;
 
@@ -94,7 +76,56 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
         favoriteOutfits.remove(outfit); // Remove the Outfit object
       }
     });
+
+    try {
+      // Update Firestore
+      await _outfitService.toggleFavorite(outfit.id, outfit.isFavorite);
+    } catch (e) {
+      // Revert the UI change if Firestore update fails
+      setState(() {
+        outfit.isFavorite = !outfit.isFavorite;
+
+        if (outfit.isFavorite) {
+          favoriteOutfits.add(outfit);
+        } else {
+          favoriteOutfits.remove(outfit);
+        }
+      });
+
+      print('Failed to update favorite status: $e');
+    }
   }
+
+
+  void _showConfirmationDialog(
+      BuildContext context, String title, String message, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+                onConfirm(); // Perform the action
+              },
+              child: const Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 
   void addOutfit(Map<String, dynamic> outfit) {
     setState(() {
@@ -107,18 +138,15 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
     final filteredOutfits = selectedCategory == 'All Categories'
         ? outfits
         : outfits
-            .where((outfit) => outfit['category'] == selectedCategory)
+            .where((outfit) => outfit.category  == selectedCategory)
             .toList();
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Outfit Dashboard')),
         leading: IconButton(
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.arrow_back_outlined),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsPage()),
-            );
+            Navigator.pop(context);
           },
         ),
         actions: [
@@ -139,7 +167,7 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      FavoriteOutfitsPage(favoriteOutfits: favoriteOutfits),
+                      FavoriteOutfitsPage(),
                 ),
               );
             },
@@ -150,7 +178,7 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AboutPage(),
+                  builder: (context) => SettingsPage(),
                 ),
               );
             },
@@ -180,7 +208,7 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
         ),
         Expanded(
           child: StreamBuilder<List<Outfit>>(
-            stream: _outfitService.getOutfitsStream(), // Fetch outfits dynamically from Firestore
+            stream: _outfitService.getOutfitsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -190,10 +218,8 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                 return const Center(child: Text('No outfits found.'));
               }
 
-              final firestoreOutfits = snapshot.data!; // List of Outfit objects
-
-              // Filter outfits based on selectedCategory
-              final filteredOutfits = firestoreOutfits.where((outfit) {
+              final outfits = snapshot.data!;
+              final filteredOutfits = outfits.where((outfit) {
                 return selectedCategory == 'All Categories' ||
                     outfit.category == selectedCategory;
               }).toList();
@@ -211,158 +237,197 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                 itemCount: filteredOutfits.length,
                 itemBuilder: (context, index) {
                   final outfit = filteredOutfits[index];
+                  return Stack(
+                    children: [
+                      OutfitCard(
+                      outfit: outfit,
+                      onTap: () {
+                        // Navigate to OutfitScreen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OutfitScreen(outfitId: outfit.id),
+                          ),
+                        );
+                      },
+                      onLongPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditOutfitPage(
+                              outfit: outfit, // Pass the outfit as a Map
+                              onSave: (updatedOutfitMap) async {
+                                // Recreate the Outfit object from the updated map
+                                Outfit updatedOutfit = Outfit.fromMap(updatedOutfitMap, outfit.id);
 
-                  return OutfitCard(
-                    outfit: outfit,
-                    onTap: () {
-                      // Navigate to OutfitScreen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OutfitScreen(
-                            outfit: outfit.toMap(), // Pass the outfit as a Map
-                            onDeleteOutfit: () async {
-                              await _outfitService.deleteOutfit(outfit.id); // Delete from Firestore
-                            },
-                            onToggleFavorite: (bool isFavorite) async {
-                              await _outfitService.toggleFavorite(outfit.id, isFavorite);
-                              setState(() {
-                                if (outfit.isFavorite) {
-                                  favoriteOutfits.add(outfit);
-                                } else {
-                                  favoriteOutfits.remove(outfit);
-                                }
-                              });
-                            },
-                            onUpdateOutfit: (updatedOutfit) async {
-                              await _outfitService.saveOutfit(Outfit.fromMap(updatedOutfit));
-                            },
+                                // Save the updated outfit back to Firestore
+                                await _outfitService.saveOutfit(updatedOutfit);
+                                setState(() {
+                                  filteredOutfits[index] = updatedOutfit;
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    onLongPress: () {
-                      // Navigate to EditOutfitPage
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditOutfitPage(
-                            outfit: outfit.toMap(), // Pass the outfit as a Map
-                            onSave: (updatedOutfit) async {
-                              await _outfitService.saveOutfit(Outfit.fromMap(updatedOutfit));
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                                  child: Image.network(
-                                    outfit.imageUrl, // Use the image URL from Firestore
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
+                        );
+                      },
+                      ),
+
+                       Stack(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                    child: Image.network(
+                                      outfit.imageUrl, // Use the image URL from Firestore
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          outfit.title, // Title from Firestore
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          outfit.category, // Category from Firestore
-                                          style: const TextStyle(color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(
-                                            outfit.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                            color: outfit.isFavorite ? Colors.red : Colors.grey,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            outfit.title, // Title from Firestore
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
                                           ),
-                                          onPressed: () async {
-                                            await _outfitService.toggleFavorite(outfit.id, !outfit.isFavorite);
-                                            setState(() {
-                                              if (outfit.isFavorite) {
-                                                favoriteOutfits.add(outfit);
-                                              } else {
-                                                favoriteOutfits.remove(outfit);
-                                              }
-                                            });
-                                          },
-                                        ),
-
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (editMode)
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: PopupMenuButton<String>(
-                              onSelected: (String option) async {
-                                if (option == 'Edit') {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditOutfitPage(
-                                        outfit: outfit.toMap(),
-                                        onSave: (updatedOutfit) async {
-                                          await _outfitService.saveOutfit(Outfit.fromMap(updatedOutfit));
-                                        },
+                                          Text(
+                                            outfit.category, // Category from Firestore
+                                            style: const TextStyle(color: Colors.grey),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  );
-                                } else if (option == 'Delete') {
-                                  await _outfitService.deleteOutfit(outfit.id);
-                                } else if (option == 'Toggle Favorite') {
-                                  await _outfitService.toggleFavorite(
-                                    outfit.id,
-                                    !outfit.isFavorite,
-                                  );
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                const PopupMenuItem(value: 'Edit', child: Text('Edit')),
-                                const PopupMenuItem(value: 'Delete', child: Text('Delete')),
-                                PopupMenuItem(
-                                  value: 'Toggle Favorite',
-                                  child: Text(
-                                    outfit.isFavorite
-                                        ? 'Remove from Favorites'
-                                        : 'Add to Favorites',
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(
+                                              outfit.isFavorite ? Icons.favorite : Icons.favorite_border,
+                                              color: outfit.isFavorite ? Colors.red : Colors.grey,
+                                            ),
+                                            onPressed: () async {
+                                              await _outfitService.toggleFavorite(outfit.id, !outfit.isFavorite);
+                                              setState(() {
+                                                if (outfit.isFavorite) {
+                                                  favoriteOutfits.add(outfit);
+                                                } else {
+                                                  favoriteOutfits.remove(outfit);
+                                                }
+                                              });
+                                            },
+                                          ),
+
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                      ],
-                    ),
+                          if (editMode)
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: PopupMenuButton<String>(
+                                onSelected: (String option) async {
+                                  if (option == 'Edit') {
+                                    _showConfirmationDialog(
+                                    context,
+                                    "Edit Outfit",
+                                    "Are you sure you want to edit this outfit?",
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditOutfitPage(
+                                                outfit: outfit,
+                                                onSave: (updatedOutfit) async {
+                                                  await _outfitService
+                                                      .saveOutfit(
+                                                      Outfit.fromMap(
+                                                          updatedOutfit,
+                                                          outfit.id));
+                                                },
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    );
+                                  } else if (option == 'Delete') {
+                                    _showConfirmationDialog(
+                                      context,
+                                      "Delete Outfit",
+                                      "Are you sure you want to delete this outfit? This action cannot be undone.",
+                                          () async {
+                                        await _outfitService.deleteOutfit(outfit.id);
+                                        // Optional: Show a snackbar confirmation after deletion
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("Outfit deleted")),
+                                        );
+                                      },
+                                    );
+                                    //await _outfitService.deleteOutfit(outfit.id);
+                                  } else if (option == 'Toggle Favorite') {
+                                    _showConfirmationDialog(
+                                    context,
+                                    "add or remove Favorite outfit",
+                                    "Are you sure you want to add/remove this outfit?",
+                                    () async {
+                                      // Toggle favorite directly with optional feedback
+                                      await _outfitService.toggleFavorite(
+                                        outfit.id,
+                                        !outfit.isFavorite,
+                                      );
+                                      // Optional: Show a snackbar confirmation
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            outfit.isFavorite
+                                                ? "Removed from favorites"
+                                                : "Added to favorites",
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    );
+                                   // await _outfitService.toggleFavorite(
+                                     // outfit.id,
+                                      //!outfit.isFavorite,
+                                    //);
+                                  }//else if
+                                },
+                                itemBuilder: (context) => [
+                                  const PopupMenuItem(value: 'Edit', child: Text('Edit')),
+                                  const PopupMenuItem(value: 'Delete', child: Text('Delete')),
+                                  PopupMenuItem(
+                                    value: 'Toggle Favorite',
+                                    child: Text(
+                                      outfit.isFavorite
+                                          ? 'Remove from Favorites'
+                                          : 'Add to Favorites',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
                   );
                 },
               );
@@ -370,38 +435,42 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
           ),
         ),
       ]),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add Outfit'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.edit), label: 'Edit Wardrobe'),
-        ],
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (content) => HomeScreen()),
-            );
-          } else if (index == 1) {
-            navigateToOutfitBuilder();
-          } else if (index == 2) {
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add Outfit'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.edit), label: 'Edit Wardrobe'),
+          ],
+          onTap: (index) {
+            if (index == 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+            } else if (index == 1) {
+              navigateToOutfitBuilder();
+            } else if (index == 2) {
+               setState(() {
+                    editMode = !editMode;
+                  });
+            }//else if
+          },
+        ),
+
+        floatingActionButton: editMode
+            ? FloatingActionButton(
+          onPressed: () {
+            // Exit edit mode and refresh UI
             setState(() {
-              editMode = !editMode;
+              editMode = false;
             });
-          }
-        },
-      ),
-      floatingActionButton: editMode
-          ? FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  editMode = false; // Exit edit mode
-                });
-              },
-              child: const Icon(Icons.done),
-            )
-          : null,
+          },
+          child: const Icon(Icons.done_outline_rounded),
+        )
+            : null,
+
+
     );
   }
 }
@@ -409,114 +478,125 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
 // Outfit Card Widget
 class OutfitCard extends StatelessWidget {
   final Outfit outfit; // Changed from Map<String, dynamic> to Outfit
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-  final VoidCallback onToggleFavorite;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onToggleFavorite;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const OutfitCard({
     super.key,
     required this.outfit,
-    required this.onEdit,
-    required this.onDelete,
-    required this.onToggleFavorite,
+    this.onEdit,
+    this.onDelete,
+    this.onToggleFavorite,
+    this.onTap,
+    this.onLongPress,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Stack(
-        children: [
-          // Image and Title Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(10)),
-                  child: outfit.imageUrl.isNotEmpty
-                      ? Image.network(
-                    outfit.imageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  )
-                      : Container(
-                    color: Colors.grey.shade300,
-                    child: const Center(
-                      child: Icon(Icons.image, size: 50, color: Colors.grey),
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Stack(
+          children: [
+            // Image and Title Section
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(10)),
+                    child: outfit.imageUrl.isNotEmpty
+                        ? Image.network(
+                      outfit.imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    )
+                        : Container(
+                      color: Colors.grey.shade300,
+                      child: const Center(
+                        child: Icon(Icons.image, size: 50, color: Colors.grey),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      outfit.title.isNotEmpty ? outfit.title : 'No Title',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      outfit.category.isNotEmpty ? outfit.category : 'No Category',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // Heart Icon
-          Positioned(
-            bottom: 8,
-            right: 8,
-            child: GestureDetector(
-              onTap: onToggleFavorite, // Calls Firestore toggle functionality
-              child: Icon(
-                outfit.isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: outfit.isFavorite ? Colors.red : Colors.grey,
-                size: 28,
-              ),
-            ),
-          ),
-          // Three-Dot Menu
-          Positioned(
-            top: 8,
-            right: 8,
-            child: PopupMenuButton<String>(
-              onSelected: (value) {
-                switch (value) {
-                  case 'Edit':
-                    onEdit(); // Opens edit functionality
-                    break;
-                  case 'Delete':
-                    onDelete(); // Deletes from Firestore
-                    break;
-                  case 'ToggleFavorite':
-                    onToggleFavorite(); // Toggles favorite in Firestore
-                    break;
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'Edit',
-                  child: Text('Edit'),
-                ),
-                const PopupMenuItem(
-                  value: 'Delete',
-                  child: Text('Delete'),
-                ),
-                PopupMenuItem(
-                  value: 'ToggleFavorite',
-                  child: Text(
-                    outfit.isFavorite ? 'Remove from Liked' : 'Add to Liked',
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        outfit.title.isNotEmpty ? outfit.title : 'No Title',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        outfit.category.isNotEmpty ? outfit.category : 'No Category',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            // Heart Icon
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: onToggleFavorite, // Calls Firestore toggle functionality
+                child: Icon(
+                  outfit.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: outfit.isFavorite ? Colors.red : Colors.grey,
+                  size: 28,
+                ),
+              ),
+            ),
+            // Three-Dot Menu
+            Positioned(
+              top: 8,
+              right: 8,
+              child: PopupMenuButton<String>(
+                onSelected: (value) {
+                  switch (value) {
+                    case 'Edit':
+                      if (onEdit!= null) onEdit; // Opens edit functionality
+                      break;
+                    case 'Delete':
+                      if(onDelete != null) onDelete; // Deletes from Firestore
+                      break;
+                    case 'ToggleFavorite':
+                      if(onToggleFavorite != null) onToggleFavorite; // Toggles favorite in Firestore
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  if(onEdit != null)
+                    const PopupMenuItem(
+                    value: 'Edit',
+                    child: Text('Edit'),
+                  ),
+                  if(onDelete != null)
+                    const PopupMenuItem(
+                    value: 'Delete',
+                    child: Text('Delete'),
+                  ),
+                  if(onToggleFavorite !=null)
+                    PopupMenuItem(
+                    value: 'ToggleFavorite',
+                    child: Text(
+                      outfit.isFavorite ? 'Remove from Liked' : 'Add to Liked',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -524,7 +604,7 @@ class OutfitCard extends StatelessWidget {
 
 //outfit searching in outfit dashboard page
 class OutfitSearchDelegate extends SearchDelegate {
-  final List<Map<String, dynamic>> outfits;
+  final List<Outfit> outfits;
 
   OutfitSearchDelegate({required this.outfits});
 
@@ -557,20 +637,20 @@ class OutfitSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    final results = outfits
+    //final results = outfits
+    final suggestions = outfits
         .where((outfit) =>
-            outfit['title']
-                .toLowerCase()
+            outfit.title.toLowerCase()
                 .contains(query.toLowerCase()) || // Exact match
-            outfit['title']
+            outfit.title
                 .toLowerCase()
                 .startsWith(query.toLowerCase()) || // Partial match
-            query.split(' ').any((word) => outfit['title']
+            query.split(' ').any((word) => outfit.title
                 .toLowerCase()
                 .contains(word.toLowerCase()))) // Word by word match
         .toList();
 
-    if (results.isEmpty) {
+    if (suggestions.isEmpty) {
       return Center(
         child: Text(
           "Item with name '$query' doesn't exist. Try searching something else.",
@@ -581,32 +661,30 @@ class OutfitSearchDelegate extends SearchDelegate {
     }
 
     return ListView.builder(
-      itemCount: results.length,
+      //itemCount: results.length,
+      itemCount: suggestions.length,
       itemBuilder: (context, index) {
-        final outfit = results[index];
+        final outfit = suggestions[index];
         return ListTile(
-          title: Text(outfit['title'] as String? ?? ''),
-          onTap: () {
+         // title: Text(outfit.title  as String? ?? ''),
+          title: Text(outfit.title,  style: const TextStyle(fontFamily: 'Lora')),
+          subtitle: Text(outfit.typeOfItem, style: const TextStyle(fontFamily: 'Lora')),
+          onTap: (){
+            query = outfit.title;
+            showResults(context); //show results on tap
+          },
+          /*onTap: () {
             close(context, null); // Close search on item tap
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => OutfitScreen(
-                  outfit: outfit, // Provide the outfit object
-                  onDeleteOutfit: () {
-                    // Handle delete action
-
-                  },
-                  onToggleFavorite: (bool isFavorite) {
-                    //  toggle favorite action
-                  },
-                  onUpdateOutfit: (updatedOutfit) {
-                    //  update action
-                  },
+                  title: outfit.title,
+                  typeOfItem: outfit.typeOfItem,
                 ),
               ),
             );
-          },
+          },*/
         );
       },
     );
@@ -616,10 +694,10 @@ class OutfitSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     final suggestions = outfits
         .where((outfit) =>
-            outfit['title']
+            outfit.title
                 .toLowerCase()
                 .startsWith(query.toLowerCase()) || // Partial match
-            outfit['title']
+            outfit.title
                 .toLowerCase()
                 .contains(query.toLowerCase())) // Fuzzy match
         .toList();
@@ -629,7 +707,7 @@ class OutfitSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final outfit = suggestions[index];
         return ListTile(
-          title: Text(outfit['title'] as String? ?? ''),
+          title: Text(outfit.title as String? ?? ''),
           trailing: const Text(
             '↖', //icon to complete the word instead of typing it all
             style: TextStyle(
@@ -640,7 +718,7 @@ class OutfitSearchDelegate extends SearchDelegate {
           // title: Text(outfit['title'] as String? ?? ''),
           //trailing: Icon(Icons.arrow_right),
           onTap: () {
-            query = outfit['title'];
+            query = outfit.title;
             showResults(
                 context); // Show results directly when suggestion is tapped
           },

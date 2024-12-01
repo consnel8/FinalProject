@@ -1,106 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'outfit_model.dart';
+import 'outfit_service.dart';
 
 class FavoriteOutfitsPage extends StatefulWidget {
-  final List<Map<String, dynamic>> favoriteOutfits;
-
-  FavoriteOutfitsPage({required this.favoriteOutfits});
-
   @override
   _FavoriteOutfitsPageState createState() => _FavoriteOutfitsPageState();
 }
 
 class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
+  List<Outfit> favoriteOutfits = []; // Initialize the favoriteOutfits list
+  bool isLoading = true; // To show a loading indicator while fetching data
   bool isGridView = false;
-  String sortOption = 'Date Liked';
-  String filterOption = 'All';
 
-  void sortFavorites() {
-    setState(() {
-      if (sortOption == 'Date Liked') {
-        widget.favoriteOutfits
-            .sort((a, b) => b['dateLiked'].compareTo(a['dateLiked']));
-      } else if (sortOption == 'Ascending') {
-        widget.favoriteOutfits.sort((a, b) => a['title'].compareTo(b['title']));
-      } else if (sortOption == 'Descending') {
-        widget.favoriteOutfits.sort((a, b) => b['title'].compareTo(a['title']));
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    fetchFavoriteOutfits(); // Fetch favorites from Firestore
   }
 
-  void filterFavorites() {
-    setState(() {
-      if (filterOption != 'All') {
-        widget.favoriteOutfits
-            .retainWhere((outfit) => outfit['type'] == filterOption);
-      }
-    });
+  Future<void> fetchFavoriteOutfits() async {
+    try {
+      // Fetch favorite outfits from Firestore
+      final outfits = await OutfitService().fetchFavoriteOutfits(); // Make sure this method exists in your service
+      setState(() {
+        favoriteOutfits = outfits;
+        isLoading = false; // Data has been fetched
+      });
+    } catch (e) {
+      print('Error fetching favorite outfits: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
-  void onDeleteOutfit(int index) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Delete Outfit',
-          style: TextStyle(fontFamily: 'Lora'),
+  void onDeleteOutfit(int index) async {
+    try {
+      final outfit = favoriteOutfits[index];
+
+      // Confirm before deleting
+      final confirm = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Outfit'),
+          content: const Text('Are you sure you want to delete this outfit?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete'),
+            ),
+          ],
         ),
-        content: Text('Are you sure you want to delete this outfit?',
-            style: TextStyle(fontFamily: 'Lora')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(fontFamily: 'Lora')),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                widget.favoriteOutfits.removeAt(index);
-              });
-              Navigator.pop(context);
-            },
-            child: Text('Delete', style: TextStyle(fontFamily: 'Lora')),
-          ),
-        ],
-      ),
-    );
-  }
+      );
 
-  void onUnlikeOutfit(int index) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title:
-            Text('Remove from Favorites', style: TextStyle(fontFamily: 'Lora')),
-        content: Text('Are you sure you want to unlike this outfit?',
-            style: TextStyle(fontFamily: 'Lora')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(fontFamily: 'Lora')),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                widget.favoriteOutfits[index]['isFavorite'] = false;
-              });
-              Navigator.pop(context);
-            },
-            child: Text('Unlike', style: TextStyle(fontFamily: 'Lora')),
-          ),
-        ],
-      ),
-    );
+      if (confirm == true) {
+        // Delete from Firestore
+        await OutfitService().deleteOutfit(outfit.id);
+
+        // Remove from local list
+        setState(() {
+          favoriteOutfits.removeAt(index);
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Outfit deleted successfully!')),
+        );
+      }
+    } catch (e) {
+      print('Error deleting outfit: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete outfit.')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Favorite Outfits',
-          style: TextStyle(fontFamily: 'Teko', fontSize: 30),
-        ),
+        title: const Text('Favorite Outfits'),
         actions: [
           IconButton(
             icon: Icon(isGridView ? Icons.list : Icons.grid_view),
@@ -110,108 +92,74 @@ class _FavoriteOutfitsPageState extends State<FavoriteOutfitsPage> {
               });
             },
           ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              setState(() {
-                if (value == 'Sort') {
-                  sortFavorites();
-                } else {
-                  filterOption = value;
-                  filterFavorites();
-                }
-              });
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                  value: 'Sort',
-                  child: Text('Sort by Date Liked',
-                      style: TextStyle(fontFamily: 'Lora'))),
-              PopupMenuItem(
-                  value: 'Ascending',
-                  child: Text('Sort Ascending',
-                      style: TextStyle(fontFamily: 'Lora'))),
-              PopupMenuItem(
-                  value: 'Descending',
-                  child: Text('Sort Descending',
-                      style: TextStyle(fontFamily: 'Lora'))),
-              PopupMenuDivider(),
-              PopupMenuItem(
-                  value: 'All',
-                  child: Text('Filter: All',
-                      style: TextStyle(fontFamily: 'Lora'))),
-              PopupMenuItem(
-                  value: 'Clothing',
-                  child: Text('Filter: Clothing',
-                      style: TextStyle(fontFamily: 'Lora'))),
-              PopupMenuItem(
-                  value: 'Accessories',
-                  child: Text('Filter: Accessories',
-                      style: TextStyle(fontFamily: 'Lora'))),
-            ],
-          ),
         ],
       ),
-      body: isGridView
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator()) // Show a loader while fetching data
+          : favoriteOutfits.isEmpty
+          ? const Center(child: Text('No favorite outfits found.'))
+          : isGridView
           ? GridView.builder(
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemCount: widget.favoriteOutfits.length,
-              itemBuilder: (context, index) {
-                final outfit = widget.favoriteOutfits[index];
-                return buildOutfitTile(outfit, index);
-              },
-            )
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 8.0,
+          crossAxisSpacing: 8.0,
+        ),
+        itemCount: favoriteOutfits.length,
+        itemBuilder: (context, index) {
+          return buildOutfitTile(favoriteOutfits[index], index);
+        },
+      )
           : ListView.builder(
-              itemCount: widget.favoriteOutfits.length,
-              itemBuilder: (context, index) {
-                final outfit = widget.favoriteOutfits[index];
-                return buildOutfitTile(outfit, index);
-              },
-            ),
+        itemCount: favoriteOutfits.length,
+        itemBuilder: (context, index) {
+          return buildOutfitTile(favoriteOutfits[index], index);
+        },
+      ),
     );
   }
 
-  Widget buildOutfitTile(Map<String, dynamic> outfit, int index) {
+  Widget buildOutfitTile(Outfit outfit, int index) {
     return Dismissible(
-      key: ValueKey(outfit['id']),
+      key: ValueKey(outfit.id),
       direction: DismissDirection.horizontal,
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 16),
-        child: Icon(Icons.delete, color: Colors.white),
+        padding: const EdgeInsets.only(left: 16),
+        child: const Icon(Icons.delete, color: Colors.white),
       ),
       secondaryBackground: Container(
         color: Colors.orange,
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 16),
-        child: Icon(Icons.remove_circle, color: Colors.white),
+        padding: const EdgeInsets.only(right: 16),
+        child: const Icon(Icons.remove_circle, color: Colors.white),
       ),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           onDeleteOutfit(index);
-          return false;
+          return false; // Prevent automatic dismissal
         } else {
-          onUnlikeOutfit(index);
-          return false;
+          return false; // Add other functionality if needed
         }
       },
       child: Card(
         child: isGridView
             ? Column(
-                children: [
-                  Image.network(outfit['image'],
-                      height: 100, fit: BoxFit.cover),
-                  Text(outfit['title']),
-                ],
-              )
+          children: [
+            Image.network(outfit.imageUrl, height: 100, fit: BoxFit.cover),
+            Text(outfit.title),
+          ],
+        )
             : Row(
-                children: [
-                  Image.network(outfit['image'], width: 100, fit: BoxFit.cover),
-                  Expanded(child: Text(outfit['title'])),
-                ],
-              ),
+          children: [
+            Image.network(outfit.imageUrl, width: 100, fit: BoxFit.cover),
+            Expanded(child: Text(outfit.title)),
+          ],
+        ),
       ),
     );
   }
 }
+
+
