@@ -7,8 +7,8 @@ class Outfit {
   final String category;
   final String typeOfItem; // New field
   final String imageUrl;
-   bool isFavorite;
-   final DateTime dateLiked;
+  bool isFavorite;
+  final DateTime dateLiked;
 
   Outfit({
     required this.id,
@@ -67,7 +67,6 @@ class Outfit {
       'dateLiked': Timestamp.fromDate(dateLiked),
     };
   }
-
 
 
 }

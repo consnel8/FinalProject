@@ -100,6 +100,52 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
       if (selectedFile != null) {
         setState(() => isSaving = true);
 
+        // Upload image to Firebase Storage and get the URL
+        final String? imageUrl = await _outfitService.uploadImage(selectedFile);
+
+        if (imageUrl != null) {
+          setState(() {
+            outfitParts[part] = imageUrl; // Update the corresponding part's URL
+            isSaving = false;
+          });
+        } else {
+          setState(() => isSaving = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to upload image')),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() => isSaving = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error selecting/uploading image: $e')),
+      );
+    }
+  }
+
+
+  /* Future<void> selectAndUploadImage(String part, ImageSource source) async {
+    try {
+      File? selectedFile;
+
+      if (source == ImageSource.gallery || source == ImageSource.camera) {
+        final XFile? pickedImage = await _picker.pickImage(source: source);
+        if (pickedImage != null) {
+          selectedFile = File(pickedImage.path);
+        }
+      } else {
+        final FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['jpg', 'jpeg', 'png'],
+        );
+        if (result != null && result.files.single.path != null) {
+          selectedFile = File(result.files.single.path!);
+        }
+      }
+
+      if (selectedFile != null) {
+        setState(() => isSaving = true);
+
         final imageUrl = await _outfitService.uploadImage(selectedFile);
 
         if (imageUrl != null) {
@@ -120,7 +166,7 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
         SnackBar(content: Text('Error selecting/uploading image: $e')),
       );
     }
-  }
+  }*/
 
   // Generate preview of the outfit collage
   Widget buildCollagePreview() {
@@ -188,15 +234,23 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               child: CircularProgressIndicator(strokeWidth: 2),
             )
                 : Icon(Icons.save),
-            onPressed: isSaving ? null : () async {
-              // Call saveOutfit and wait for it to complete
+            onPressed: isSaving
+                ? null
+                : () async {
               try {
-                // Get values from your form (replace these with actual values)
-                String title = titleController.text; // Assuming you have a title controller
-                String description = descriptionController.text; // Description controller
-                String category = selectedCategory!; // Assuming you have a category
-                String typeOfItem = selectedItemType!; // Assuming you have an item type
+                String title = titleController.text.trim();
+                String description = descriptionController.text.trim();
+                String category = selectedCategory ?? '';
+                String typeOfItem = selectedItemType ?? '';
                 String imageUrl = outfitParts['Complete Outfit'] ?? '';
+
+                // Validate required fields
+                if (title.isEmpty || description.isEmpty || imageUrl.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please fill in all fields.')),
+                  );
+                  return;
+                }
 
                 await saveOutfit(
                   title: title,
@@ -204,18 +258,20 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
                   category: category,
                   typeOfItem: typeOfItem,
                   imageUrl: imageUrl,
-                ); // Ensure this runs asynchronously
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Outfit saved successfully!')),
                 );
-                Navigator.pop(context); // Return to the previous screen
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Outfit saved successfully!')),
+                );
+
+                Navigator.pop(context);
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error saving outfit: $e')),
                 );
               }
             },
-          )
+          ),
 
         ],
       ),

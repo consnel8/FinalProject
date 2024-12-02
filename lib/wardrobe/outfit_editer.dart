@@ -54,15 +54,23 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
   }
 
   Future<void> _pickImage() async {
-    final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
-
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        _selectedImage = pickedFile.path;
-      });
+      try {
+        final uploadedUrl = await _uploadImage(pickedFile.path); // Upload the image
+        if (uploadedUrl != null) {
+          setState(() {
+            _selectedImage = uploadedUrl; // Set the uploaded image URL
+          });
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Image upload failed: $e')),
+        );
+      }
     }
   }
+
 
   @override
   void dispose() {

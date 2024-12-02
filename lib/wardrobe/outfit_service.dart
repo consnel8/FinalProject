@@ -98,12 +98,6 @@ class OutfitService {
     }
   }
 
-
-
-
-
-
-
   // Toggle favorite status in Firestore
   Future<void> toggleFavorite(String outfitId, bool isFavorite) async {
     try {
@@ -136,7 +130,7 @@ class OutfitService {
 
 
    // Upload image to Firebase Storage and return the URL
-  Future<String?> uploadImage(File imageFile) async {
+  /*Future<String?> uploadImage(File imageFile) async {
     try {
       final fileName = imageFile.path
           .split('/')
@@ -148,7 +142,21 @@ class OutfitService {
       print('Error uploading image: $e');
       return null;
     }
-  }
+  }*/
+   Future<String?> uploadImage(File imageFile) async {
+     try {
+       final fileName = DateTime.now().toIso8601String(); // Unique name
+       final ref = FirebaseStorage.instance.ref().child('outfit_images/$fileName');
+       final uploadTask = await ref.putFile(imageFile);
+       return await uploadTask.ref.getDownloadURL(); // Return the image URL
+     } catch (e) {
+       print('Error uploading image: $e');
+       return null; // Handle error gracefully
+     }
+   }
+
+
+
 
 
    Future<void> deleteOutfit(String outfitId) async {
