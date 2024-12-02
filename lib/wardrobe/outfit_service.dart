@@ -6,8 +6,7 @@ import 'dart:io';
 
 
 import 'outfit_model.dart';
-import 'package:uuid/uuid.dart';  // For unique ID generation
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class OutfitService {
    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -104,6 +103,7 @@ class OutfitService {
       await _firestore.collection('outfits').doc(outfitId).update({
         'isFavorite': isFavorite,
       });
+
       print('Favorite status updated successfully!');
     } catch (e) {
       print('Error toggling favorite: $e');
@@ -129,29 +129,18 @@ class OutfitService {
 
 
 
-   // Upload image to Firebase Storage and return the URL
-  /*Future<String?> uploadImage(File imageFile) async {
-    try {
-      final fileName = imageFile.path
-          .split('/')
-          .last;
-      final ref = _storage.ref().child('outfit_images/$fileName');
-      final uploadTask = await ref.putFile(imageFile);
-      return await uploadTask.ref.getDownloadURL();
-    } catch (e) {
-      print('Error uploading image: $e');
-      return null;
-    }
-  }*/
+
    Future<String?> uploadImage(File imageFile) async {
      try {
-       final fileName = DateTime.now().toIso8601String(); // Unique name
-       final ref = FirebaseStorage.instance.ref().child('outfit_images/$fileName');
-       final uploadTask = await ref.putFile(imageFile);
-       return await uploadTask.ref.getDownloadURL(); // Return the image URL
+       final fileName = DateTime.now().toIso8601String();
+       final storageRef = FirebaseStorage.instance.ref().child('outfit_images/$fileName');
+       final uploadTask = storageRef.putFile(imageFile);
+
+       final snapshot = await uploadTask;
+       return await snapshot.ref.getDownloadURL();
      } catch (e) {
-       print('Error uploading image: $e');
-       return null; // Handle error gracefully
+       print("Firebase upload failed: $e");
+       return null;
      }
    }
 
@@ -182,6 +171,26 @@ class OutfitService {
       return null; // Handle the error
     }
   }
+
+
+
+
+   Future<bool> isValidImageUrl(String url) async {
+     try {
+       final uri = Uri.parse(url);
+       if (!uri.hasAbsolutePath) return false;
+
+       final response = await HttpClient().headUrl(uri).then((request) => request.close());
+       return response.statusCode == 200 &&
+           (response.headers.contentType?.mimeType.startsWith('image/') ?? false);
+     } catch (e) {
+       print("Error validating image URL: $e");
+       return false;
+     }
+   }
+
+
+
 
 
 

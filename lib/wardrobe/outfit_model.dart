@@ -9,6 +9,7 @@ class Outfit {
   final String imageUrl;
   bool isFavorite;
   final DateTime dateLiked;
+  final DateTime dateAdded;
 
   Outfit({
     required this.id,
@@ -19,6 +20,7 @@ class Outfit {
     required this.imageUrl,
     required this.isFavorite,
     required this.dateLiked,
+    required this.dateAdded,
   });
 
 
@@ -36,6 +38,9 @@ class Outfit {
       dateLiked: data['dateLiked'] != null
           ? (data['dateLiked'] as Timestamp).toDate()
           : DateTime.now(),
+      dateAdded: data['dateAdded'] != null
+          ? (data['dateAdded'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 
@@ -52,6 +57,9 @@ class Outfit {
       dateLiked: map['dateLiked'] != null
           ? (map['dateLiked'] as Timestamp).toDate()
           : DateTime.now(),
+      dateAdded: map['dateAdded'] != null
+          ? (map['dateAdded'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 
@@ -65,9 +73,31 @@ class Outfit {
       'imageUrl': imageUrl,
       'isFavorite': isFavorite,
       'dateLiked': Timestamp.fromDate(dateLiked),
+      'dateAdded': dateAdded,
     };
   }
 
+  Outfit copyWith(
+      { String? id,
+        String? title,
+        String? description,
+        String? category,
+        String? typeOfItem,
+        String? imageUrl,
+        bool? isFavorite,
+        DateTime? dateLiked,
+        DateTime? dateAdded,
+      }) {
+    return Outfit(
+    id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      typeOfItem: typeOfItem ?? this.typeOfItem,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isFavorite: isFavorite ?? this.isFavorite,
+      dateLiked: dateLiked ?? this.dateLiked,
+      dateAdded: dateAdded ?? this.dateAdded, ); }
 
 }
 

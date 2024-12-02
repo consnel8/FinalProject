@@ -1,290 +1,247 @@
-import 'dart:io';
-
+import  'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-
 import 'outfit_model.dart';
+import 'outfit_service.dart';
 
 class EditOutfitPage extends StatefulWidget {
   final Outfit outfit;
-  final Function(Map<String, dynamic>) onSave;
+  final Function(Outfit) onSave;
 
-  const EditOutfitPage({super.key, required this.outfit, required this.onSave});
+  const EditOutfitPage({required this.outfit, required this.onSave});
 
   @override
   _EditOutfitPageState createState() => _EditOutfitPageState();
 }
 
 class _EditOutfitPageState extends State<EditOutfitPage> {
-  late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
-  String? _selectedImage;
-  late String selectedItemType;
+  late TextEditingController titleController;
+  late TextEditingController descriptionController;
   late String selectedCategory;
-  late String imageUrl;
+  late String selectedItemType;
+  String? imageUrl;
+  bool isSaving = false;
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize controllers and fields from the passed outfit
-    _titleController = TextEditingController(text: widget.outfit.title ?? '');
-    _descriptionController = TextEditingController(
-      text: widget.outfit.description ?? '',
-    );
-    selectedItemType = widget.outfit.typeOfItem ?? '';
-    selectedCategory = widget.outfit.category ?? '';
-    imageUrl = widget.outfit.imageUrl ?? '';
+    titleController = TextEditingController(text: widget.outfit.title);
+    descriptionController = TextEditingController(text: widget.outfit.description);
+    selectedCategory = widget.outfit.category;
+    selectedItemType = widget.outfit.typeOfItem;
+    imageUrl = widget.outfit.imageUrl;
   }
 
-  /// Method to upload an image to Firebase Storage
-  Future<String> _uploadImage(String imagePath) async {
-    try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('images/${DateTime.now().toIso8601String()}');
-      final uploadTask = storageRef.putFile(File(imagePath));
-      final snapshot = await uploadTask.whenComplete(() {});
-      return await snapshot.ref.getDownloadURL();
-    } catch (e) {
-      throw Exception('Failed to upload image: $e');
-    }
-  }
+  Future<void> _pickAndUploadImage() async {
+    final XFile? pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() => isSaving = true);
 
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
       try {
-        final uploadedUrl = await _uploadImage(pickedFile.path); // Upload the image
-        if (uploadedUrl != null) {
-          setState(() {
-            _selectedImage = uploadedUrl; // Set the uploaded image URL
-          });
-        }
+        final File imageFile = File(pickedImage.path);
+        final String? uploadedUrl = await OutfitService().uploadImage(imageFile);
+        setState(() {
+          imageUrl = uploadedUrl;
+        });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Image upload failed: $e')),
+          SnackBar(content: Text('Failed to upload image: $e')),
         );
+      } finally {
+        setState(() => isSaving = false);
       }
     }
   }
 
+  Future<void> _saveChanges() async {
+    if (titleController.text.isEmpty ||
+        descriptionController.text.isEmpty ||
+        selectedCategory.isEmpty ||
+        selectedItemType.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill out all fields.')),
+      );
+      return;
+    }
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
+    setState(() => isSaving = true);
+
+    try {
+      final updatedOutfit = widget.outfit.copyWith(
+        title: titleController.text,
+        description: descriptionController.text,
+        category: selectedCategory,
+        typeOfItem: selectedItemType,
+        imageUrl: imageUrl ?? widget.outfit.imageUrl,
+      );
+
+      await OutfitService().updateOutfit(updatedOutfit);
+      widget.onSave(updatedOutfit);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Outfit updated successfully!')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update outfit: $e')),
+      );
+    } finally {
+      setState(() => isSaving = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final imageHeight = screenHeight * 0.4;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Edit ${widget.outfit.title ?? 'Outfit'}',
-          style: const TextStyle(fontFamily: 'Teko', fontSize: 30),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: Text('Edit ${widget.outfit.title}'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: EdgeInsets.all(16),
+        child: ListView(
           children: [
-            // Image Section
-            Center(
+            GestureDetector(
+              onTap: _pickAndUploadImage,
               child: Container(
-                height: 150,
-                width: double.infinity,
+                height: imageHeight,
                 decoration: BoxDecoration(
-                  color: Colors.pink[50],
+                  color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _selectedImage != null
-                        ? Image.file(
-                      File(_selectedImage!),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                        : imageUrl.isNotEmpty
-                        ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                        : const Icon(Icons.image, size: 100, color: Colors.grey),
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: _pickImage,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: imageUrl != null
+                    ? Image.network(imageUrl!, fit: BoxFit.cover)
+                    : Icon(Icons.image, size: 100, color: Colors.grey),
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Description Section
-            const Text(
-              'Description',
-              style: TextStyle(fontSize: 22, fontFamily: 'Teko'),
-            ),
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                hintText: 'Enter description',
-                helperText: '180 characters max',
-              ),
-              maxLength: 180,
-            ),
-            const SizedBox(height: 20),
-
-            // Type of Item Dropdown
-            ListTile(
-              leading: const Icon(Icons.shopping_cart_outlined),
-              title: const Text('Type of Item',
-                  style: TextStyle(fontFamily: 'Teko', fontSize: 18)),
-              subtitle: const Text('Clothing, Shoe, Jewellery, etc.',
-                  style: TextStyle(fontFamily: 'Lora')),
-              trailing: DropdownButtonFormField<String>(
-                value: ['Clothing', 'Shoe', 'Jewellery'].contains(selectedItemType)
-                    ? selectedItemType
-                    : null,
-                onChanged: (value) {
-                  setState(() {
-                    selectedItemType = value ?? '';
-                  });
-                },
-                items: ['Clothing', 'Shoe', 'Jewellery']
-                    .map((type) => DropdownMenuItem(
-                  value: type,
-                  child: Text(type),
-                ))
-                    .toList(),
-                decoration: const InputDecoration(labelText: 'Type of Item'),
-              ),
-            ),
-
-            // Category Dropdown
-            ListTile(
-              leading: const Icon(Icons.star_border),
-              title: const Text('Category',
-                  style: TextStyle(fontFamily: 'Teko', fontSize: 18)),
-              subtitle: const Text('Winters, Casual, Formal, etc.',
-                  style: TextStyle(fontFamily: 'Lora')),
-              trailing: DropdownButtonFormField<String>(
-                value: ['Winters', 'Casual', 'Formal'].contains(selectedCategory)
-                    ? selectedCategory
-                    : null,
-                onChanged: (value) {
-                  setState(() {
-                    selectedCategory = value ?? '';
-                  });
-                },
-                items: ['Winters', 'Casual', 'Formal']
-                    .map((category) => DropdownMenuItem(
-                  value: category,
-                  child: Text(category),
-                ))
-                    .toList(),
-                decoration: const InputDecoration(labelText: 'Category'),
-              ),
-            ),
-            const Spacer(),
-
-            // Buttons
+            SizedBox(height: 20),
+            // Title Field
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.cancel, color: Colors.grey),
-                  label: const Text('Cancel', style: TextStyle(fontFamily: 'Lora')),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_descriptionController.text.isNotEmpty &&
-                        selectedItemType.isNotEmpty &&
-                        selectedCategory.isNotEmpty) {
-                      try {
-                        // Upload image if a new one is selected
-                        if (_selectedImage != null) {
-                          imageUrl = await _uploadImage(_selectedImage!);
-                        }
-
-                        // Updated outfit data
-                        final updatedOutfit = {
-                          'title': _titleController.text,
-                          'description': _descriptionController.text,
-                          'category': selectedCategory,
-                          'typeOfItem': selectedItemType,
-                          'imageUrl': imageUrl,
-                        };
-
-                        // Save changes
-                        await FirebaseFirestore.instance
-                            .collection('outfits')
-                            .doc(widget.outfit.id)
-                            .update(updatedOutfit);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Changes saved successfully!',
-                                style: TextStyle(fontFamily: 'Lora')),
-                          ),
-                        );
-                        Navigator.pop(context);
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Failed to save changes: $e',
-                              style: const TextStyle(fontFamily: 'Lora'),
-                            ),
-                          ),
-                        );
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Please fill all the fields',
-                              style: TextStyle(fontFamily: 'Lora')),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                Expanded(
+                  child: Text(
+                    'Title',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                      'Save Changes',
-                      style: TextStyle(fontFamily: 'Lora'),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Title',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 20),
+            // Description Field
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Description',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: descriptionController,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Description',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            // Category Dropdown
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Category',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    onChanged: (value) => setState(() => selectedCategory = value!),
+                    items: ['Formal', 'Casual', 'Winter/Fall', 'Summer/Spring']
+                        .map((category) => DropdownMenuItem(
+                      value: category,
+                      child: Text(category),
+                    ))
+                        .toList(),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            // Item Type Dropdown
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Type of Item',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedItemType,
+                    onChanged: (value) => setState(() => selectedItemType = value!),
+                    items: ['Clothing', 'Shoe', 'Jewellery']
+                        .map((type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(type),
+                    ))
+                        .toList(),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            // Save Changes Button
+            ElevatedButton(
+              onPressed: isSaving ? null : _saveChanges,
+              child: isSaving
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Text('Save Changes'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16),
+              ),
             ),
           ],
         ),
@@ -292,5 +249,6 @@ class _EditOutfitPageState extends State<EditOutfitPage> {
     );
   }
 }
+
 
 

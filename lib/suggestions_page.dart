@@ -238,7 +238,10 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
       double longitude = position.longitude;
 
       String url =
-          'https://api.foursquare.com/v3/places/nearby?ll=$latitude,$longitude&radius=5000&limit=20';
+         'https://api.foursquare.com/v3/places/nearby?ll=$latitude,$longitude&radius=5000&limit=20';
+      //String url =
+        //  'https://api.foursquare.com/v3/places/search?ll=$latitude,$longitude&categories=19014&radius=5000&limit=20';
+
 
       var response = await http.get(
         Uri.parse(url),

@@ -21,6 +21,8 @@ class OutfitDashboardPage extends StatefulWidget {
 }
 
 class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
+  int checkcount = 0;
+  bool isAscending = true;
   final OutfitService _outfitService = OutfitService();
 
   List<Outfit> outfits = []; //this list is to store fetched outfit from fb
@@ -41,8 +43,10 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
     'All Categories',
     'Formal',
     'Casual',
-    'Dresses',
+    'Individual Item',
     'Accessories',
+    'Shoe',
+    'Jewellery',
     'Winter/Fall',
     'Summer/Spring'
   ];
@@ -150,7 +154,6 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
           },
         ),
         actions: [
-          // Search Button
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () async {
@@ -172,17 +175,24 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsPage(),
-                ),
-              );
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'sort_date') {
+                setState(() {
+                  isAscending = !isAscending;
+                  outfits.sort((a, b) => isAscending ? a.dateAdded.compareTo(b.dateAdded): b.dateAdded.compareTo(a.dateAdded));
+
+                });
+              }
             },
-          )
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'sort_date',
+                child: Text(isAscending ? 'Sort by Newest' : 'Sort by Oldest'),
+              ),
+            ],
+          ),
+
         ],
       ),
       body: Column(children: [
@@ -225,8 +235,6 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
               }).toList();
 
               return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(8.0),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -237,224 +245,192 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
                 itemCount: filteredOutfits.length,
                 itemBuilder: (context, index) {
                   final outfit = filteredOutfits[index];
-                  return Stack(
-                    children: [
-                      OutfitCard(
-                      outfit: outfit,
-                      onTap: () {
-                        // Navigate to OutfitScreen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OutfitScreen(outfitId: outfit.id),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OutfitScreen(outfit: outfit),
+                        ),
+                      );
+                    },
+                    onLongPress: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditOutfitPage(
+                            outfit: outfit,
+                            onSave: (updatedOutfit) async {
+                              await _outfitService.saveOutfit(updatedOutfit);
+                              setState(() {
+                                filteredOutfits[index] = updatedOutfit;
+                              });
+                            },
                           ),
-                        );
-                      },
-                      onLongPress: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditOutfitPage(
-                              outfit: outfit, // Pass the outfit as a Map
-                              onSave: (updatedOutfitMap) async {
-                                // Recreate the Outfit object from the updated map
-                                Outfit updatedOutfit = Outfit.fromMap(updatedOutfitMap, outfit.id);
-
-                                // Save the updated outfit back to Firestore
-                                await _outfitService.saveOutfit(updatedOutfit);
-                                setState(() {
-                                  filteredOutfits[index] = updatedOutfit;
-                                });
-                              },
-                            ),
+                        ),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        // Main Card Design
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                        );
-                      },
-                      ),
-
-                       Stack(
-                        children: [
-                          Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                                    child: Image.network(
-                                      outfit.imageUrl, // Use the image URL from Firestore
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                    ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Image Section
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius:
+                                  const BorderRadius.vertical(top: Radius.circular(10)),
+                                  child: Image.network(
+                                    outfit.imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            outfit.title, // Title from Firestore
-                                            style: const TextStyle(fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            outfit.category, // Category from Firestore
-                                            style: const TextStyle(color: Colors.grey),
-                                          ),
-                                        ],
+                              ),
+                              // Title, Category, and Favorite Button
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          outfit.title,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold, fontSize: 14),
+                                        ),
+                                        Text(
+                                          outfit.category,
+                                          style:
+                                          const TextStyle(color: Colors.grey, fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        outfit.isFavorite
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: outfit.isFavorite ? Colors.red : Colors.grey,
                                       ),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: Icon(
-                                              outfit.isFavorite ? Icons.favorite : Icons.favorite_border,
-                                              color: outfit.isFavorite ? Colors.red : Colors.grey,
-                                            ),
-                                            onPressed: () async {
-                                              await _outfitService.toggleFavorite(outfit.id, !outfit.isFavorite);
-                                              setState(() {
-                                                if (outfit.isFavorite) {
-                                                  favoriteOutfits.add(outfit);
-                                                } else {
-                                                  favoriteOutfits.remove(outfit);
-                                                }
-                                              });
-                                            },
-                                          ),
+                                      onPressed: () async {
+                                        await _outfitService.toggleFavorite(
+                                            outfit.id, !outfit.isFavorite);
+                                        setState(() {
+                                          outfit.isFavorite = !outfit.isFavorite;
+                                        });
 
-                                        ],
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(outfit.isFavorite
+                                                ? 'Added to Favorites'
+                                                : 'Removed from Favorites'),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Popup Menu for Edit and Delete
+                        if (editMode)
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: PopupMenuButton<String>(
+                              onSelected: (String option) async {
+                                if (option == 'Edit') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditOutfitPage(
+                                        outfit: outfit,
+                                        onSave: (updatedOutfit) async {
+                                          await _outfitService.saveOutfit(updatedOutfit);
+                                          setState(() {
+                                            final index = filteredOutfits
+                                                .indexWhere((o) => o.id == updatedOutfit.id);
+                                            if (index != -1) {
+                                              filteredOutfits[index] = updatedOutfit;
+                                            }
+                                          });
+                                        },
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  );
+                                } else if (option == 'Delete') {
+                                  _showConfirmationDialog(
+                                    context,
+                                    "Delete Outfit",
+                                    "Are you sure you want to delete this outfit? This action cannot be undone.",
+                                        () async {
+                                      await _outfitService.deleteOutfit(outfit.id);
+                                      // Optional: Show a snackbar confirmation after deletion
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text("Outfit deleted")),
+                                      );
+                                    },
+                                  );
+
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 'Edit',
+                                  child: Text('Edit'),
+                                ),
+                                const PopupMenuItem(
+                                  value: 'Delete',
+                                  child: Text('Delete'),
                                 ),
                               ],
                             ),
                           ),
-                          if (editMode)
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: PopupMenuButton<String>(
-                                onSelected: (String option) async {
-                                  if (option == 'Edit') {
-                                    _showConfirmationDialog(
-                                    context,
-                                    "Edit Outfit",
-                                    "Are you sure you want to edit this outfit?",
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditOutfitPage(
-                                                outfit: outfit,
-                                                onSave: (updatedOutfit) async {
-                                                  await _outfitService
-                                                      .saveOutfit(
-                                                      Outfit.fromMap(
-                                                          updatedOutfit,
-                                                          outfit.id));
-                                                },
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                    );
-                                  } else if (option == 'Delete') {
-                                    _showConfirmationDialog(
-                                      context,
-                                      "Delete Outfit",
-                                      "Are you sure you want to delete this outfit? This action cannot be undone.",
-                                          () async {
-                                        await _outfitService.deleteOutfit(outfit.id);
-                                        // Optional: Show a snackbar confirmation after deletion
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text("Outfit deleted")),
-                                        );
-                                      },
-                                    );
-                                    //await _outfitService.deleteOutfit(outfit.id);
-                                  } else if (option == 'Toggle Favorite') {
-                                    _showConfirmationDialog(
-                                    context,
-                                    "add or remove Favorite outfit",
-                                    "Are you sure you want to add/remove this outfit?",
-                                    () async {
-                                      // Toggle favorite directly with optional feedback
-                                      await _outfitService.toggleFavorite(
-                                        outfit.id,
-                                        !outfit.isFavorite,
-                                      );
-                                      // Optional: Show a snackbar confirmation
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            outfit.isFavorite
-                                                ? "Removed from favorites"
-                                                : "Added to favorites",
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    );
-                                   // await _outfitService.toggleFavorite(
-                                     // outfit.id,
-                                      //!outfit.isFavorite,
-                                    //);
-                                  }//else if
-                                },
-                                itemBuilder: (context) => [
-                                  const PopupMenuItem(value: 'Edit', child: Text('Edit')),
-                                  const PopupMenuItem(value: 'Delete', child: Text('Delete')),
-                                  PopupMenuItem(
-                                    value: 'Toggle Favorite',
-                                    child: Text(
-                                      outfit.isFavorite
-                                          ? 'Remove from Favorites'
-                                          : 'Add to Favorites',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               );
+
             },
           ),
         ),
       ]),
         bottomNavigationBar: BottomNavigationBar(
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.alarm_add), label: 'Reminders', ),
             BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add Outfit'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.edit), label: 'Edit Wardrobe'),
+            BottomNavigationBarItem(icon: Icon(Icons.edit), label: 'Edit Wardrobe'),
+            BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: 'Home'),
           ],
           onTap: (index) {
             if (index == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
+              handleReminderIconPress();
             } else if (index == 1) {
               navigateToOutfitBuilder();
             } else if (index == 2) {
                setState(() {
                     editMode = !editMode;
                   });
-            }//else if
+            } else if(index ==3){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(),
+                ),
+              );
+            }
           },
         ),
 
@@ -473,6 +449,49 @@ class _OutfitDashboardPageState extends State<OutfitDashboardPage> {
 
     );
   }
+
+  void handleReminderIconPress() {
+    if (checkcount == 0 || checkcount == 2) {
+      scheduleAlert();
+      setState(() {
+        checkcount = 0;
+      });
+    } else if (checkcount == 0) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          content: const Text(
+            "Your weekly notification is already scheduled.",
+            style: TextStyle(
+              fontFamily: 'Lora',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(
+                  fontFamily: 'Lora',
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void scheduleAlert() {
+    // Add your scheduling logic here
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Weekly notification scheduled!')),
+    );
+  }
+
+
 }
 
 // Outfit Card Widget
@@ -637,54 +656,28 @@ class OutfitSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    //final results = outfits
     final suggestions = outfits
         .where((outfit) =>
-            outfit.title.toLowerCase()
-                .contains(query.toLowerCase()) || // Exact match
-            outfit.title
-                .toLowerCase()
-                .startsWith(query.toLowerCase()) || // Partial match
-            query.split(' ').any((word) => outfit.title
-                .toLowerCase()
-                .contains(word.toLowerCase()))) // Word by word match
+    outfit.title.toLowerCase().contains(query.toLowerCase()) ||
+        outfit.title.toLowerCase().startsWith(query.toLowerCase()))
         .toList();
 
-    if (suggestions.isEmpty) {
-      return Center(
-        child: Text(
-          "Item with name '$query' doesn't exist. Try searching something else.",
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16, color: Colors.grey),
-        ),
-      );
-    }
-
     return ListView.builder(
-      //itemCount: results.length,
       itemCount: suggestions.length,
       itemBuilder: (context, index) {
         final outfit = suggestions[index];
         return ListTile(
-         // title: Text(outfit.title  as String? ?? ''),
-          title: Text(outfit.title,  style: const TextStyle(fontFamily: 'Lora')),
+          title: Text(outfit.title, style: const TextStyle(fontFamily: 'Lora')),
           subtitle: Text(outfit.typeOfItem, style: const TextStyle(fontFamily: 'Lora')),
-          onTap: (){
-            query = outfit.title;
-            showResults(context); //show results on tap
-          },
-          /*onTap: () {
-            close(context, null); // Close search on item tap
+          onTap: () {
+            // Navigate to OutfitScreen with the specific outfit
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OutfitScreen(
-                  title: outfit.title,
-                  typeOfItem: outfit.typeOfItem,
-                ),
+                builder: (context) => OutfitScreen(outfit: outfit),
               ),
             );
-          },*/
+          },
         );
       },
     );
@@ -694,12 +687,8 @@ class OutfitSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     final suggestions = outfits
         .where((outfit) =>
-            outfit.title
-                .toLowerCase()
-                .startsWith(query.toLowerCase()) || // Partial match
-            outfit.title
-                .toLowerCase()
-                .contains(query.toLowerCase())) // Fuzzy match
+    outfit.title.toLowerCase().startsWith(query.toLowerCase()) ||
+        outfit.title.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
@@ -707,23 +696,21 @@ class OutfitSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final outfit = suggestions[index];
         return ListTile(
-          title: Text(outfit.title as String? ?? ''),
-          trailing: const Text(
-            '↖', //icon to complete the word instead of typing it all
-            style: TextStyle(
-              fontSize: 24, // Adjust size as needed
-              color: Colors.black, // Adjust color if necessary
-            ),
-          ),
-          // title: Text(outfit['title'] as String? ?? ''),
-          //trailing: Icon(Icons.arrow_right),
+          title: Text(outfit.title, style: const TextStyle(fontFamily: 'Lora')),
+          subtitle: Text(outfit.typeOfItem, style: const TextStyle(fontFamily: 'Lora')),
           onTap: () {
-            query = outfit.title;
-            showResults(
-                context); // Show results directly when suggestion is tapped
+            // Navigate to OutfitScreen with the specific outfit
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OutfitScreen(outfit: outfit),
+              ),
+            );
           },
         );
       },
     );
   }
+
+
 }

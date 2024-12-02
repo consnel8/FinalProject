@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'outfit_screen.dart';
-
+import 'outfit_model.dart';
 class OutfitSearchDelegate extends SearchDelegate {
-  final List<Map<String, dynamic>> outfits;
+  final List<Outfit> outfits;
 
   OutfitSearchDelegate({required this.outfits});
 
@@ -33,32 +33,36 @@ class OutfitSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // Filter results based on the search query
-    final results = outfits
-        .where((outfit) =>
-    outfit['title'].toLowerCase().contains(query.toLowerCase()) ||
-        (outfit['typeOfItem']?.toLowerCase() ?? '')
-            .contains(query.toLowerCase()))
-        .toList();
+    final results = outfits.where((outfit) {
+      return outfit.title.toLowerCase().contains(query.toLowerCase()) ||
+          outfit.typeOfItem.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    if (results.isEmpty) {
+      // Show a message if no results are found
+      return Center(
+        child: Text( "The item ${query} you're searching for isn't in your wardrobe.\nTry searching for something else.",
+          textAlign: TextAlign.center, style
+              : TextStyle( fontSize: 16, color: Colors.black, fontFamily: 'Lora',
+          ),
+        ),
+      );
+    }
 
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, index) {
         final outfit = results[index];
         return ListTile(
-          title: Text(outfit['title'] as String? ?? '',
-              style: const TextStyle(fontFamily: 'Lora')),
-          subtitle: Text(outfit['typeOfItem'] as String? ?? '',
-              style: const TextStyle(fontFamily: 'Lora')),
+          title: Text(outfit.title, style: const TextStyle(fontFamily: 'Lora')),
+          subtitle: Text(outfit.typeOfItem, style: const TextStyle(fontFamily: 'Lora')),
           onTap: () {
-            // Navigate to OutfitScreen using outfitId
-            close(context, null); // Close search on item tap
+            // Navigate to OutfitScreen with the Outfit object
+            close(context, null); // Close search
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OutfitScreen(
-                  outfitId: outfit['id'], // Pass outfitId to fetch data
-                ),
+                builder: (context) => OutfitScreen(outfit: outfit),
               ),
             );
           },
@@ -69,26 +73,21 @@ class OutfitSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // Show suggestions based on the search query
-    final suggestions = outfits
-        .where((outfit) =>
-    outfit['title'].toLowerCase().contains(query.toLowerCase()) ||
-        (outfit['typeOfItem']?.toLowerCase() ?? '')
-            .contains(query.toLowerCase()))
-        .toList();
+    final suggestions = outfits.where((outfit) {
+      return outfit.title.toLowerCase().contains(query.toLowerCase()) ||
+          outfit.typeOfItem.toLowerCase().contains(query.toLowerCase());
+    }).toList();
 
     return ListView.builder(
       itemCount: suggestions.length,
       itemBuilder: (context, index) {
         final outfit = suggestions[index];
         return ListTile(
-          title: Text(outfit['title'] as String? ?? '',
-              style: const TextStyle(fontFamily: 'Lora')),
-          subtitle: Text(outfit['typeOfItem'] as String? ?? '',
-              style: const TextStyle(fontFamily: 'Lora')),
+          title: Text(outfit.title, style: const TextStyle(fontFamily: 'Lora')),
+          subtitle: Text(outfit.typeOfItem, style: const TextStyle(fontFamily: 'Lora')),
           onTap: () {
-            // Update query and show results when suggestion is tapped
-            query = outfit['title'];
+            // Update the query and show results
+            query = outfit.title;
             showResults(context);
           },
         );
@@ -96,3 +95,5 @@ class OutfitSearchDelegate extends SearchDelegate {
     );
   }
 }
+
+
