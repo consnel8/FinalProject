@@ -71,7 +71,7 @@ class _JournalPageState extends State<JournalPage> {
       JournalEntry(
         title: 'Welcome!',
         content:
-        'This is a sample entry to help you begin journaling! Log moods, view mood trends and insights, capture a picture for your entry and tap the save icon.',
+        'This is a sample entry to help you begin journaling! We use local storage to log moods, view mood trends and insights, use our built-in camera to capture images and tap the save icon.',
         date: DateTime.now(),
         imageUrl: 'assets/journal_icon.png', // First pre-written entry
       ),
