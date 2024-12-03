@@ -1,12 +1,12 @@
 // imports
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart'; // imports permission handler plugin, checks permissions
 
 class PrivSafetyPage extends StatefulWidget {
   const PrivSafetyPage({super.key});
 
   @override
-  State<PrivSafetyPage> createState() => _PSPageState();
+  State<PrivSafetyPage> createState() => _PSPageState(); // creates state
 } // end PrivSafetyPage
 
 class _PSPageState extends State<PrivSafetyPage> {
@@ -28,6 +28,7 @@ class _PSPageState extends State<PrivSafetyPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  
                   /*
                   With flutter, permissions cannot be retroactively applied or
                   denied. This must be done through system settings, geolocation
@@ -51,7 +52,7 @@ class _PSPageState extends State<PrivSafetyPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: checkPerms, // calling the check perms function
+                    onPressed: checkPerms, // calling the checkPerms function
                     child: const Text(
                       "Check Permissions",
                       style: TextStyle(
