@@ -1,16 +1,16 @@
 // imports
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart'; // handles permissions
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // for notifications
 import 'dart:async';
-import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/timezone.dart' as tz; // handles times for scheduling
 import 'dart:io';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
   @override
-  State<NotificationsPage> createState() => _NotificationsPageState();
+  State<NotificationsPage> createState() => _NotificationsPageState(); // set state
 } // end NotificationsPage
 
 class _NotificationsPageState extends State<NotificationsPage> {
