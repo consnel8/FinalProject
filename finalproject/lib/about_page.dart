@@ -1,15 +1,17 @@
+// imports
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
 
   @override
-  State<AboutPage> createState() => _AboutPageState();
+  State<AboutPage> createState() => _AboutPageState(); // create state
 }
 
 class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
+    // defining UI for the page
     return Scaffold(
       appBar: AppBar(
           title: const Text("About",
@@ -19,10 +21,11 @@ class _AboutPageState extends State<AboutPage> {
               ))),
       body: Center(
         child: Container(
+          // various alignment and padding adjustments consistent with other pages
           padding: const EdgeInsets.fromLTRB(30, 0, 30, 300),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: [ // for each child row, contributer name and github account
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -42,7 +45,7 @@ class _AboutPageState extends State<AboutPage> {
               const Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("\n"),
+                  Text("\n"), // spacer
                 ],
               ),
               Row(
@@ -146,9 +149,10 @@ class _AboutPageState extends State<AboutPage> {
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: const Text(
+                      // explanation of why the app exists
                         "\nThis project was created for Ontario Tech\n"
                         "University's CSCI 4100 Mobile Development course\n"
-                        "during the fall of 2024."),
+                        "during the Fall of 2024."),
                   ),
                 ],
               ),
