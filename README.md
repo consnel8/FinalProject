@@ -23,10 +23,8 @@ Take control of your wardrobe with Life Palette.
 
 <div align="center">
        <img src="finalproject/assets/dashboard.png" alt="Outfit Dashboard" width="170" />
-       <img src="finalproject/assets/outfitScreen.png" alt="Outfit Card/Screen" width="170" />
        <img src="finalproject/assets/outfitEdit.png" alt="Outfit editing" width="170" />
        <img src="finalproject/assets/nearbystores.png" alt="Similar Outfit" width="170" />
-       <img src="finalproject/assets/searchoutfit.png" alt="Search Outfit" width="170" />
        <img src="finalproject/assets/outfitBuilder.png" alt="Outfit Dashboard" width="170" />
 </div>
 
