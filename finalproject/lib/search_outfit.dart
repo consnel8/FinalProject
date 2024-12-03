@@ -8,6 +8,32 @@ class OutfitSearchDelegate extends SearchDelegate {
   final List<Outfit> outfits;
 
   OutfitSearchDelegate({required this.outfits});
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return theme.copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.white, // Light background for the search bar
+        iconTheme: const IconThemeData(color: Colors.black), // Black icons
+        titleTextStyle: const TextStyle(
+          color: Colors.black, // Black text in the search bar
+          fontSize: 18,
+          fontFamily: 'Lora',
+        ),
+      ),
+      inputDecorationTheme: const InputDecorationTheme(
+        hintStyle: TextStyle(color: Colors.grey), // Hint text color
+      ),
+    );
+  }
+
+  @override
+  TextStyle get searchFieldStyle => const TextStyle(
+    color: Colors.black, // Black text for input
+    fontSize: 16,
+    fontFamily: 'Lora',
+  );
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -45,7 +71,7 @@ class OutfitSearchDelegate extends SearchDelegate {
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 16,
-            color: Colors.yellowAccent,
+            color: Colors.blue,
             fontFamily: 'Lora',
           ),
         ),
@@ -87,7 +113,7 @@ class OutfitSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         final outfit = suggestions[index];
         return ListTile(
-          title: Text(outfit.title, style: const TextStyle(fontFamily: 'Lora')),
+          title: Text(outfit.title, style: const TextStyle(fontFamily: 'Lora', )),
           subtitle: Text(outfit.typeOfItem, style: const TextStyle(fontFamily: 'Lora')),
           onTap: () {
             // Update the query and show results

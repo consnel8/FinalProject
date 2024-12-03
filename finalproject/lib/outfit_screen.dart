@@ -83,83 +83,85 @@ class _OutfitScreenState extends State<OutfitScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image section
-            Center(
-              child: widget.outfit.imageUrl.isNotEmpty
-                  ? Image.network(
-                widget.outfit.imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 600,
-              )
-                  : Container(
-                height: 300,
-                color: Colors.grey[200],
-                child: const Icon(
-                  Icons.image,
-                  size: 100,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              widget.outfit.title,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Teko',
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Description
-            Text(
-              widget.outfit.description,
-              style: const TextStyle(
-                fontSize: 16,
-                fontFamily: 'Lora',
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Category and Type of Item
-            Column(
-              children: [
-                Chip(
-                  label: Text(
-                    widget.outfit.typeOfItem,
-                    style: const TextStyle(fontFamily: 'Lora'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image section
+              Center(
+                child: widget.outfit.imageUrl.isNotEmpty
+                    ? Image.network(
+                  widget.outfit.imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 500,
+                )
+                    : Container(
+                  height: 300,
+                  color: Colors.grey[200],
+                  child: const Icon(
+                    Icons.image,
+                    size: 100,
+                    color: Colors.grey,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Chip(
-                  label: Text(
-                    widget.outfit.category,
-                    style: const TextStyle(fontFamily: 'Lora'),
-                  ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                widget.outfit.title,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Teko',
                 ),
-              ],
-            ),
-            const SizedBox(width : 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SimilarOutfitsPage(outfitImageUrl: widget.outfit.imageUrl),
+              ),
+              const SizedBox(height: 8),
+              // Description
+              Text(
+                widget.outfit.description,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Lora',
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Category and Type of Item
+              Column(
+                children: [
+                  Chip(
+                    label: Text(
+                      widget.outfit.typeOfItem,
+                      style: const TextStyle(fontFamily: 'Lora'),
+                    ),
                   ),
-                );
-              },
-              child: const Text('Find Similar Outfits'),
-            ),
-
-
-
-          ],
+                  const SizedBox(width: 8),
+                  Chip(
+                    label: Text(
+                      widget.outfit.category,
+                      style: const TextStyle(fontFamily: 'Lora'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width : 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SimilarOutfitsPage(outfitImageUrl: widget.outfit.imageUrl),
+                    ),
+                  );
+                },
+                child: const Text('Find Similar Outfits'),
+              ),
+        
+        
+        
+            ],
+          ),
         ),
       ),
     );

@@ -477,37 +477,74 @@ class _OutfitBuilderPageState extends State<OutfitBuilderPage> {
               SizedBox(height: 20),
           
               // Dropdowns for Item Type and Category
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      value: selectedItemType,
-                      decoration: InputDecoration(labelText: 'Type of Item'),
-                      items: ['Clothing', 'Shoe', 'Jewellery', 'Accessories']
-                          .map((value) => DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, style: TextStyle(fontFamily: 'Lora')),
-                      ))
-                          .toList(),
-                      onChanged: (value) => setState(() => selectedItemType = value),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      value: selectedCategory,
-                      decoration: InputDecoration(labelText: 'Category'),
-                      items: ['Winter/Fall', 'Summer/Spring', 'Casual', 'Formal', 'Individual Item']
-                          .map((value) => DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, style: TextStyle(fontFamily: 'Lora')),
-                      ))
-                          .toList(),
-                      onChanged: (value) => setState(() => selectedCategory = value),
-                    ),
-                  ),
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth < 400) {
+                    // Use a Column if the screen width is too small
+                    return Column(
+                      children: [
+                        DropdownButtonFormField<String>(
+                          value: selectedItemType,
+                          decoration: InputDecoration(labelText: 'Type of Item'),
+                          items: ['Clothing', 'Shoe', 'Jewellery', 'Accessories']
+                              .map((value) => DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: TextStyle(fontFamily: 'Lora', color: Colors.blueAccent)),
+                          ))
+                              .toList(),
+                          onChanged: (value) => setState(() => selectedItemType = value),
+                        ),
+                        SizedBox(height: 10),
+                        DropdownButtonFormField<String>(
+                          value: selectedCategory,
+                          decoration: InputDecoration(labelText: 'Category'),
+                          items: ['Winter/Fall', 'Summer/Spring', 'Casual', 'Formal', 'Individual Item']
+                              .map((value) => DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: TextStyle(fontFamily: 'Lora', color: Colors.blueAccent)),
+                          ))
+                              .toList(),
+                          onChanged: (value) => setState(() => selectedCategory = value),
+                        ),
+                      ],
+                    );
+                  } else {
+                    // Use a Row for larger screens
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: selectedItemType,
+                            decoration: InputDecoration(labelText: 'Type of Item'),
+                            items: ['Clothing', 'Shoe', 'Jewellery', 'Accessories']
+                                .map((value) => DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value, style: TextStyle(fontFamily: 'Lora')),
+                            ))
+                                .toList(),
+                            onChanged: (value) => setState(() => selectedItemType = value),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: selectedCategory,
+                            decoration: InputDecoration(labelText: 'Category'),
+                            items: ['Winter/Fall', 'Summer/Spring', 'Casual', 'Formal', 'Individual Item']
+                                .map((value) => DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value, style: TextStyle(fontFamily: 'Lora', color: Colors.blueAccent)),
+                            ))
+                                .toList(),
+                            onChanged: (value) => setState(() => selectedCategory = value),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
               ),
+
             ],
           ),
         ),
