@@ -13,12 +13,22 @@ Packed with features for personal improvement and well-being, Life Palette focus
 
 ## Features  
 ### 🧥 **Wardrobe Management**  
-Take control of your wardrobe with Life Palette.  
-- **Add your clothes** by uploading photos of garments.
-- **Organize with tags and categories** such as tops, bottoms, warm weather clothes, and basics.  
-- **Browse your collection** anytime, anywhere. Never wonder what to wear again!  
+Take control of your wardrobe with Life Palette.
+- **Display outfit cards** in outfit dashboard.
+- **Organize with tags and categories** such as tops, bottoms, warm weather clothes, and basics and navigate them through selecting categories or simply by searching by title/category of item.
+- **Save Favourite outfits** separately in favourite outfit page, and set reminders to log outfit of the day.
+- Through **edit wardrobe** easily edit or delete your outfits and by clicking on build outfit to  create an outfit by uploading/capturing/adding image URL to build outfit card.
+- Also find **nearby places** to shop by clicking on similar outfit in outfit card.
+- **Browse your collection** anytime, anywhere. Never wonder what to wear again!
 
-<!--images of wardrobe-->
+<div align="center">
+       <img src="finalproject/assets/dashbaord.png" alt="Outfit Dashboard" width="170" />
+       <img src="finalproject/assets/outfitscreen.png" alt="Outfit Card/Screen" width="170" />
+       <img src="finalproject/assets/editoutfit.png" alt="Outfit editing" width="170" />
+       <img src="finalproject/assets/similiar.png" alt="Similar Outfit" width="170" />
+       <img src="finalproject/assets/search.png" alt="Search Outfit" width="170" />
+       <img src="finalproject/assets/builder.png" alt="Outfit Dashboard" width="170" />
+</div>
 
 ### 🍳 **Recipe Catalog**, powered by **Firestore** for seamless data management.
 Keep your favorite meals organized with our recipe storage feature.  
