@@ -1,32 +1,45 @@
+// Importing Flutter Material package for building the app UI
 import 'package:flutter/material.dart';
+// Importing fl_chart package for charting and visualization features like pie and line charts
 import 'package:fl_chart/fl_chart.dart';
+// Importing the JournalEntry model class for handling journal entry data
 import 'journal_entry_model.dart';
 
+// The JournalInsightsPage is a StatelessWidget that displays insights and charts based on journal entries
 class JournalInsightsPage extends StatelessWidget {
   final List<JournalEntry> entries;
 
+  // Constructor to initialize the JournalInsightsPage with journal entries
   const JournalInsightsPage({Key? key, required this.entries}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Calculate mood frequency from the journal entries
     Map<String, int> moodFrequency = _calculateMoodFrequency(entries);
-    var totalEntries = entries.isNotEmpty ? entries.length : 1;
+    var totalEntries = entries.isNotEmpty ? entries.length : 1; // Ensure non-zero totalEntries
 
+    // Calculate mood percentages based on the frequency of each mood
     Map<String, double> moodPercentages = _calculateMoodPercentages(moodFrequency, totalEntries);
 
+    // Sort moods by their frequency in descending order
     var sortedMoods = moodFrequency.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
+    // Prepare data for charts
     List<BarChartGroupData> barChartData = _prepareBarChartData(sortedMoods);
     List<FlSpot> lineChartData = _prepareLineChartData(sortedMoods);
 
+    // Get the peak mood (the mood with the highest frequency)
     String peakMood = sortedMoods.isNotEmpty ? sortedMoods.first.key : 'No data';
     int peakMoodCount = sortedMoods.isNotEmpty ? sortedMoods.first.value : 0;
+    // Generate a personalized message based on the peak mood
     String personalizedMessage = _getPersonalizedMessage(peakMood);
 
+    // Check if the app is in dark mode to apply appropriate colors
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      // AppBar with a custom title style
       appBar: AppBar(
         title: const Text(
           'Mood Trends',
@@ -44,7 +57,7 @@ class JournalInsightsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Mood Trends Title with an elegant divider
+              // Title for the mood trends section
               Text(
                 'Mood Trends Over Time',
                 style: TextStyle(
@@ -57,14 +70,14 @@ class JournalInsightsPage extends StatelessWidget {
               const SizedBox(height: 1),
               Divider(color: isDarkMode ? Colors.white30 : Colors.black26), // Divider
 
-              // Line Chart
+              // Line chart showing mood frequency over time
               AspectRatio(
                 aspectRatio: 1.9,
                 child: LineChart(
                   LineChartData(
                     lineBarsData: [
                       LineChartBarData(
-                        spots: lineChartData,
+                        spots: lineChartData, // Data for the line chart
                         isCurved: true,
                         color: Colors.blue,
                         belowBarData: BarAreaData(
@@ -84,6 +97,7 @@ class JournalInsightsPage extends StatelessWidget {
                           getTitlesWidget: (value, meta) {
                             final index = value.toInt();
                             if (index < sortedMoods.length) {
+                              // Custom rotation for mood labels on the x-axis
                               return Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Transform.rotate(
@@ -114,7 +128,7 @@ class JournalInsightsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Mood Insights Section with improved separation
+              // Mood Insights Section title
               Text(
                 'Mood Insights (%)',
                 style: TextStyle(
@@ -130,7 +144,7 @@ class JournalInsightsPage extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Pie Chart
+                  // Pie chart for mood percentage distribution
                   Expanded(
                     child: AspectRatio(
                       aspectRatio: 1,
@@ -157,7 +171,7 @@ class JournalInsightsPage extends StatelessWidget {
                   ),
                   const SizedBox(width: 20),
 
-                  // Mood Legend with better separation
+                  // Mood legend showing the mood distribution with labels
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +206,7 @@ class JournalInsightsPage extends StatelessWidget {
               ),
               const SizedBox(height: 0.1),
 
-              // Peak Mood Section with more emphasis
+              // Peak mood section with the most frequent mood displayed
               Text(
                 'Peak Mood:',
                 style: TextStyle(
@@ -212,7 +226,7 @@ class JournalInsightsPage extends StatelessWidget {
               ),
               const SizedBox(height: 5),
 
-              // Personalized Message with emphasis
+              // Personalized message based on the peak mood
               Text(
                 personalizedMessage,
                 style: TextStyle(
@@ -223,7 +237,7 @@ class JournalInsightsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Mood Frequency Distribution with a divider before
+              // Mood Frequency Distribution with a divider
               Text(
                 'Mood Frequency Distribution:',
                 style: TextStyle(
@@ -236,6 +250,7 @@ class JournalInsightsPage extends StatelessWidget {
               const SizedBox(height: 5),
               Divider(color: isDarkMode ? Colors.white30 : Colors.black26), // Divider
 
+              // Bar chart displaying mood frequency distribution
               AspectRatio(
                 aspectRatio: 1.7,
                 child: BarChart(
@@ -246,6 +261,7 @@ class JournalInsightsPage extends StatelessWidget {
                           showTitles: true,
                           getTitlesWidget: (value, meta) {
                             final index = value.toInt();
+                            // Custom rotation for mood labels on the x-axis
                             if (index < sortedMoods.length) {
                               return Transform.rotate(
                                 angle: -0.5,
@@ -269,7 +285,7 @@ class JournalInsightsPage extends StatelessWidget {
                     ),
                     borderData: FlBorderData(show: true),
                     gridData: FlGridData(show: true),
-                    barGroups: barChartData,
+                    barGroups: barChartData, // Data for the bar chart
                   ),
                 ),
               ),

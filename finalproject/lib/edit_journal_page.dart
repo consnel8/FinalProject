@@ -1,22 +1,26 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'journal_entry_model.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:intl/intl.dart';
+// Importing necessary libraries for various functionalities
+import 'dart:io'; // For handling file operations like picking images
+import 'package:flutter/material.dart'; // Core Flutter package for UI components
+import 'package:image_picker/image_picker.dart'; // To pick images from camera or gallery
+import 'journal_entry_model.dart'; // Importing the model for journal entries (custom class)
+import 'package:timeago/timeago.dart' as timeago; // To format time as "time ago" (e.g., 5 minutes ago)
+import 'package:intl/intl.dart'; // For formatting dates in various formats
 
+
+// Stateful widget that enables dynamic updates for the journal entry page (creating/editing)
 class EditJournalPage extends StatefulWidget {
-  final JournalEntry? entry;
+  final JournalEntry? entry; // Optional journal entry to edit. If null, it means we're creating a new entry.
 
-  const EditJournalPage({Key? key, this.entry}) : super(key: key);
+  const EditJournalPage({Key? key, this.entry}) : super(key: key); // Constructor to initialize the widget with optional entry
 
   @override
-  _EditJournalPageState createState() => _EditJournalPageState();
+  _EditJournalPageState createState() => _EditJournalPageState(); // Creates state for the widget (for managing dynamic content)
 }
 
 class _EditJournalPageState extends State<EditJournalPage> {
-  final _titleController = TextEditingController();
-  final _contentController = TextEditingController();
+  // Controllers to manage the input fields for title and content
+  final _titleController = TextEditingController(); // To store the image file that is picked by the user
+  final _contentController = TextEditingController(); // To hold the selected date for the journal entry
   File? _imageFile; // To hold the picked image file
   DateTime? _selectedDate; // To store the selected date
   String? _selectedMood; // Store the selected mood
@@ -25,39 +29,48 @@ class _EditJournalPageState extends State<EditJournalPage> {
   void initState() {
     super.initState();
 
+    // If an existing journal entry is passed for editing, prepopulate the fields for sake of demo
     if (widget.entry != null) {
-      _titleController.text = widget.entry!.title;
-      _contentController.text = widget.entry!.content;
+      _titleController.text = widget.entry!.title; // Set the title from the passed entry
+      _contentController.text = widget.entry!.content;// Set the content from the passed entry
 
       // Only set _imageFile if the image URL is not an asset
       if (widget.entry!.imageUrl != null &&
           !widget.entry!.imageUrl!.startsWith('assets/')) {
-        _imageFile = File(widget.entry!.imageUrl!);
+        _imageFile = File(widget.entry!.imageUrl!); // Load image if it's from file system
       }
 
-      _selectedDate = widget.entry!.date;
-      _selectedMood = widget.entry!.mood;
+      _selectedDate = widget.entry!.date; // Set the date for the journal entry from the passed entry
+      _selectedMood = widget.entry!.mood;// Set the mood from the passed entry
     } else {
-      _selectedDate = DateTime.now();
+      _selectedDate = DateTime.now(); // Set the default date to current date
     }
   }
 
+  // Method to format the selected date
   String _formatSelectedDate(DateTime? date) {
+    // If no date is selected, return a default prompt
     if (date == null) return 'Select Date';
 
+    // Format the date as "time ago" (e.g., "5 minutes ago") using the timeago package
     final timeAgo = timeago.format(date);
+
+    // Format the date as "MMM dd, yyyy" (e.g., "Dec 02, 2024") using intl package
     final formattedDate = DateFormat('MMM dd, yyyy').format(date);
+
+    // Return the formatted date as a string with both "time ago" and the date
     return '$timeAgo | $formattedDate';
   }
 
-  // Method to capture image
+  // Method to capture an image from the camera
   Future<void> _captureImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    final picker = ImagePicker(); // Create an ImagePicker instance to access camera or gallery
+    final pickedFile = await picker.pickImage(source: ImageSource.camera); // Pick an image using the camera
 
+    // If the user picks an image, store it in the _imageFile variable
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path); // Store the captured image file
+        _imageFile = File(pickedFile.path); // Store the captured image file in the state
       });
     }
   }
@@ -96,16 +109,21 @@ class _EditJournalPageState extends State<EditJournalPage> {
   }
 
 
+// Method to display a mood picker dialog and update the selected mood
   void _showMoodPicker() async {
+    // Show the MoodPickerDialog and wait for the user to select a mood
     final String? mood = await showDialog<String>(
       context: context,
       builder: (context) {
+        // Return the MoodPickerDialog widget, passing the current selected mood
         return MoodPickerDialog(currentMood: _selectedMood);
       },
     );
+
+    // If a mood is selected, update the _selectedMood state variable
     if (mood != null) {
       setState(() {
-        _selectedMood = mood;
+        _selectedMood = mood; // Store the new mood in the state
       });
     }
   }
@@ -178,21 +196,24 @@ class _EditJournalPageState extends State<EditJournalPage> {
               child: Column(
                 children: [
                   Expanded(
+                    // Expanded widget to make the content take the available space
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),// Add padding to the scroll view
                       child: Column(
                         children: [
+                          // Title TextField to input the journal title
                           TextField(
-                            controller: _titleController,
+                            controller: _titleController, // Controller to manage text input
                             decoration: InputDecoration(
                               labelStyle: TextStyle(fontFamily: 'Lora'),
                               hintStyle: TextStyle(fontFamily: 'Lora'),
-                              hintText: 'Title',
-                              border: InputBorder.none,
+                              hintText: 'Title', // Placeholder text
+                              border: InputBorder.none, // Remove the border
                               filled: true,
                               fillColor: Colors.transparent,
                             ),
                             style: TextStyle(
+                              // Set font size, weight, color, style and family
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFFbe3b88),
@@ -200,15 +221,18 @@ class _EditJournalPageState extends State<EditJournalPage> {
                               fontStyle: FontStyle.normal,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 16), // Add space between widgets
+                          // GestureDetector to open date picker when tapped
                           GestureDetector(
-                            onTap: () => _selectDate(context),
+                            onTap: () => _selectDate(context), // Trigger date selection
                             child: AbsorbPointer(
                               child: Row(
                                 children: [
+                                  // TextField for displaying the selected date
                                   Expanded(
                                     child: TextField(
                                       controller: TextEditingController(
+                                        // Format date as "time ago | formatted date"
                                         text: _formatSelectedDate(_selectedDate),
                                       ),
                                       decoration: InputDecoration(
@@ -224,10 +248,12 @@ class _EditJournalPageState extends State<EditJournalPage> {
                                       ),
                                     ),
                                   ),
+                                  // Display mood if selected
                                   if (_selectedMood != null)
                                     Padding(
                                       padding: const EdgeInsets.only(left: 8.0, bottom: 25.0),
                                       child: Text(
+                                        // Display selected mood and its formatting
                                         'Mood: $_selectedMood',
                                         style: TextStyle(
                                           fontFamily: 'IndieFlower',

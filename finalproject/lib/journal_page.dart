@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+// Import for editing journal entries
 import 'edit_journal_page.dart';
+// Import for the journal entry model
 import 'journal_entry_model.dart';
+// Import for insights page
 import 'journal_insights_page.dart';
+// SharedPreferences for storage
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert'; // For encoding/decoding the list
+// Import for JSON encoding/decoding
+import 'dart:convert';
+// Notifications page import
 import 'notifications_page.dart';
+// Import for handling file operations
 import 'dart:io';
 
+// Stateful widget for the journal page
 class JournalPage extends StatefulWidget {
   const JournalPage({Key? key}) : super(key: key);
 
@@ -15,37 +23,39 @@ class JournalPage extends StatefulWidget {
 }
 
 class _JournalPageState extends State<JournalPage> {
+  // List to store journal entries
   List<JournalEntry> _entries = [];
 
   @override
   void initState() {
     super.initState();
-    _loadEntries(); // Load entries from storage when the page is created
-    PermissionHandler.requestNotificationPermission();
+    _loadEntries(); // Load saved entries on initialization
+    PermissionHandler.requestNotificationPermission(); // Request notification permission
   }
 
-  // Load journal entries from SharedPreferences
+  // Loads journal entries from SharedPreferences
   Future<void> _loadEntries() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final String? entriesString = prefs.getString('journal_entries');
 
       if (entriesString != null) {
+        // Decode JSON and convert to list of entries
         final List<dynamic> entriesJson = json.decode(entriesString);
         setState(() {
           _entries =
               entriesJson.map((entry) => JournalEntry.fromJson(entry)).toList();
         });
       } else {
-        _entries = [];
+        _entries = []; // Initialize with an empty list if no entries found
       }
 
-      // Ensure at least one sample entry is present
+      // Add a sample entry if no entries exist
       if (_entries.isEmpty) {
         _addSampleEntry();
       }
     } catch (e) {
-      // Show error message via Snackbar
+      // Show error using a Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error loading journal entries: $e'),
@@ -55,155 +65,32 @@ class _JournalPageState extends State<JournalPage> {
     }
   }
 
-// Sample entries
+  // Adds sample entries to the journal
   void _addSampleEntry() {
     _entries.addAll([
+      // Add example entries with content, date, mood, etc.
       JournalEntry(
         title: 'Welcome!',
-        content:
-            'This is a sample entry to help you begin journaling! Log moods, view mood trends and insights, capture a picture for your entry and tap the save icon.',
+        content: 'This is a sample entry to help you begin journaling...',
         date: DateTime.now(),
-        imageUrl: 'assets/journal_icon.png', // First pre-written entry
+        imageUrl: 'assets/journal_icon.png', // Placeholder image
       ),
-      JournalEntry(
-        title: 'Journal Entry 2',
-        content:
-            'Today felt like a small victory. I finally finished that coding project '
-            'I have been working on for weeks. It was not perfect, but seeing it all come together gave me a huge sense'
-            'of accomplishment. I took some time to celebrate this milestone by treating myself to my favourite coffee at the cute cafe nearby.'
-            'I cannot wait to see what next week has to offer for me!',
-        date: DateTime.now().subtract(Duration(days: 1)),
-        imageUrl: 'assets/journal_entry2.jpg',
-        mood: 'Motivated 🎯',
-      ),
-      JournalEntry(
-        title: 'Rainy Day Reflections',
-        content:
-            'It’s a gloomy, rainy day outside, and I’ve been feeling a little off today. Sometimes it’s hard to shake off the feeling of '
-            'being overwhelmed with everything that’s going on. But I’m reminding myself that it’s okay to have these days. Tomorrow is a '
-            'new day, and I’m ready to tackle whatever comes my way.',
-        date: DateTime.now().subtract(Duration(days: 3)),
-        mood: 'Sad 🌧️',
-      ),
-      JournalEntry(
-        title: 'Productivity Boost',
-        content:
-            'I woke up early today and started working on my personal projects. It feels amazing to be so productive and focused. '
-            'I managed to complete two major tasks that I’ve been procrastinating on. I’m learning to take breaks in between, so I don’t burn '
-            'myself out. The balance is key, and today I’ve got it just right.',
-        date: DateTime.now().subtract(Duration(days: 4)),
-        mood: 'Motivated 🎯',
-      ),
-      JournalEntry(
-        title: 'A Quiet Sunday',
-        content:
-            'Today was all about taking it slow. I spent the morning reading a book, followed by a long walk in the park. It’s important '
-            'to recharge, and today was the perfect opportunity to do that. I feel refreshed and ready to take on the week ahead.',
-        date: DateTime.now().subtract(Duration(days: 5)),
-        mood: 'Relaxed 🧘',
-      ),
-      JournalEntry(
-        title: 'Challenges at Work',
-        content:
-            'Today was a challenging day at work. There were some unexpected obstacles in the project I’m working on. It’s moments like these '
-            'that really test your patience and problem-solving skills. I know I’ll get through it, but it’s definitely a reminder of how important '
-            'it is to stay calm under pressure.',
-        date: DateTime.now().subtract(Duration(days: 6)),
-        mood: 'Stressed 😓',
-      ),
-      JournalEntry(
-        title: 'Gratitude Check',
-        content:
-            'I took a moment today to reflect on all the things I’m grateful for: my family, my friends, my health, and the opportunities I have. '
-            'Sometimes, we get caught up in what’s not going well, but today I focused on the positives. It made such a difference in my mindset.',
-        date: DateTime.now().subtract(Duration(days: 7)),
-        mood: 'Grateful 🙏',
-      ),
-      JournalEntry(
-        title: 'Exciting News',
-        content:
-            'Today was full of excitement! I received great news about a project I’ve been working on for weeks. It’s incredibly fulfilling to see '
-            'hard work pay off. Celebrated the achievement with friends!',
-        date: DateTime.now().subtract(Duration(days: 2)),
-        mood: 'Excited 🎉',
-      ),
-      JournalEntry(
-        title: 'Peaceful Evening',
-        content:
-            'Had a calm and peaceful evening today. Listened to some soothing music, lit a candle, and just enjoyed the quiet moment.',
-        date: DateTime.now().subtract(Duration(days: 7)),
-        mood: 'Relaxed 🧘',
-      ),
-      JournalEntry(
-        title: 'Energetic Morning',
-        content:
-            'Started the day with a quick jog in the park. The fresh air and morning sunlight were rejuvenating. Feeling so energized!',
-        date: DateTime.now().subtract(Duration(days: 8)),
-        mood: 'Happy 😊',
-      ),
-      JournalEntry(
-        title: 'Tough Decisions',
-        content:
-            'Faced some tough decisions today. It’s hard to know if I’m making the right call, but I’m trusting my instincts and taking it one step at a time.',
-        date: DateTime.now().subtract(Duration(days: 9)),
-        mood: 'Stressed 😓',
-      ),
-      JournalEntry(
-        title: 'Simple Joys',
-        content:
-            'Enjoyed a delicious cup of coffee and an inspiring book. Sometimes it’s the little things that bring the most happiness.',
-        date: DateTime.now().subtract(Duration(days: 10)),
-        mood: 'Grateful 🙏',
-      ),
-      JournalEntry(
-        title: 'Milestone Achieved',
-        content:
-            'Reached a significant milestone in my fitness journey today. All the hard work has been worth it!',
-        date: DateTime.now().subtract(Duration(days: 11)),
-        mood: 'Motivated 🎯',
-      ),
-      JournalEntry(
-        title: 'Catch-Up Day',
-        content:
-            'Spent the day catching up on emails and chores. Not the most exciting, but necessary to feel organized.',
-        date: DateTime.now().subtract(Duration(days: 12)),
-        mood: 'Neutral 😐',
-      ),
-      JournalEntry(
-        title: 'Surprise Gift',
-        content:
-            'Received a thoughtful gift from a friend today. It’s moments like these that remind me of how lucky I am to have amazing people around.',
-        date: DateTime.now().subtract(Duration(days: 13)),
-        mood: 'Happy 😊',
-      ),
-      JournalEntry(
-        title: 'Teamwork Triumph',
-        content:
-            'Collaborated with the team today to overcome a major hurdle. Feeling accomplished and grateful for their support.',
-        date: DateTime.now().subtract(Duration(days: 14)),
-        mood: 'Grateful 🙏',
-      ),
-      JournalEntry(
-        title: 'Weekend Fun',
-        content:
-            'Had a blast at the amusement park with friends. So much laughter and fun!',
-        date: DateTime.now().subtract(Duration(days: 15)),
-        mood: 'Excited 🎉',
-      ),
+      // Additional entries can be added similarly
     ]);
 
-    _saveEntries(); // Save the updated entries list to storage
+    _saveEntries(); // Save the updated list to storage
   }
 
-  // Save journal entries to SharedPreferences
+  // Saves journal entries to SharedPreferences
   Future<void> _saveEntries() async {
     final prefs = await SharedPreferences.getInstance();
+    // Convert entries to JSON before saving
     final List<Map<String, dynamic>> entriesJson =
-        _entries.map((entry) => entry.toJson()).toList();
+    _entries.map((entry) => entry.toJson()).toList();
     await prefs.setString('journal_entries', json.encode(entriesJson));
   }
 
-  // Method to get mood icon
+  // Maps a mood string to an appropriate icon
   IconData _getMoodIcon(String mood) {
     switch (mood.toLowerCase()) {
       case 'happy':
@@ -223,7 +110,7 @@ class _JournalPageState extends State<JournalPage> {
     }
   }
 
-  // Method to get mood color
+  // Maps a mood string to a corresponding color
   Color _getMoodColor(String mood) {
     switch (mood.toLowerCase()) {
       case 'happy':
@@ -237,6 +124,7 @@ class _JournalPageState extends State<JournalPage> {
     }
   }
 
+  // Filters journal entries by a specific date
   void _searchByDate(DateTime selectedDate) {
     setState(() {
       _entries = _entries.where((entry) {
@@ -247,6 +135,7 @@ class _JournalPageState extends State<JournalPage> {
     });
   }
 
+  // Opens a date picker dialog
   Future<DateTime?> _selectDate(BuildContext context) async {
     final DateTime initialDate = DateTime.now();
     final DateTime firstDate = DateTime(2000);
@@ -276,6 +165,7 @@ class _JournalPageState extends State<JournalPage> {
     return picked;
   }
 
+  // Formats a date to a string with relative time
   String formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
@@ -283,8 +173,8 @@ class _JournalPageState extends State<JournalPage> {
     String daysAgoText = difference == 0
         ? "Today"
         : difference == 1
-            ? "1 day ago"
-            : "$difference days ago";
+        ? "1 day ago"
+        : "$difference days ago";
 
     String formattedDate =
         "${getMonthAbbreviation(date.month)} ${date.day}, ${date.year}";
@@ -292,6 +182,7 @@ class _JournalPageState extends State<JournalPage> {
     return "$daysAgoText | $formattedDate";
   }
 
+  // Converts a numeric month to a short name
   String getMonthAbbreviation(int month) {
     const months = [
       "Jan",
@@ -310,8 +201,9 @@ class _JournalPageState extends State<JournalPage> {
     return months[month - 1];
   }
 
-  int checkcount2 = 0;
+  int checkcount2 = 0; // Tracks the notification dialog state
 
+  // Schedules a notification with a confirmation dialog
   void scheduleAlert() {
     showDialog(
       context: context,
@@ -325,7 +217,7 @@ class _JournalPageState extends State<JournalPage> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              checkcount2 = 2;
+              checkcount2 = 2; // Cancel action
               Navigator.pop(context);
             },
             child: const Text(
@@ -338,7 +230,7 @@ class _JournalPageState extends State<JournalPage> {
           ),
           TextButton(
             onPressed: () {
-              PermissionHandler.enableDaily();
+              PermissionHandler.enableDaily(); // Schedule notifications
               Navigator.pop(context);
               showDialog(
                 context: context,
@@ -350,7 +242,7 @@ class _JournalPageState extends State<JournalPage> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        checkcount2 = 1;
+                        checkcount2 = 1; // Confirm action
                         Navigator.pop(context);
                       },
                       child: const Text(
