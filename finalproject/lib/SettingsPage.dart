@@ -6,6 +6,8 @@ import 'appearance_page.dart' as appearance;
 import 'account_page.dart' as account;
 import 'about_page.dart' as aboutp;
 
+// defining the main settings page as a stateful widget, allowing for
+// dynamic updating
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -18,7 +20,7 @@ class MainSettings extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( // creates our main header, Settings
         title: const Text("Settings",
             style: TextStyle(
               fontFamily: 'Teko',
@@ -27,6 +29,7 @@ class MainSettings extends State<SettingsPage> {
       ),
       body: Center(
         child: Container(
+          // custom padding and alignment throughout the page for uniformity
           padding: const EdgeInsets.fromLTRB(30, 15, 30, 300),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,6 +37,7 @@ class MainSettings extends State<SettingsPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // all children redirect to a different settings page
                   const Text("Account",
                       style: TextStyle(
                         fontSize: 25,
