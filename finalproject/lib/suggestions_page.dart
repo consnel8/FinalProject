@@ -298,6 +298,7 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
   bool isLoading = true;
   String errorMessage = '';
 
+  // Foursquare API
   final String foursquareApiKey = "fsq3GOZ7uhN/MS2jobaLIO0xPFO8b5M7gVzLp3YK79MmSU0=";
 
   @override
@@ -348,6 +349,7 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
     }
   }
 
+  // Determine user current position
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;

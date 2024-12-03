@@ -77,11 +77,11 @@ class _EditJournalPageState extends State<EditJournalPage> {
         return Theme(
           data: ThemeData.light().copyWith(
             primaryColor: Color(0xFF55acee), // Header color
-        colorScheme: ColorScheme.light(primary: Color(0xFF55acee)),
-        textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-        foregroundColor: Color(0xFFBE3B88),
-        ),),
+            colorScheme: ColorScheme.light(primary: Color(0xFF55acee)),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Color(0xFFBE3B88),
+              ),),
           ),
           child: child!,
         );
@@ -114,24 +114,24 @@ class _EditJournalPageState extends State<EditJournalPage> {
   Widget build(BuildContext context) {
     return Theme(
         data: Theme.of(context).copyWith(
-      textTheme: Theme.of(context).textTheme.apply(
-        bodyColor: Colors.black,
-        displayColor: Colors.black,
-      ),
-    ),
-    child: Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Handle back navigation
-          },
+          textTheme: Theme.of(context).textTheme.apply(
+            bodyColor: Colors.black,
+            displayColor: Colors.black,
+          ),
         ),
-        title: const Text('Journal Entry',
-            style: TextStyle(fontFamily: 'RobotoMono', fontSize: 25)),
-        actions: widget.entry != null
-            ? [
+        child: Scaffold(
+            appBar: AppBar(
+              elevation: 1,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context); // Handle back navigation
+                },
+              ),
+              title: const Text('Journal Entry',
+                  style: TextStyle(fontFamily: 'RobotoMono', fontSize: 25)),
+              actions: widget.entry != null
+                  ? [
                 IconButton(
                   icon: const Icon(Icons.delete),
                   iconSize: 30,
@@ -144,7 +144,7 @@ class _EditJournalPageState extends State<EditJournalPage> {
                         title: const Text('Delete Entry',
                             style: TextStyle(fontFamily: 'Teko', color:Colors.black,)),
                         content: const Text(
-                            'Are you sure you want to delete this entry?',),
+                          'Are you sure you want to delete this entry?',),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
@@ -165,197 +165,197 @@ class _EditJournalPageState extends State<EditJournalPage> {
                   },
                 ),
               ]
-            : null,
-      ),
+                  : null,
+            ),
 
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/journal_diary_icon.jpg'), // Background image
-            fit: BoxFit.cover, // Ensure the image covers the entire screen
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        labelStyle: TextStyle(fontFamily: 'Lora'),
-                        hintStyle: TextStyle(fontFamily: 'Lora'),
-                        hintText: 'Title',
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.transparent,
-                      ),
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFbe3b88),
-                        fontFamily: 'RobotoMono',
-                        fontStyle: FontStyle.normal,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: () => _selectDate(context),
-                      child: AbsorbPointer(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: TextEditingController(
-                                  text: _formatSelectedDate(_selectedDate),
-                                ),
-                                decoration: InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Lora', fontSize: 30,),
-                                  labelText: 'Select Date',
-                                  filled: true,
-                                  fillColor: Colors.transparent,
-                                  border: InputBorder.none,
-                                ),
-                                style: TextStyle(
-                                  color: Color(0xFF444444),
-                                  fontFamily: 'Lora',
-                                ),
+            body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/journal_diary_icon.jpg'), // Background image
+                  fit: BoxFit.cover, // Ensure the image covers the entire screen
+                ),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _titleController,
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(fontFamily: 'Lora'),
+                              hintStyle: TextStyle(fontFamily: 'Lora'),
+                              hintText: 'Title',
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Colors.transparent,
+                            ),
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFbe3b88),
+                              fontFamily: 'RobotoMono',
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          GestureDetector(
+                            onTap: () => _selectDate(context),
+                            child: AbsorbPointer(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: TextEditingController(
+                                        text: _formatSelectedDate(_selectedDate),
+                                      ),
+                                      decoration: InputDecoration(
+                                        labelStyle: TextStyle(fontFamily: 'Lora', fontSize: 30,),
+                                        labelText: 'Select Date',
+                                        filled: true,
+                                        fillColor: Colors.transparent,
+                                        border: InputBorder.none,
+                                      ),
+                                      style: TextStyle(
+                                        color: Color(0xFF444444),
+                                        fontFamily: 'Lora',
+                                      ),
+                                    ),
+                                  ),
+                                  if (_selectedMood != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0, bottom: 25.0),
+                                      child: Text(
+                                        'Mood: $_selectedMood',
+                                        style: TextStyle(
+                                          fontFamily: 'IndieFlower',
+                                          fontSize: 20,
+                                          color: Color(0xFFbe3b88),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
-                            if (_selectedMood != null)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, bottom: 25.0),
-                                child: Text(
-                                  'Mood: $_selectedMood',
-                                  style: TextStyle(
-                                    fontFamily: 'IndieFlower',
-                                    fontSize: 20,
-                                    color: Color(0xFFbe3b88),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _contentController,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              hintText: 'Your journal entry...',
+                              hintStyle: TextStyle(
+                                height: 3,
+                                fontFamily: 'Lora',
                               ),
-                          ],
-                        ),
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              contentPadding: EdgeInsets.only(left: 15.0, top: 1.0),
+                            ),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'FuzzyBubbles',
+                              color: Colors.black,
+                              height: 1.70, // line spacing
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Display the picked or captured image if any
+                          if (_imageFile != null)
+                            Image.file(
+                              _imageFile!,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                          if (widget.entry?.imageUrl != null && _imageFile == null)
+                            widget.entry!.imageUrl!.startsWith('assets/')
+                                ? Image.asset(
+                              widget.entry!.imageUrl!,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            )
+                                : Image.file(
+                              File(widget.entry!.imageUrl!),
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _contentController,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: 'Your journal entry...',
-                        hintStyle: TextStyle(
-                          height: 3,
-                          fontFamily: 'Lora',
-                        ),
-                        border: InputBorder.none,
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        contentPadding: EdgeInsets.only(left: 15.0, top: -28.0),
-                      ),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'FuzzyBubbles',
-                        color: Colors.black,
-                        height: 1.70, // line spacing
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Display the picked or captured image if any
-                    if (_imageFile != null)
-                      Image.file(
-                        _imageFile!,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    if (widget.entry?.imageUrl != null && _imageFile == null)
-                      widget.entry!.imageUrl!.startsWith('assets/')
-                          ? Image.asset(
-                        widget.entry!.imageUrl!,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      )
-                          : Image.file(
-                        File(widget.entry!.imageUrl!),
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
 
-        bottomNavigationBar: BottomAppBar(
-          color: const Color(0xFF393634),
-          child: Row(
-            children: [
-              Expanded(
-                child: IconButton(
-                  icon: Image.asset('assets/mood.png'),
-                  iconSize: 50,
-                  onPressed: _showMoodPicker,
-                ),
-              ),
-              Container(
-                height: 60,
-                width: 2,
-                color: Colors.black,
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: Image.asset('assets/camera.png'),
-                  iconSize: 50,
-                  onPressed: _captureImage,
-                ),
-              ),
-              Container(
-                height: 60,
-                width: 2,
-                color: Colors.black,
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: Image.asset('assets/save.png'),
-                  iconSize: 50,
-                  onPressed: () {
-                    final updatedEntry = JournalEntry(
-                      title: _titleController.text,
-                      content: _contentController.text,
-                      imageUrl: _imageFile?.path ?? widget.entry?.imageUrl,
-                      date: _selectedDate ?? DateTime.now(),
-                      mood: _selectedMood,
-                    );
+            bottomNavigationBar: BottomAppBar(
+              color: const Color(0xFF393634),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: IconButton(
+                      icon: Image.asset('assets/mood.png'),
+                      iconSize: 50,
+                      onPressed: _showMoodPicker,
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: 2,
+                    color: Colors.black,
+                  ),
+                  Expanded(
+                    child: IconButton(
+                      icon: Image.asset('assets/camera.png'),
+                      iconSize: 50,
+                      onPressed: _captureImage,
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    width: 2,
+                    color: Colors.black,
+                  ),
+                  Expanded(
+                    child: IconButton(
+                      icon: Image.asset('assets/save.png'),
+                      iconSize: 50,
+                      onPressed: () {
+                        final updatedEntry = JournalEntry(
+                          title: _titleController.text,
+                          content: _contentController.text,
+                          imageUrl: _imageFile?.path ?? widget.entry?.imageUrl,
+                          date: _selectedDate ?? DateTime.now(),
+                          mood: _selectedMood,
+                        );
 
-                    // Snackbar when saving edited/new entry
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
+                        // Snackbar when saving edited/new entry
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
                               '✨ Entry saved! Time to reflect',
-                          style: TextStyle(fontFamily: 'Lora', ),
-                        ),
-                        duration: Duration(seconds: 5),
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: Color(0xffc5c5c5),
-                        margin: EdgeInsets.all(16.0),
-                      ),
-                    );
+                              style: TextStyle(fontFamily: 'Lora', ),
+                            ),
+                            duration: Duration(seconds: 5),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Color(0xffc5c5c5),
+                            margin: EdgeInsets.all(16.0),
+                          ),
+                        );
 
-                    Navigator.pop(context, updatedEntry);
-                  },
-                ),
+                        Navigator.pop(context, updatedEntry);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
+            )
 
-    )
+        )
     );
   }
 }
