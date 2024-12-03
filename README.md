@@ -22,12 +22,12 @@ Take control of your wardrobe with Life Palette.
 - **Browse your collection** anytime, anywhere. Never wonder what to wear again!
 
 <div align="center">
-       <img src="finalproject/assets/wardrobe_images/dashbaord.png" alt="Outfit Dashboard" width="170" />
-       <img src="finalproject/assets/wardrobe_images/outfitscreen.png" alt="Outfit Card/Screen" width="170" />
-       <img src="finalproject/assets/wardrobe_images/editoutfit.png" alt="Outfit editing" width="170" />
-       <img src="finalproject/assets/wardrobe_images/similiar.png" alt="Similar Outfit" width="170" />
-       <img src="finalproject/assets/wardrobe_images/search.png" alt="Search Outfit" width="170" />
-       <img src="finalproject/assets/wardrobe_images/builder.png" alt="Outfit Dashboard" width="170" />
+       <img src="finalproject/assets/dashboard.png" alt="Outfit Dashboard" width="170" />
+       <img src="finalproject/assets/outfitScreen.png" alt="Outfit Card/Screen" width="170" />
+       <img src="finalproject/assets/outfitEdit.png" alt="Outfit editing" width="170" />
+       <img src="finalproject/assets/nearbystores.png" alt="Similar Outfit" width="170" />
+       <img src="finalproject/assets/searchoutfit.png" alt="Search Outfit" width="170" />
+       <img src="finalproject/assets/outfitBuilder.png" alt="Outfit Dashboard" width="170" />
 </div>
 
 ### 🍳 **Recipe Catalog**, powered by **Firestore** for seamless data management.
