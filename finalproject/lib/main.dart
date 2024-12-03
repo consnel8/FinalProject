@@ -3,7 +3,7 @@ import 'dart:async'; // For timing and delays
 import 'dart:convert'; // For JSON encoding/decoding
 import 'package:timezone/data/latest.dart' as tz; // For handling time zones
 import 'package:adaptive_theme/adaptive_theme.dart'; // For adaptive themes based on system settings
-import 'package:finalproject/wardrobe/outfit_builder.dart'; // For virtual wardrobe functionality
+import 'package:finalproject/outfit_builder.dart'; // For virtual wardrobe functionality
 import 'package:flutter/material.dart'; // Flutter framework for building the UI
 import 'recipe_book_page.dart'; // For the recipe book page
 import 'add_recipe_page.dart'; // For adding new recipes
@@ -13,7 +13,7 @@ import 'journal_page.dart'; // For the journal page
 import 'package:shared_preferences/shared_preferences.dart'; // For storing and retrieving app preferences
 import 'journal_entry_model.dart'; // Model for journal entries
 import 'edit_journal_page.dart'; // For editing journal entries
-import 'wardrobe/outfits_page.dart'; // For managing wardrobe outfits
+import 'outfits_page.dart'; // For managing wardrobe outfits
 import 'package:firebase_core/firebase_core.dart'; // For Firebase initialization
 import 'firebase_options.dart'; // For Firebase configuration options
 import 'suggestions_page.dart'; // For the suggestions page
