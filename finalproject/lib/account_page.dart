@@ -1,12 +1,13 @@
+// imports
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // firebase
+import 'package:firebase_auth/firebase_auth.dart'; // firebase
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
   @override
-  State<AccountPage> createState() => _AccountPageState();
+  State<AccountPage> createState() => _AccountPageState(); // create state
 } // end AccountPage
 
 class _AccountPageState extends State<AccountPage> {
@@ -27,6 +28,7 @@ class _AccountPageState extends State<AccountPage> {
       ),
       body: Center(
         child: Container(
+          // padding and alignment consistent with other settings pages
           padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,7 +53,7 @@ class _AccountPageState extends State<AccountPage> {
                 children: [
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: deletionAlert,
+                    onPressed: deletionAlert, // alert requiring confirmation from the user about deleting their data
                     child: const Text(
                       "Begin Data Deletion",
                       style: TextStyle(
@@ -70,6 +72,7 @@ class _AccountPageState extends State<AccountPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text( // explains what the button will do
+                    // explanation and warning for the user
                     "By clicking the above button, you agree to the complete deletion of\n"
                     "your data off the Life Palette"
                     " app. All saved cloud data will be\ncompletely wiped. This data "
@@ -142,7 +145,7 @@ class _AccountPageState extends State<AccountPage> {
 
     if (user == null) {
       // If no user is logged in, show a prompt.
-      _showLoginRequiredMessage();
+      _showLoginRequiredMessage(); // user must be logged in
       return;
     } // end if
 
@@ -153,7 +156,8 @@ class _AccountPageState extends State<AccountPage> {
     } // end try-catch
   } // end _checkAndDeleteData
 
-  void _showLoginRequiredMessage() {
+  void _showLoginRequiredMessage() { 
+    // pop up for the user, informing of the requirement to log in to delete the cloud data
     showDialog(
       context: context,
       builder: (context) {
